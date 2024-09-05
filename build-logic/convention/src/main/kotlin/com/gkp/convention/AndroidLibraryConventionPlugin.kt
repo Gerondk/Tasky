@@ -4,6 +4,7 @@ import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.LibraryExtension
 import com.gkp.convention.util.ExtensionType
 import com.gkp.convention.util.configureBuildType
+import com.gkp.convention.util.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -19,6 +20,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             }
 
             extensions.configure<LibraryExtension>() {
+                configureKotlinAndroid(this)
                 configureBuildType(
                     commonExtension = this,
                     extensionType = ExtensionType.LIBRARY
