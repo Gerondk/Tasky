@@ -6,6 +6,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.project
 
 class AndroidFeatureUiConventionPlugin : Plugin<Project>  {
     override fun apply(target: Project) {
@@ -16,9 +17,9 @@ class AndroidFeatureUiConventionPlugin : Plugin<Project>  {
             dependencies {
                 "implementation"(project.libs.findBundle("koin.compose").get())
                 "implementation"(project.libs.findBundle("compose").get())
-                "implementation"(project.libs.findLibrary("androidx.navigation.compose").get())
                 "debugImplementation"(project.libs.findBundle("compose.debug").get())
                 "androidTestImplementation"(project.libs.findLibrary("androidx.compose.ui.test.junit4").get())
+                "implementation"(project(":core:presentation:designsystem"))
             }
         }
     }
