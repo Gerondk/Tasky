@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.com.intellij.psi.search.GlobalSearchScope
-
 plugins {
     alias(libs.plugins.tasky.application.compose)
     alias(libs.plugins.kotlin.plugin.serialization)
@@ -7,23 +5,9 @@ plugins {
 
 android {
     namespace = "com.gkp.tasky"
-
-//    defaultConfig {
-//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-//        vectorDrawables {
-//            useSupportLibrary = true
-//        }
-//    }
-//
-//    packaging {
-//        resources {
-//            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-//        }
-//    }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.ui.graphics)
