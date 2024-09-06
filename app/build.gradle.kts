@@ -12,6 +12,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.core.splashscreen)
 
     implementation(projects.core.presentation.designsystem)
 
