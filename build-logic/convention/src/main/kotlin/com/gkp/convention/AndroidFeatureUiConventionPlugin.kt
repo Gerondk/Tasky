@@ -13,12 +13,16 @@ class AndroidFeatureUiConventionPlugin : Plugin<Project>  {
         with(target) {
             with(pluginManager) {
                 apply("tasky.android.library.compose")
+                apply("org.jetbrains.kotlin.plugin.serialization")
             }
             dependencies {
                 "implementation"(project.libs.findBundle("koin.compose").get())
                 "implementation"(project.libs.findBundle("compose").get())
+                "implementation"(platform(project.libs.findLibrary("koin.bom").get()))
+                "implementation"(project.libs.findBundle("koin.compose").get())
+                "implementation"(project.libs.findLibrary("kotlinx.serialization.json").get())
                 "debugImplementation"(project.libs.findBundle("compose.debug").get())
-                "androidTestImplementation"(project.libs.findLibrary("androidx.compose.ui.test.junit4").get())
+                "androidTestImplementation"(project.libs.findLibrary("androidx.ui.test.junit4").get())
                 "implementation"(project(":core:presentation:designsystem"))
             }
         }

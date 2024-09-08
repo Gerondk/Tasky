@@ -88,6 +88,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
 tasky-application-compose = { id = "tasky.android.application.compose", version = "unspecified"}
 tasky-library-compose = { id = "tasky.android.library.compose", version = "unspecified"}
+tasky-featureui = { id = "tasky.android.featureui", version = "unspecified"}
 tasky-library-Jvm = { id = "tasky.Jvm.library", version = "unspecified"}
 tasky-android-room = { id = "tasky.android.room", version = "unspecified"}
 android-library = { id = "com.android.library", version.ref = "agp" }
@@ -98,6 +99,7 @@ compose = [
     "androidx-lifecycle-runtime-compose",
     "androidx-lifecycle-viewmodel-compose",
     "androidx-material3",
+    "androidx-navigation-compose",
     "androidx-ui",
     "androidx-ui-graphics",
     "androidx-ui-tooling-preview",
