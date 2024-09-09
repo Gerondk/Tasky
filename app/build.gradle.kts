@@ -15,6 +15,7 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
 
     implementation(projects.core.presentation.designsystem)
+    implementation(projects.auth.presentation)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -32,6 +32,10 @@ gradlePlugin {
             id = "tasky.android.library.compose"
             implementationClass = "com.gkp.convention.AndroidLibraryComposeConventionPlugin"
         }
+        register("AndroidFeatureUiConventionPlugin") {
+            id = "tasky.android.featureui"
+            implementationClass = "com.gkp.convention.AndroidFeatureUiConventionPlugin"
+        }
         register("JvmLibrary") {
             id = "tasky.Jvm.library"
             implementationClass = "com.gkp.convention.JvmLibraryConventionPlugin"
