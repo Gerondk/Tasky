@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.BasicSecureTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.InputTransformation
-import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.TextObfuscationMode
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,32 +27,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gkp.core.designsystem.theme.TaskyGreen
 import com.gkp.core.designsystem.theme.TaskyLightGray
 import com.gkp.core.designsystem.theme.TaskyTextFieldColor
 import com.gkp.core.designsystem.theme.TaskyTextHintColor
 
 
 @Composable
-fun TaskyTextField(
+fun TaskyPasswordTextField(
     modifier: Modifier = Modifier,
     hintText: String,
     textState: TextFieldState,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     inputTransformation: InputTransformation? = null,
-    endIcon: ImageVector? = null,
-    iconTintColor: Color = TaskyGreen,
+    iconTintColor: Color = TaskyTextFieldColor,
     endIconContentDescription: String? = null,
 ) {
     var hasFocus by remember {
         mutableStateOf(false)
     }
+    var isPasswordVisible by remember {
+        mutableStateOf(false)
+    }
 
-    BasicTextField(
+    BasicSecureTextField(
         modifier = modifier
             .defaultMinSize(minHeight = 63.dp)
             .onFocusChanged {
@@ -69,7 +68,6 @@ fun TaskyTextField(
         ),
         keyboardOptions = keyboardOptions,
         inputTransformation = inputTransformation,
-        lineLimits = TextFieldLineLimits.SingleLine,
         decorator = { innerBox ->
             Row(
                 modifier = modifier.fillMaxWidth(),
@@ -86,33 +84,34 @@ fun TaskyTextField(
                     }
                     innerBox()
                 }
-                if (endIcon != null) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = endIcon,
-                            contentDescription = endIconContentDescription,
-                            tint = iconTintColor
-                        )
-                    }
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                    Icon(
+                        imageVector = if (isPasswordVisible) VisibilityIcon else VisibilityOffIcon,
+                        contentDescription = endIconContentDescription,
+                        tint = iconTintColor
+                    )
                 }
             }
         },
+        textObfuscationMode = if (isPasswordVisible)
+                                TextObfuscationMode.Visible
+                             else
+                                TextObfuscationMode.Hidden
     )
 }
 
 @Preview
 @Composable
-private fun TaskyTextFieldPreview() {
+private fun TaskyPasswordTextFieldPreview() {
     val state = rememberTextFieldState()
     state.edit {
         append("test")
     }
-    TaskyTextField(
+    TaskyPasswordTextField(
         modifier = Modifier.fillMaxWidth(),
         hintText = "Email address",
         textState = state,
-        endIcon = VisibilityOffIcon,
         iconTintColor = TaskyTextFieldColor
     )
 }

@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.gkp.auth.presentation.R
 import com.gkp.auth.presentation.components.AuthBlackBackground
 import com.gkp.auth.presentation.components.PrimaryButton
+import com.gkp.auth.presentation.components.TaskyPasswordTextField
 import com.gkp.auth.presentation.components.TaskyTextField
 import com.gkp.core.designsystem.theme.Inter
 import com.gkp.core.designsystem.theme.TaskyTextFieldColor
@@ -79,7 +80,7 @@ private fun LoginScreen(
                 hintText = stringResource(R.string.email_address_hint),
                 textState = emailTextState
             )
-            TaskyTextField(
+            TaskyPasswordTextField(
                 modifier = Modifier.fillMaxWidth(),
                 hintText = stringResource(R.string.password_hint),
                 textState = passwordTextState

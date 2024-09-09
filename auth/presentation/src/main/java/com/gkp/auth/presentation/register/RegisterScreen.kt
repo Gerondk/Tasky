@@ -1,5 +1,6 @@
 package com.gkp.auth.presentation.register
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.gkp.auth.presentation.R
 import com.gkp.auth.presentation.components.AuthBlackBackground
 import com.gkp.auth.presentation.components.PrimaryButton
+import com.gkp.auth.presentation.components.TaskyPasswordTextField
 import com.gkp.auth.presentation.components.TaskyTextField
 import com.gkp.core.designsystem.theme.TaskyTheme
 import org.koin.androidx.compose.navigation.koinNavViewModel
@@ -44,6 +46,7 @@ internal fun RegisterScreen(
     )
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 private fun RegisterScreen(
     onGetStartedButtonClick: () -> Unit,
@@ -63,7 +66,7 @@ private fun RegisterScreen(
            }
         },
         floatingActionButtonPosition = FabPosition.Start
-    ) {  paddingValues ->
+    ) {
         AuthBlackBackground(title = "Create your account") {
             val nameTextFieldState = rememberTextFieldState()
             val emailTextFieldState = rememberTextFieldState()
@@ -96,10 +99,10 @@ private fun RegisterScreen(
                     textState = emailTextFieldState
                 )
 
-                TaskyTextField(
+                TaskyPasswordTextField(
                     modifier = Modifier.fillMaxWidth(),
                     hintText = stringResource(R.string.password_hint),
-                    textState = passwordTextFieldState
+                    textState = passwordTextFieldState,
                 )
                 PrimaryButton(
                     modifier = Modifier.fillMaxWidth(),

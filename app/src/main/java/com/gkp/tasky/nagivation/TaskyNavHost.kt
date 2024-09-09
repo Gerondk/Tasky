@@ -17,11 +17,11 @@ fun TaskyNavHost() {
     ) {
         loginScreen(
             onLoginButtonClick = {},
-            onSignUpTextClick = { navController.navigateToRegister()}
+            onSignUpTextClick =  navController::navigateToRegister
         )
         registerScreen(
             onGetStartedButtonClick = {},
-            onFabBackClick = {navController.popBackStack()}
+            onFabBackClick = navController::navigateUp
         )
     }
 }
