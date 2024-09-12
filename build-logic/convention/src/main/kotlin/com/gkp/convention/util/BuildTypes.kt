@@ -23,13 +23,13 @@ internal fun Project.configureBuildType(
                     buildTypes {
                         debug {
                             configureBuildType(
-                                apiKey = "",
+                                apiKey = apiKey,
                                 commonExtension = commonExtension,
                             )
                         }
                         release {
                             configureBuildType(
-                                apiKey = "",
+                                apiKey = apiKey,
                                 commonExtension = commonExtension,
                                 isBuildTypeRelease =  true
                             )
@@ -45,13 +45,13 @@ internal fun Project.configureBuildType(
                     buildTypes {
                         debug {
                             configureBuildType(
-                                apiKey = "",
+                                apiKey = apiKey,
                                 commonExtension = commonExtension,
                             )
                         }
                         release {
                             configureBuildType(
-                                apiKey = "",
+                                apiKey = apiKey,
                                 commonExtension = commonExtension,
                                 isBuildTypeRelease = true
                             )
@@ -71,7 +71,7 @@ private fun BuildType.configureBuildType(
     isBuildTypeRelease: Boolean = false,
 ) {
     buildConfigField("String", "API_KEY", "\"$apiKey\"")
-    buildConfigField("String", "BASE_URL", "\"https://runique.pl-coding.com:8080\"")
+    buildConfigField("String", "BASE_URL", "\"https://tasky.pl-coding.com\"")
 
     if (isBuildTypeRelease) {
         isMinifyEnabled = true
@@ -82,7 +82,3 @@ private fun BuildType.configureBuildType(
     }
 }
 
-//private fun BuildType.configureDebugBuildType(apiKey: String) {
-//    buildConfigField("String", "API_KEY", "\"$apiKey\"")
-//    buildConfigField("String", "BASE_URL", "\"https://runique.pl-coding.com:8080\"")
-//}

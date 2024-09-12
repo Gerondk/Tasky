@@ -13,6 +13,7 @@ import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gkp.auth.presentation.R
 import com.gkp.auth.presentation.components.AuthBlackBackground
 import com.gkp.auth.presentation.components.PrimaryButton
@@ -39,25 +41,24 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 internal fun LoginScreen(
     modifier: Modifier = Modifier,
-    onLoginButtonClick: () -> Unit,
     onSignUpTextClick: () -> Unit
 ) {
     val viewModel = koinViewModel<LoginViewModel>()
+    val state by viewModel.loginState.collectAsStateWithLifecycle()
 
     LoginScreen(
-        onLoginButtonClick = onLoginButtonClick,
+        state,
+        onLoginButtonClick = viewModel::onLoginButtonClick,
         onSignUpTextClick = onSignUpTextClick,
     )
 }
 
 @Composable
 private fun LoginScreen(
+    state: LoginState,
     onLoginButtonClick: () -> Unit,
     onSignUpTextClick: () -> Unit
 ) {
-    val emailTextState = rememberTextFieldState()
-    val passwordTextState = rememberTextFieldState()
-
     AuthBlackBackground(title = stringResource(R.string.login_welcome_back)) {
         Column(
             modifier = Modifier
@@ -78,12 +79,12 @@ private fun LoginScreen(
             TaskyTextField(
                 modifier = Modifier.fillMaxWidth(),
                 hintText = stringResource(R.string.email_address_hint),
-                textState = emailTextState
+                textState = state.emailTextFieldState
             )
             TaskyPasswordTextField(
                 modifier = Modifier.fillMaxWidth(),
                 hintText = stringResource(R.string.password_hint),
-                textState = passwordTextState
+                textState = state.passwordTextFieldState
             )
             PrimaryButton(
                 modifier = Modifier.fillMaxWidth(),
@@ -136,6 +137,7 @@ private fun LoginScreen(
 private fun LoginScreenPreview() {
     TaskyTheme {
         LoginScreen(
+            state = LoginState(),
             onLoginButtonClick = {},
             onSignUpTextClick = {}
         )

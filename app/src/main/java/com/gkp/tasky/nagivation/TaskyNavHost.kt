@@ -16,11 +16,9 @@ fun TaskyNavHost() {
         navController = navController
     ) {
         loginScreen(
-            onLoginButtonClick = {},
             onSignUpTextClick =  navController::navigateToRegister
         )
         registerScreen(
-            onGetStartedButtonClick = {},
             onFabBackClick = navController::navigateUp
         )
     }

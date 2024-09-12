@@ -6,4 +6,13 @@ plugins {
     alias(libs.plugins.kotlin.plugin.serialization) apply false
     alias(libs.plugins.ksp) apply  false
     alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
+
+/*
+fix error "Android build fail - Unable to make progress running work"
+When building rebuild the projects with android studio
+ */
+gradle.startParameter.excludedTaskNames.addAll(
+    gradle.startParameter.taskNames.filter { it.contains("testClasses") }
+)

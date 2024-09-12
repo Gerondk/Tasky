@@ -18,12 +18,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gkp.auth.presentation.R
 import com.gkp.auth.presentation.components.AuthBlackBackground
 import com.gkp.auth.presentation.components.PrimaryButton
@@ -35,13 +37,14 @@ import org.koin.androidx.compose.navigation.koinNavViewModel
 @Composable
 internal fun RegisterScreen(
     modifier: Modifier = Modifier,
-    onGetStartedButtonClick: () -> Unit,
     onFabBackClick: () -> Unit
 ) {
     val viewModel = koinNavViewModel<RegisterViewModel>()
+    val state by viewModel.registerStateFlow.collectAsStateWithLifecycle()
 
     RegisterScreen(
-        onGetStartedButtonClick = onGetStartedButtonClick,
+        state,
+        onGetStartedButtonClick = viewModel::onGetStatedClick,
         onFabBackClick = onFabBackClick
     )
 }
@@ -49,6 +52,7 @@ internal fun RegisterScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 private fun RegisterScreen(
+    state: RegisterState,
     onGetStartedButtonClick: () -> Unit,
     onFabBackClick: () -> Unit
 ) {
@@ -68,9 +72,6 @@ private fun RegisterScreen(
         floatingActionButtonPosition = FabPosition.Start
     ) {
         AuthBlackBackground(title = "Create your account") {
-            val nameTextFieldState = rememberTextFieldState()
-            val emailTextFieldState = rememberTextFieldState()
-            val passwordTextFieldState = rememberTextFieldState()
 
             Column(
                 modifier = Modifier
@@ -91,18 +92,18 @@ private fun RegisterScreen(
                 TaskyTextField(
                     modifier = Modifier.fillMaxWidth(),
                     hintText = stringResource(R.string.name_hint),
-                    textState = nameTextFieldState
+                    textState = state.fullNameTextState
                 )
                 TaskyTextField(
                     modifier = Modifier.fillMaxWidth(),
                     hintText = stringResource(R.string.email_address_hint),
-                    textState = emailTextFieldState
+                    textState = state.emailTextState
                 )
 
                 TaskyPasswordTextField(
                     modifier = Modifier.fillMaxWidth(),
                     hintText = stringResource(R.string.password_hint),
-                    textState = passwordTextFieldState,
+                    textState = state.passwordTextState,
                 )
                 PrimaryButton(
                     modifier = Modifier.fillMaxWidth(),
@@ -125,6 +126,7 @@ private fun RegisterScreen(
 private fun RegisterScreenPreview() {
     TaskyTheme {
         RegisterScreen(
+            state = RegisterState(),
             onGetStartedButtonClick = {},
             onFabBackClick = {}
         )

@@ -10,12 +10,10 @@ import kotlinx.serialization.Serializable
 data object RegisterRoute
 
 fun NavGraphBuilder.registerScreen(
-    onGetStartedButtonClick: () -> Unit,
     onFabBackClick: () -> Unit
 ) {
     composable<RegisterRoute> {
         RegisterScreen(
-            onGetStartedButtonClick = onGetStartedButtonClick,
             onFabBackClick = onFabBackClick
         )
     }
