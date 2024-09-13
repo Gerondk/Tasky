@@ -8,7 +8,7 @@ import com.gkp.core.network.model.LoginBody
 import com.gkp.core.network.model.RegisterBody
 import kotlinx.coroutines.flow.Flow
 
-class RetrofitAuthRepository(val taskyApi: TaskyRetrofitApi) : AuthRepository {
+class RetrofitAuthRepository(private val taskyApi: TaskyRetrofitApi) : AuthRepository {
     override fun login(
         email: String,
         password: String,
