@@ -2,10 +2,11 @@ package com.gkp.auth.data
 
 import com.gkp.auth.domain.AuthRepository
 import com.gkp.core.domain.util.TaskyResult
-import com.gkp.core.domain.util.networkApiCall
+
 import com.gkp.core.network.TaskyRetrofitApi
 import com.gkp.core.network.model.LoginBody
 import com.gkp.core.network.model.RegisterBody
+import com.gkp.core.network.util.networkApiCall
 import kotlinx.coroutines.flow.Flow
 
 class RetrofitAuthRepository(private val taskyApi: TaskyRetrofitApi) : AuthRepository {
