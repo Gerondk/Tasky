@@ -1,6 +1,7 @@
 package com.gkp.auth.data
 
 import com.gkp.auth.domain.AuthRepository
+import com.gkp.auth.domain.session.SessionStorage
 import com.gkp.core.domain.util.TaskyResult
 
 import com.gkp.core.network.TaskyRetrofitApi
@@ -9,7 +10,10 @@ import com.gkp.core.network.model.RegisterBody
 import com.gkp.core.network.util.networkApiCall
 import kotlinx.coroutines.flow.Flow
 
-class RetrofitAuthRepository(private val taskyApi: TaskyRetrofitApi) : AuthRepository {
+class RetrofitAuthRepository(
+    private val taskyApi: TaskyRetrofitApi,
+    private val sessionStorage: SessionStorage
+) : AuthRepository {
     override fun login(
         email: String,
         password: String,
@@ -21,7 +25,7 @@ class RetrofitAuthRepository(private val taskyApi: TaskyRetrofitApi) : AuthRepos
                     password = password
                 )
             ).toAuthInfo()
-            // TODO: persist user auth in datastore
+            sessionStorage.saveAuthInfo(authInfo)
         }
     }
 

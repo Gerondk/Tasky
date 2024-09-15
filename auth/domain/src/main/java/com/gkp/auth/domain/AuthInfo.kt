@@ -1,5 +1,8 @@
 package com.gkp.auth.domain
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class AuthInfo(
     val accessToken: String,
     val refreshToken: String,
@@ -13,3 +16,10 @@ data class RefreshTokenInfo(
     val accessTokenExpirationTimestamp: Long
 )
 
+fun resetAuthInfo() = AuthInfo(
+    accessToken = "",
+    refreshToken = "",
+    fullName = "",
+    userId = "",
+    accessTokenExpirationTimestamp = 0L
+)
