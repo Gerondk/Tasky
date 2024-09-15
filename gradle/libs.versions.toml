@@ -6,16 +6,21 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 coreSplashscreen = "1.0.1"
-lifecycleRuntimeKtx = "2.8.4"
-activityCompose = "1.9.1"
-composeBom = "2024.08.00"
+lifecycleRuntimeKtx = "2.8.5"
+activityCompose = "1.9.2"
+composeBom = "2024.09.01"
 navigationCompose = "2.8.0"
 kotlinPluginSerialization = "2.0.20"
 kotlinxSerialization = "1.7.1"
+
+okhttp = "4.12.0"
+retrofit = "2.11.0"
+retrofitKotlinxSerializationJson = "1.0.0"
+
 koinBom = "4.0.0-RC2"
 androidTools = "31.6.0"
 
-ksp = "2.0.10-1.0.24"
+ksp = "2.0.20-1.0.24"
 room = "2.6.1"
 
 desugar_jdk_libs = "2.1.2"
@@ -29,6 +34,8 @@ projectCompileSdkVersion = "34"
 projectVersionCode = "1"
 appcompat = "1.7.0"
 material = "1.12.0"
+jetbrainsKotlinJvm = "2.0.20"
+coroutines = "1.8.1"
 
 
 
@@ -53,6 +60,7 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 
 kotlinx-serialization-json = { group ="org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization"}
+        kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines"}
 
 # Koin
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koinBom" }
@@ -66,6 +74,13 @@ koin-android-workmanager = { group = "io.insert-koin", name = "koin-androidx-wor
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+
+
+# Retrofit
+
+retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-kotlin-serialization = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofitKotlinxSerializationJson" }
+http-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 
 desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 
@@ -89,9 +104,11 @@ room = { id = "androidx.room", version.ref = "room" }
 tasky-application-compose = { id = "tasky.android.application.compose", version = "unspecified"}
 tasky-library-compose = { id = "tasky.android.library.compose", version = "unspecified"}
 tasky-featureui = { id = "tasky.android.featureui", version = "unspecified"}
-tasky-library-Jvm = { id = "tasky.Jvm.library", version = "unspecified"}
+tasky-Jvm-library = { id = "tasky.Jvm.library", version = "unspecified"}
 tasky-android-room = { id = "tasky.android.room", version = "unspecified"}
+tasky-android-library = { id = "tasky.android.library", version = "unspecified"}
 android-library = { id = "com.android.library", version.ref = "agp" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 
 [bundles]
 compose = [

@@ -10,12 +10,10 @@ import kotlinx.serialization.Serializable
 object LoginRoute
 
 fun NavGraphBuilder.loginScreen(
-    onLoginButtonClick: () -> Unit,
     onSignUpTextClick: () -> Unit
 ) {
     composable<LoginRoute> {
         LoginScreen(
-            onLoginButtonClick =  onLoginButtonClick,
             onSignUpTextClick = onSignUpTextClick
         )
     }
