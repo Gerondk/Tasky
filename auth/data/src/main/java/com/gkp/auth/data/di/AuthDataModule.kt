@@ -13,6 +13,5 @@ import org.koin.dsl.module
 val authDataModule = module {
     includes(networkModule)
     singleOf(::RetrofitAuthRepository).bind<AuthRepository>()
-    single<SessionStorage> { DataStoreSessionStorage(get()) }
-
+    singleOf(::DataStoreSessionStorage).bind<SessionStorage>()
 }

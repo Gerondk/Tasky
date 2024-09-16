@@ -64,7 +64,7 @@ object AndroidCryptographyManger {
     }
 
     private fun createKey(): SecretKey {
-        val key = KeyGenerator.getInstance(ALGORITHM).apply {
+        return  KeyGenerator.getInstance(ALGORITHM).apply {
             init(
                 KeyGenParameterSpec.Builder(
                     KEY_ALIAS,
@@ -77,6 +77,5 @@ object AndroidCryptographyManger {
                     .build()
             )
         }.generateKey()
-        return key
     }
 }
