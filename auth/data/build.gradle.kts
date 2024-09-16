@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.tasky.android.library)
+    alias(libs.plugins.kotlin.plugin.serialization)
 }
 
 android {
@@ -8,8 +9,11 @@ android {
 
 dependencies {
     implementation(projects.auth.domain)
+    implementation(projects.core.data)
     api(projects.core.network)
     implementation(libs.kotlinx.coroutines.core)
     implementation(platform(libs.koin.bom))
     implementation(libs.bundles.koin)
+    implementation(libs.androidx.datastore)
+    implementation(libs.kotlinx.serialization.json)
 }

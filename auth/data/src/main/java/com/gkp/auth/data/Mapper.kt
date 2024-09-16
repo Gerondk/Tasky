@@ -11,3 +11,11 @@ fun LoginResponse.toAuthInfo() =
         userId =  userId,
         accessTokenExpirationTimestamp = accessTokenExpirationTimestamp
     )
+fun AuthInfo.toLoginResponse() =
+    LoginResponse(
+        accessToken = accessToken,
+        refreshToken = refreshToken,
+        fullName = fullName,
+        userId =  userId,
+        accessTokenExpirationTimestamp = accessTokenExpirationTimestamp
+    )

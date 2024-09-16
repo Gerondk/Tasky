@@ -1,5 +1,6 @@
 package com.gkp.auth.domain
 
+
 data class AuthInfo(
     val accessToken: String,
     val refreshToken: String,
