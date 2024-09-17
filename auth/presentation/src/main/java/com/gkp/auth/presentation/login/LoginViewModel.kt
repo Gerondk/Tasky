@@ -21,17 +21,25 @@ class LoginViewModel(
     val loginState = _loginStateFlow.asStateFlow()
 
     init {
-        combine(
-            loginState.value.emailTextFieldState.textAsFlow(),
-            loginState.value.passwordTextFieldState.textAsFlow()
-        ){ email, password ->
-            _loginStateFlow.update { state ->
-                state.copy(
-                    isEmailValid = userDataValidation.isEmailValid(email),
-                    isPasswordValid = password.isNotEmpty()
-                )
+        loginState.value.emailTextFieldState.textAsFlow()
+            .onEach { email ->
+                _loginStateFlow.update { state ->
+                    state.copy(
+                        isEmailValid = userDataValidation.isEmailValid(email)
+                    )
+                }
             }
-        }.launchIn(viewModelScope)
+            .launchIn(viewModelScope)
+
+        loginState.value.passwordTextFieldState.textAsFlow()
+            .onEach { password ->
+                _loginStateFlow.update { state ->
+                    state.copy(
+                        isPasswordValid = password.isNotEmpty()
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     fun onLoginButtonClick() {
