@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -92,12 +93,16 @@ private fun RegisterScreen(
                 TaskyTextField(
                     modifier = Modifier.fillMaxWidth(),
                     hintText = stringResource(R.string.name_hint),
-                    textState = state.fullNameTextState
+                    textState = state.fullNameTextState,
+                    endIcon = if (state.isFullNameValid) Icons.Default.Check else null,
+                    endIconContentDescription = if (state.isFullNameValid) stringResource(R.string.valid_name) else null
                 )
                 TaskyTextField(
                     modifier = Modifier.fillMaxWidth(),
                     hintText = stringResource(R.string.email_address_hint),
-                    textState = state.emailTextState
+                    textState = state.emailTextState,
+                    endIcon = if (state.isEmailValid) Icons.Default.Check else null,
+                    endIconContentDescription = if (state.isEmailValid) stringResource(R.string.valid_email) else null
                 )
 
                 TaskyPasswordTextField(

@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -79,7 +81,9 @@ private fun LoginScreen(
             TaskyTextField(
                 modifier = Modifier.fillMaxWidth(),
                 hintText = stringResource(R.string.email_address_hint),
-                textState = state.emailTextFieldState
+                textState = state.emailTextFieldState,
+                endIcon = if (state.isEmailValid) Icons.Default.Check else null,
+                endIconContentDescription = if (state.isEmailValid) stringResource(R.string.valid_email) else null
             )
             TaskyPasswordTextField(
                 modifier = Modifier.fillMaxWidth(),
