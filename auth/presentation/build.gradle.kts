@@ -8,5 +8,6 @@ android {
 }
 
 dependencies {
-   implementation(projects.auth.domain)
+    implementation(projects.auth.domain)
+    implementation(projects.core.presentation.ui)
 }

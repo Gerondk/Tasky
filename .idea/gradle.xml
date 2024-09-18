@@ -21,6 +21,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/agenda" />
+            <option value="$PROJECT_DIR$/agenda/presentation" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/auth" />
             <option value="$PROJECT_DIR$/auth/data" />
@@ -34,6 +36,7 @@
             <option value="$PROJECT_DIR$/core/network" />
             <option value="$PROJECT_DIR$/core/presentation" />
             <option value="$PROJECT_DIR$/core/presentation/designsystem" />
+            <option value="$PROJECT_DIR$/core/presentation/ui" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

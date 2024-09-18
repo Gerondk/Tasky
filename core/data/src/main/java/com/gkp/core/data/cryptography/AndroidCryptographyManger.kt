@@ -4,6 +4,7 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import java.io.InputStream
 import java.io.OutputStream
+import java.nio.ByteBuffer
 import java.security.KeyStore
 import java.security.KeyStore.SecretKeyEntry
 import javax.crypto.Cipher
@@ -17,14 +18,14 @@ object AndroidCryptographyManger {
     private const val PADDING = KeyProperties.ENCRYPTION_PADDING_PKCS7
     private const val KEY_ALIAS = "secret"
     private const val TRANSFORMATION = "$ALGORITHM/$BLOCK_MODE/$PADDING"
+    private const val  INT_SIZE_IN_BYTES = 4
 
     fun encryptData(dataToEncrypt: ByteArray, encryptedOutput: OutputStream) {
         val encryptedBytes = encryptCypher.doFinal(dataToEncrypt)
         encryptedOutput.use { stream ->
             with(stream) {
-                write(encryptCypher.iv.size)
+                writeInteger(encryptCypher.iv.size)
                 write(encryptCypher.iv)
-                write(encryptedBytes.size)
                 write(encryptedBytes)
             }
         }
@@ -33,14 +34,11 @@ object AndroidCryptographyManger {
     fun decryptData(encryptedInput: InputStream): ByteArray {
         return encryptedInput.use { stream ->
             with(stream) {
-                val ivSize = read()
+                val ivSize = readInteger()
                 val iv = ByteArray(ivSize)
                 read(iv)
 
-                val encryptedByteSize = read()
-                val encryptedBytes = ByteArray(encryptedByteSize)
-                read(encryptedBytes)
-
+                val encryptedBytes = readBytes()
                 getDecryptCipher(iv).doFinal(encryptedBytes)
             }
         }
@@ -78,4 +76,19 @@ object AndroidCryptographyManger {
             )
         }.generateKey()
     }
+
+    private fun InputStream.readInteger() : Int {
+        val buffer = ByteArray(INT_SIZE_IN_BYTES)
+        read(buffer)
+        return ByteBuffer.wrap(buffer).int
+
+    }
+
+    private fun OutputStream.writeInteger(integer: Int) {
+        val buffer = ByteBuffer.allocate(INT_SIZE_IN_BYTES)
+            .putInt(integer)
+            .array()
+        write(buffer)
+    }
 }
+

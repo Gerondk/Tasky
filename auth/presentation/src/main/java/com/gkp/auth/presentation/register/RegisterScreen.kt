@@ -18,10 +18,16 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -33,6 +39,8 @@ import com.gkp.auth.presentation.components.PrimaryButton
 import com.gkp.auth.presentation.components.TaskyPasswordTextField
 import com.gkp.auth.presentation.components.TaskyTextField
 import com.gkp.core.designsystem.theme.TaskyTheme
+import com.gkp.core.ui.EventsObserver
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.navigation.koinNavViewModel
 
 @Composable
@@ -43,10 +51,49 @@ internal fun RegisterScreen(
     val viewModel = koinNavViewModel<RegisterViewModel>()
     val state by viewModel.registerStateFlow.collectAsStateWithLifecycle()
 
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember{
+        SnackbarHostState()
+    }
+    val snackbarSuccessMessage = stringResource(R.string.register_success)
+    val snackbarErrorMessage = stringResource(R.string.register_error)
+
+    EventsObserver(
+        viewModel.eventsFlow,
+        key1 = Unit,
+        key2 = Unit
+    ){ event ->
+        when(event) {
+            is RegisterEvents.RegisterError -> {
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = snackbarErrorMessage
+                    )
+                }
+
+            }
+            RegisterEvents.RegisterLoading -> {
+
+            }
+            RegisterEvents.RegisterSuccess -> {
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = snackbarSuccessMessage
+                    )
+                }
+                keyboardController?.hide()
+                onFabBackClick()
+            }
+        }
+
+    }
+
     RegisterScreen(
         state,
         onGetStartedButtonClick = viewModel::onGetStatedClick,
-        onFabBackClick = onFabBackClick
+        onFabBackClick = onFabBackClick,
+        snackbarHostState = snackbarHostState
     )
 }
 
@@ -55,7 +102,8 @@ internal fun RegisterScreen(
 private fun RegisterScreen(
     state: RegisterState,
     onGetStartedButtonClick: () -> Unit,
-    onFabBackClick: () -> Unit
+    onFabBackClick: () -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     Scaffold(
         floatingActionButton = {
@@ -70,7 +118,10 @@ private fun RegisterScreen(
                )
            }
         },
-        floatingActionButtonPosition = FabPosition.Start
+        floatingActionButtonPosition = FabPosition.Start,
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
+        }
     ) {
         AuthBlackBackground(title = "Create your account") {
 
@@ -133,7 +184,8 @@ private fun RegisterScreenPreview() {
         RegisterScreen(
             state = RegisterState(),
             onGetStartedButtonClick = {},
-            onFabBackClick = {}
+            onFabBackClick = {},
+            snackbarHostState = SnackbarHostState()
         )
     }
 }

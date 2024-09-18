@@ -31,6 +31,10 @@ class DataStoreSessionStorage(private val context: Context) : SessionStorage {
     }
 
     override suspend fun getAuthInfo(): AuthInfo {
-        return context.dataStore.data.first().toAuthInfo()
+        return try {
+            context.dataStore.data.first().toAuthInfo()
+        } catch (e: Exception) {
+            defaultLoginResponse.toAuthInfo()
+        }
     }
 }
