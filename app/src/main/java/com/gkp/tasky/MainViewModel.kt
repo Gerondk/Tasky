@@ -17,7 +17,7 @@ class MainViewModel(sessionStorage: SessionStorage) : ViewModel() {
             val authInfo = sessionStorage.getAuthInfo()
             mainAppState = mainAppState.copy(
                 sessionStorageLoading = false,
-                isLoggedIn = authInfo.accessToken.isNotEmpty()
+                isUserLoggedIn = authInfo.accessToken.isNotEmpty()
             )
         }
     }

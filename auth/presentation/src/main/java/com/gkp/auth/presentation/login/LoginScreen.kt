@@ -80,7 +80,6 @@ internal fun LoginScreen(
                     )
                 }
             }
-            LoginEvents.LoginEventsLoading -> {}
             LoginEvents.LoginEventsSuccess -> {
                navigateToAgenda()
             }
