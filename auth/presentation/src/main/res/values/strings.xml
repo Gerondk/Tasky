@@ -10,4 +10,7 @@
     <string name="login_welcome_back">Welcome Back</string>
     <string name="valid_name">Valid name</string>
     <string name="valid_email">Valid email</string>
+    <string name="register_success">You are succefully registered</string>
+    <string name="register_error">Oups!! registrastion failed</string>
+    <string name="login_error">"Oups!! Login failed "</string>
 </resources>

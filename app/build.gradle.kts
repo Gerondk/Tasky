@@ -14,9 +14,16 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.core.splashscreen)
 
+    implementation(platform(libs.koin.bom))
+    implementation(libs.bundles.koin)
+
     implementation(projects.core.presentation.designsystem)
+
     implementation(projects.auth.presentation)
+    implementation(projects.auth.domain)
     implementation(projects.auth.data)
+
+    implementation(projects.agenda.presentation)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
