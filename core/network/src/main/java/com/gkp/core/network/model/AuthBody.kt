@@ -14,3 +14,9 @@ data class RegisterBody(
     val email: String,
     val password: String
 )
+
+@Serializable
+data class RefreshTokenBody(
+    val refreshToken: String,
+    val userId: String
+)

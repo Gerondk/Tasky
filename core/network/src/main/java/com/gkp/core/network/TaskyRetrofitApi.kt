@@ -2,10 +2,14 @@ package com.gkp.core.network
 
 import com.gkp.core.network.model.LoginBody
 import com.gkp.core.network.model.LoginResponse
+import com.gkp.core.network.model.RefreshTokenBody
 import com.gkp.core.network.model.RefreshTokenResponse
 import com.gkp.core.network.model.RegisterBody
+import com.gkp.network.BuildConfig
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface TaskyRetrofitApi {
     @POST("/register")
@@ -20,8 +24,16 @@ interface TaskyRetrofitApi {
 
     @POST("/accessToken")
     suspend fun refreshToken(
-        refreshToken: String,
-        userId: String
+        @Body refreshTokenBody: RefreshTokenBody,
+        @Query("x-api-key") apiKey: String = BuildConfig.API_KEY
     ) : RefreshTokenResponse
+
+    @GET("/logout")
+    suspend fun logout()
+
+    @GET("/agenda")
+    suspend fun getAgenda(
+        @Query("time") time: Long = System.currentTimeMillis()
+    )
 
 }

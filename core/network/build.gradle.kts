@@ -15,6 +15,6 @@ dependencies {
     implementation(libs.http.logging)
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.kotlin.serialization)
-    implementation(projects.core.domain)
+    implementation(projects.auth.domain)
     implementation(libs.kotlinx.coroutines.core)
 }
