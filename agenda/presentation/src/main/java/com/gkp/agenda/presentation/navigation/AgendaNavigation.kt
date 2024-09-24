@@ -15,9 +15,13 @@ fun NavController.navigateToAgendaRoute(navOptions: NavOptions? = null) {
     navigate(AgendaRoute, navOptions)
 }
 
-fun NavGraphBuilder.agendaScreen() {
+fun NavGraphBuilder.agendaScreen(
+    onLogout: () -> Unit,
+) {
     composable<AgendaRoute> {
-        AgendaScreen()
+        AgendaScreen(
+            onLogout = onLogout
+        )
     }
 }
 

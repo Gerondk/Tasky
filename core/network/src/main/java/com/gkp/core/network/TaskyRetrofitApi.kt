@@ -25,7 +25,6 @@ interface TaskyRetrofitApi {
     @POST("/accessToken")
     suspend fun refreshToken(
         @Body refreshTokenBody: RefreshTokenBody,
-        @Query("x-api-key") apiKey: String = BuildConfig.API_KEY
     ) : RefreshTokenResponse
 
     @GET("/logout")

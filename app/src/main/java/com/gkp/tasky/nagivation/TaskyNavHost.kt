@@ -9,6 +9,7 @@ import com.gkp.agenda.presentation.navigation.agendaScreen
 import com.gkp.agenda.presentation.navigation.navigateToAgendaRoute
 import com.gkp.auth.presentation.login.navigation.LoginRoute
 import com.gkp.auth.presentation.login.navigation.loginScreen
+import com.gkp.auth.presentation.login.navigation.navigateToLogin
 import com.gkp.auth.presentation.register.navigation.navigateToRegister
 import com.gkp.auth.presentation.register.navigation.registerScreen
 
@@ -36,6 +37,16 @@ fun TaskyNavHost(
         registerScreen(
             onFabBackClick = navController::navigateUp
         )
-        agendaScreen()
+        agendaScreen(
+            onLogout = {
+                navController.navigateToLogin(
+                    navOptions = navOptions {
+                        popUpTo(AgendaRoute) {
+                            inclusive = true
+                        }
+                    }
+                )
+            }
+        )
     }
 }

@@ -24,6 +24,8 @@ dependencies {
     implementation(projects.auth.data)
 
     implementation(projects.agenda.presentation)
+//    implementation(projects.agenda.domain)
+    implementation(projects.agenda.data)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
