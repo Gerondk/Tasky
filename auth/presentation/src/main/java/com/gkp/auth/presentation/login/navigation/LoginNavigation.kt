@@ -2,6 +2,7 @@ package com.gkp.auth.presentation.login.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.gkp.auth.presentation.login.LoginScreen
 import kotlinx.serialization.Serializable
@@ -21,6 +22,6 @@ fun NavGraphBuilder.loginScreen(
     }
 }
 
-fun NavController.navigateToLogin() {
-    navigate(LoginRoute)
+fun NavController.navigateToLogin( navOptions: NavOptions? = null) {
+    navigate(LoginRoute, navOptions)
 }

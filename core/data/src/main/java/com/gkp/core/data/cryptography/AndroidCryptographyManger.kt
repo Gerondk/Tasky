@@ -7,6 +7,7 @@ import java.io.OutputStream
 import java.nio.ByteBuffer
 import java.security.KeyStore
 import java.security.KeyStore.SecretKeyEntry
+import java.security.SecureRandom
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey

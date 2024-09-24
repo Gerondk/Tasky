@@ -37,4 +37,10 @@ class DataStoreSessionStorage(private val context: Context) : SessionStorage {
             defaultLoginResponse.toAuthInfo()
         }
     }
+
+    override suspend fun resetAuthInfo() {
+        context.dataStore.updateData {
+            defaultLoginResponse
+        }
+    }
 }

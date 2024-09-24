@@ -5,4 +5,5 @@ import com.gkp.auth.domain.AuthInfo
 interface SessionStorage {
     suspend fun saveAuthInfo(authInfo: AuthInfo)
     suspend fun getAuthInfo(): AuthInfo
+    suspend fun resetAuthInfo()
 }

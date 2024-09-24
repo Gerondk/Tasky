@@ -32,7 +32,7 @@ class AccessTokenRefreshHandler(
     }
 
     fun shouldRefreshAccessToken(response: Response): Boolean {
-        val authUrlPathSegments = listOf("login", "register")
+        val authUrlPathSegments = listOf("login", "register","logout")
         return with(response) {
             code == HTTP_UNAUTHORIZED &&
                     request.url.pathSegments.intersect(authUrlPathSegments).isEmpty()
