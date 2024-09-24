@@ -38,6 +38,8 @@ jetbrainsKotlinJvm = "2.0.20"
 coroutines = "1.8.1"
 dataStore = "1.1.1"
 
+securityCryptoKtx = "1.1.0-alpha06"
+
 
 
 [libraries]
@@ -62,6 +64,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 
 # DataStore
 androidx-datastore ={ group ="androidx.datastore", name ="datastore", version.ref = "dataStore"}
+androidx-security-crypto-ktx = { module = "androidx.security:security-crypto-ktx", version.ref = "securityCryptoKtx" }
 
 kotlinx-serialization-json = { group ="org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization"}
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines"}

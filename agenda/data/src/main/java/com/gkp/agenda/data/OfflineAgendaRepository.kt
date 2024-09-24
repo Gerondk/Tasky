@@ -19,8 +19,8 @@ class OfflineAgendaRepository(
 
     override fun logout() {
         networkApiCall {
-            taskyRetrofitApi.logout()
             sessionStorage.resetAuthInfo()
+            taskyRetrofitApi.logout()
         }.launchIn(scope)
     }
 }

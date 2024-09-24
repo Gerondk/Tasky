@@ -16,4 +16,5 @@ dependencies {
     implementation(libs.bundles.koin)
     implementation(libs.androidx.datastore)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.security.crypto.ktx)
 }

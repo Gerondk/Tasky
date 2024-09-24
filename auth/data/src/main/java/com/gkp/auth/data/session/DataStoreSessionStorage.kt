@@ -9,7 +9,7 @@ import com.gkp.auth.domain.session.SessionStorage
 import com.gkp.core.network.model.LoginResponse
 import kotlinx.coroutines.flow.first
 
-private val defaultLoginResponse = LoginResponse(
+val defaultLoginResponse = LoginResponse(
     accessToken = "",
     refreshToken = "",
     fullName = "",
@@ -23,6 +23,10 @@ private val Context.dataStore by dataStore(
     )
 )
 
+/**
+ * This class throws exception due the implementation of AndroidCryptoManger
+ * Therefore EncryptedSharedPreferences is used
+ */
 class DataStoreSessionStorage(private val context: Context) : SessionStorage {
     override suspend fun saveAuthInfo(authInfo: AuthInfo) {
         context.dataStore.updateData {
