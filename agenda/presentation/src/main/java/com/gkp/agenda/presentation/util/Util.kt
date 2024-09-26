@@ -4,7 +4,13 @@ import java.time.LocalDate
 private const val CURRENT_AND_NEXT_SIX_DATES = 7
 
 fun getFullNameInitials(fullName: String): String {
-    val names = fullName.split(" ")
+    val names = fullName
+        .trim()
+        .split(" ")
+        .filterNot {
+            it.isBlank() || it.isEmpty()
+        }
+
     val initialsBuilder = StringBuilder()
     if (names.size == 1) {
         initialsBuilder.append(names[0].take(2).uppercase())
@@ -15,7 +21,7 @@ fun getFullNameInitials(fullName: String): String {
         return initialsBuilder.toString()
     }
     if (names.size >= 3) {
-        initialsBuilder.append("${names[0].first()}${names[2].first()}".uppercase())
+        initialsBuilder.append("${names[0].first()}${names.last().first()}".uppercase())
         return initialsBuilder.toString()
     }
     return ""

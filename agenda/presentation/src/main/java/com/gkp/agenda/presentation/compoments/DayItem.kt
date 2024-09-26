@@ -30,17 +30,14 @@ fun DayItem(
         modifier = modifier
             .height(61.dp)
             .width(40.dp)
-            .then(
-                if (isDateSelected) {
-                    Modifier.drawBehind {
-                        drawOval(
-                            color = TaskyOrange,
-                        )
-                    }
-                } else {
-                    Modifier
+            .applyIf(isDateSelected) {
+                drawBehind {
+                    drawOval(
+                        color = TaskyOrange,
+                    )
                 }
-            ).clickable {
+            }
+            .clickable {
                 onClick()
             },
     ) {
@@ -87,3 +84,14 @@ data class TaskyCalendarDay(
     val weekDay: String,
     val monthDay: String,
 )
+
+fun Modifier.applyIf(
+    condition: Boolean, block:
+    Modifier.() -> Modifier
+): Modifier {
+    return if (condition) {
+        block()
+    } else {
+        this
+    }
+}
