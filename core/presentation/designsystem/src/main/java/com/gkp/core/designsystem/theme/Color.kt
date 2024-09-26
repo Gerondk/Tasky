@@ -15,5 +15,6 @@ val TaskyGreen = Color(0xFF279F70)
 val TaskyLightGray = Color(0xFFF2F3F7)
 val TaskyTextHintColor = Color(0xFFA1A4B2)
 val TaskyTextFieldColor = Color( 0xFF5C5D5A)
+val TaskyOrange = Color(0xFFFDEFA8)
 
 
