@@ -2,4 +2,15 @@
 <resources>
     <string name="add_task_event_or_reminder">Add task event or reminder</string>
     <string name="logout">Logout</string>
+    <string name="menu_item_event">Event</string>
+    <string name="menu_item_task">Task</string>
+    <string name="menu_item_reminder">Reminder</string>
+    <string name="close_button">Close </string>
+    <string name="edit">Edit</string>
+    <string name="edit_task">EDIT TASK</string>
+    <string name="delete_task">DELETE TASK</string>
+    <string name="save">Save</string>
+    <string name="arrow_back">" Arrow Back "</string>
+    <string name="edit_title">EDIT TITLE</string>
+    <string name="edit_description">EDIT DESCRIPTION</string>
 </resources>
