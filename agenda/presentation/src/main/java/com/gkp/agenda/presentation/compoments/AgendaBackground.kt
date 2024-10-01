@@ -2,22 +2,32 @@ package com.gkp.agenda.presentation.compoments
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -31,27 +41,23 @@ import com.gkp.core.designsystem.theme.TaskyTheme
 fun AgendaBackground(
     modifier: Modifier = Modifier,
     title: String = "",
-    onClickFab: () -> Unit = {},
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable () -> Unit = {},
+    onMenuItemEventClick: () -> Unit = {},
+    onMenuItemTaskClick: () -> Unit = {},
+    onMenuItemReminderClick: () -> Unit = {},
     hasFloatingActionButton: Boolean = false,
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    Scaffold(
 
+    Scaffold(
         floatingActionButton = {
             if (hasFloatingActionButton) {
-                FloatingActionButton(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    onClick = onClickFab,
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = stringResource(R.string.add_task_event_or_reminder),
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
+                FabWithAgendaMenu(
+                    onMenuItemEventClick = onMenuItemEventClick,
+                    onMenuItemTaskClick = onMenuItemTaskClick,
+                    onMenuItemReminderClick = onMenuItemReminderClick
+                )
             }
         }
     ) { padding ->
@@ -94,6 +100,74 @@ fun AgendaBackground(
     }
 
 
+}
+
+@Composable
+private fun FabWithAgendaMenu(
+    onMenuItemEventClick: () -> Unit = {},
+    onMenuItemTaskClick: () -> Unit = {},
+    onMenuItemReminderClick: () -> Unit = {},
+) {
+    var showDropdownMenu by remember {
+        mutableStateOf(false)
+    }
+    Column(horizontalAlignment = Alignment.End) {
+        DropdownMenu(
+            expanded = showDropdownMenu,
+            onDismissRequest = { showDropdownMenu = false }
+        ) {
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        text = stringResource(R.string.menu_item_event)
+                    )
+                },
+                onClick = {
+                    showDropdownMenu = false
+                    onMenuItemEventClick()
+                }
+            )
+            HorizontalDivider()
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        text = stringResource(R.string.menu_item_task)
+                    )
+                },
+                onClick = {
+                    showDropdownMenu = false
+                    onMenuItemTaskClick()
+                }
+            )
+            HorizontalDivider()
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        text = stringResource(R.string.menu_item_reminder)
+                    )
+                },
+                onClick = {
+                    showDropdownMenu = false
+                    onMenuItemReminderClick()
+                }
+            )
+
+        }
+        Spacer(Modifier.height(8.dp))
+        FloatingActionButton(
+            containerColor = MaterialTheme.colorScheme.primary,
+            onClick = {
+                showDropdownMenu = true
+            },
+            shape = RoundedCornerShape(10.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = stringResource(R.string.add_task_event_or_reminder),
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+    }
 }
 
 @Preview(

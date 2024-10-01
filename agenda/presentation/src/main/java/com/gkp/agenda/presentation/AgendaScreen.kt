@@ -40,12 +40,14 @@ import java.time.LocalDate
 @Composable
 fun AgendaScreen(
     onLogout: () -> Unit,
+    onMenuItemTaskClick: () -> Unit
 ) {
     val viewModel = koinViewModel<AgendaViewModel>()
     val agendaUiState = viewModel.agendaUiState
 
     AgendaScreen(
         modifier = Modifier,
+        onMenuItemTaskClick = onMenuItemTaskClick,
         onLogout = {
             onLogout()
             viewModel.logout()
@@ -61,6 +63,7 @@ internal fun AgendaScreen(
     modifier: Modifier = Modifier,
     onLogout: () -> Unit,
     onDateSelected: (LocalDate) -> Unit = {},
+    onMenuItemTaskClick: () -> Unit,
     agendaUiState: AgendaUiState,
 ) {
 
@@ -70,6 +73,7 @@ internal fun AgendaScreen(
 
     AgendaBackground(
         modifier = modifier,
+        onMenuItemTaskClick = onMenuItemTaskClick,
         hasFloatingActionButton = true,
         actions = {
             Box(
@@ -165,7 +169,8 @@ private fun AgendaScreenPreview() {
             onLogout = {},
             agendaUiState = AgendaUiState(
                 fullName = "Ksdda Mbugua"
-            )
+            ),
+            onMenuItemTaskClick = {}
         )
     }
 }

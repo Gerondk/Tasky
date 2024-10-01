@@ -4,9 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.gkp.agenda.presentation.navigation.AgendaRoute
+import com.gkp.agenda.presentation.navigation.AgendaScreenRoute
 import com.gkp.agenda.presentation.navigation.agendaScreen
 import com.gkp.agenda.presentation.navigation.navigateToAgendaRoute
+import com.gkp.agenda.presentation.navigation.navigateToEditDescriptionRoute
+import com.gkp.agenda.presentation.navigation.navigateToEditTaskRoute
+import com.gkp.agenda.presentation.navigation.navigateToEditTitleRoute
 import com.gkp.auth.presentation.login.navigation.LoginRoute
 import com.gkp.auth.presentation.login.navigation.loginScreen
 import com.gkp.auth.presentation.login.navigation.navigateToLogin
@@ -19,7 +22,7 @@ fun TaskyNavHost(
 ) {
     val navController = rememberNavController()
     NavHost(
-        startDestination = if (isLoggedIn) AgendaRoute else LoginRoute,
+        startDestination = if (isLoggedIn) AgendaScreenRoute else LoginRoute,
         navController = navController
     ) {
         loginScreen(
@@ -38,10 +41,21 @@ fun TaskyNavHost(
             onFabBackClick = navController::navigateUp
         )
         agendaScreen(
+            onEditTaskTitleBackClick = navController::navigateUp,
+            onEditTaskDescriptionBackClick = navController::navigateUp,
+            onTaskDescriptionClick = {
+                navController.navigateToEditDescriptionRoute()
+            },
+            onTaskTitleClick = {
+                navController.navigateToEditTitleRoute()
+            },
+            onMenuItemTaskClick = {
+                navController.navigateToEditTaskRoute()
+            } ,
             onLogout = {
                 navController.navigateToLogin(
                     navOptions = navOptions {
-                        popUpTo(AgendaRoute) {
+                        popUpTo(AgendaScreenRoute) {
                             inclusive = true
                         }
                     }
