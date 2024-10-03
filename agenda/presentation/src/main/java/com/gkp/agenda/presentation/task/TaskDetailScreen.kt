@@ -76,25 +76,32 @@ private fun TaskDetailScreen(
             Spacer(modifier = Modifier.height(42.dp))
             AgendaItemTitle(
                 modifier = Modifier.padding(vertical = 16.dp),
+                itemTitle = "Task Title"
             )
             HorizontalDivider()
             AgendaItemDescription(
                 modifier = Modifier.padding(vertical = 16.dp),
+                itemDescription = "Task Description"
             )
             HorizontalDivider()
             AgendaItemDateTime(
                 modifier = Modifier.padding(vertical = 16.dp),
+                onClickDate = {},
+                onClickTime = {},
+                date = "Jul 12 2023",
+                time = "12:00"
             )
             HorizontalDivider()
             AgendaItemReminderTime(
                 modifier = Modifier.padding(vertical = 16.dp),
+                reminderTimeText = "10 minutes before"
             )
             HorizontalDivider()
             Spacer(modifier = Modifier.weight(1f))
 
             TextButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { onClickDeleteButton() }
+                onClick =  onClickDeleteButton
             ) {
                 Text(
                     text = stringResource(R.string.delete_task),

@@ -13,4 +13,10 @@
     <string name="arrow_back">" Arrow Back "</string>
     <string name="edit_title">EDIT TITLE</string>
     <string name="edit_description">EDIT DESCRIPTION</string>
+    <string name="task">Task</string>
+    <string name="at">At</string>
+    <string name="time_picker_ok">OK</string>
+    <string name="time_picker_cancel">Cancel</string>
+    <string name="time_picker_title">Select time</string>
+    <string name="date_picker_ok">OK</string>
 </resources>

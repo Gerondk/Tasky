@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,7 +46,6 @@ import org.koin.androidx.compose.navigation.koinNavViewModel
 
 @Composable
 internal fun RegisterScreen(
-    modifier: Modifier = Modifier,
     onFabBackClick: () -> Unit
 ) {
     val viewModel = koinNavViewModel<RegisterViewModel>()
@@ -128,7 +128,7 @@ private fun RegisterScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .safeContentPadding()
+                    .navigationBarsPadding()
                     .fillMaxHeight(0.8f)
                     .align(Alignment.BottomEnd)
                     .background(

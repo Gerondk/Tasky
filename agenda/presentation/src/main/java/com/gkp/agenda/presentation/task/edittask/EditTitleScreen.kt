@@ -9,7 +9,9 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -19,23 +21,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gkp.agenda.presentation.R
 import com.gkp.core.designsystem.theme.TaskyTheme
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun EditTitleScreen(
-    onClickBackButton: () -> Unit = {},
+    modifier: Modifier = Modifier,
+    onClickBackButton: () -> Unit = {}
 ) {
+    val viewModel = koinViewModel<EditTaskViewModel>()
+    val uiState = viewModel.uiState
+
     EditTitleScreen(
         onClickBackButton = onClickBackButton,
-        onClickSaveButton = {}
+        onClickSaveButton = {
+            viewModel.onTaskTitleChanged(
+                uiState.editTitleTextState.text.toString()
+            )
+        },
+        textState = uiState.editTitleTextState
     )
 
 }
 
 @Composable
 private fun EditTitleScreen(
-    onClickBackButton: () -> Unit = {},
-    onClickSaveButton: () -> Unit = {},
-    textState: TextFieldState = rememberTextFieldState(),
+    onClickBackButton: () -> Unit,
+    onClickSaveButton: () -> Unit,
+    textState: TextFieldState
 ){
     EditAgendaField(
         title = stringResource(R.string.edit_title),
@@ -67,7 +79,9 @@ private fun EditTitleScreenPreview() {
             this.append("Tasky")
         }
         EditTitleScreen(
-            textState = textState
+            textState = textState,
+            onClickBackButton = {},
+            onClickSaveButton = {}
         )
     }
 }
