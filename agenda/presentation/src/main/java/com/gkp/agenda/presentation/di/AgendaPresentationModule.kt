@@ -7,5 +7,4 @@ import org.koin.dsl.module
 
 val agendaPresentationModule = module {
     viewModelOf(::AgendaViewModel)
-    viewModelOf(::EditTaskViewModel)
 }

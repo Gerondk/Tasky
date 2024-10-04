@@ -62,7 +62,8 @@ fun TaskyNavHost(
                     }
                 )
             },
-            onClickEditCloseButton = navController::navigateUp
+            onClickEditCloseButton = navController::navigateUp,
+            navController = navController
         )
     }
 }

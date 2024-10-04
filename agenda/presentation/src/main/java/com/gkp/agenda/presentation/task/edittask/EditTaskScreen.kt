@@ -56,18 +56,16 @@ import com.gkp.agenda.presentation.compoments.AgendaItemReminderTime
 import com.gkp.agenda.presentation.compoments.AgendaItemTitle
 import com.gkp.core.designsystem.theme.TaskyTextFieldColor
 import com.gkp.core.designsystem.theme.TaskyTheme
-import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EditTaskScreen(
-    modifier: Modifier = Modifier,
     onClickTaskTitle: () -> Unit,
     onClickTaskDescription: () -> Unit,
     onClickEditCloseButton: () -> Unit,
+    viewModel: EditTaskViewModel,
 ) {
-    val viewModel = koinViewModel<EditTaskViewModel>()
     val uiState = viewModel.uiState
 
     EditTaskScreen(

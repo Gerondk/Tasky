@@ -16,21 +16,18 @@ class EditTaskViewModel(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val taskId: Int = savedStateHandle.toRoute<EditTaskGraph>().taskId
-    private val taskTitle: String? = savedStateHandle.get<String>("title")
 
     var uiState by mutableStateOf(EditTaskUiState())
         private set
 
-    init {
-        taskTitle?.let {
-            uiState = uiState.copy(taskTitle = it)
-        }
-    }
-
     fun onTaskTitleChanged(title: String) {
         uiState = uiState.copy(taskTitle = title)
-
     }
+
+    fun onTaskDescriptionChanged(description: String) {
+        uiState = uiState.copy(taskDescription = description)
+    }
+
     fun onTaskReminderChanged(reminderIndex: Int) {
         uiState = uiState.copy(taskReminderTextId = getReminderTimeText(reminderIndex))
     }

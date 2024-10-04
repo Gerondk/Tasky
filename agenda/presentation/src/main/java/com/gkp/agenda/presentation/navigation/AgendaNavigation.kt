@@ -33,7 +33,8 @@ fun NavGraphBuilder.agendaGraph(
     onTaskTitleClick: () -> Unit,
     onEditTaskTitleBackClick: () -> Unit,
     onEditTaskDescriptionBackClick: () -> Unit,
-    onClickEditCloseButton: () -> Unit
+    onClickEditCloseButton: () -> Unit,
+    navController: NavController
 ) {
     navigation<AgendaGraph>(
         startDestination = AgendaScreenRoute
@@ -53,7 +54,8 @@ fun NavGraphBuilder.agendaGraph(
             onTaskDescriptionClick = onTaskDescriptionClick,
             onEditTaskTitleBackClick = onEditTaskTitleBackClick,
             onEditTaskDescriptionBackClick = onEditTaskDescriptionBackClick,
-            onClickEditCloseButton = onClickEditCloseButton
+            onClickEditCloseButton = onClickEditCloseButton,
+            navController = navController
         )
     }
 }

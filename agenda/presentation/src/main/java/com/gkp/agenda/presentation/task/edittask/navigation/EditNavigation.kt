@@ -11,6 +11,7 @@ import com.gkp.agenda.presentation.task.edittask.EditDescriptionScreen
 import com.gkp.agenda.presentation.task.edittask.EditTaskScreen
 import com.gkp.agenda.presentation.task.edittask.EditTaskViewModel
 import com.gkp.agenda.presentation.task.edittask.EditTitleScreen
+import com.gkp.agenda.presentation.task.edittask.util.sharedViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,6 +22,9 @@ data class EditTitleScreenRoute(val taskId: Int)
 
 @Serializable
 data object EditDescriptionScreenRoute
+
+@Serializable
+data class EditTaskGraph(val taskId: Int)
 
 fun NavController.navigateToEditTaskRoute(navOptions: NavOptions? = null) {
     navigate(EditTaskScreenRoute, navOptions)
@@ -39,35 +43,39 @@ fun NavController.navigateToEditTaskGraph(taskId: Int, navOptions: NavOptions? =
 }
 
 
-@Serializable
-data class EditTaskGraph(val taskId: Int)
-
 @SuppressLint("NewApi")
 fun NavGraphBuilder.editTaskGraph(
     onTaskTitleClick: () -> Unit,
     onTaskDescriptionClick: () -> Unit,
     onEditTaskTitleBackClick: () -> Unit,
     onEditTaskDescriptionBackClick: () -> Unit,
-    onClickEditCloseButton: () -> Unit
+    onClickEditCloseButton: () -> Unit,
+    navController: NavController
 ) {
     navigation<EditTaskGraph>(
         startDestination = EditTaskScreenRoute
     ) {
         composable<EditTaskScreenRoute> {
+            val viewModel = it.sharedViewModel<EditTaskViewModel>(navController)
             EditTaskScreen(
                 onClickTaskTitle = onTaskTitleClick,
                 onClickTaskDescription = onTaskDescriptionClick,
-                onClickEditCloseButton = onClickEditCloseButton
+                onClickEditCloseButton = onClickEditCloseButton,
+                viewModel = viewModel
             )
         }
         composable<EditTitleScreenRoute> {
+            val viewModel = it.sharedViewModel<EditTaskViewModel>(navController)
             EditTitleScreen(
-                onClickBackButton = onEditTaskTitleBackClick
+                onClickBackButton = onEditTaskTitleBackClick,
+                viewModel = viewModel
             )
         }
         composable<EditDescriptionScreenRoute> {
+            val viewModel = it.sharedViewModel<EditTaskViewModel>(navController)
             EditDescriptionScreen(
-                onBackClick = onEditTaskDescriptionBackClick
+                onBackClick = onEditTaskDescriptionBackClick,
+                viewModel = viewModel
             )
         }
     }

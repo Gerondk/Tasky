@@ -19,20 +19,27 @@ import com.gkp.core.designsystem.theme.TaskyTheme
 @Composable
 fun EditDescriptionScreen(
     onBackClick: () -> Unit = {},
+    viewModel: EditTaskViewModel,
 ) {
+    val uiState = viewModel.uiState
 
     EditDescriptionScreen(
         onClickBackButton = onBackClick,
-        onClickSaveButton = {}
+        onClickSaveButton = {
+            viewModel.onTaskDescriptionChanged(
+                uiState.editDescriptionTextState.text.toString()
+            )
+            onBackClick()
+        },
+        textState = uiState.editDescriptionTextState
     )
-
 }
 
 @Composable
 private fun EditDescriptionScreen(
-    onClickBackButton: () -> Unit = {},
-    onClickSaveButton: () -> Unit = {},
-    textState: TextFieldState = rememberTextFieldState(),
+    onClickBackButton: () -> Unit,
+    onClickSaveButton: () -> Unit,
+    textState: TextFieldState,
 ) {
     Spacer(modifier = Modifier.height(30.dp))
     EditAgendaField(
@@ -60,7 +67,9 @@ private fun EditDescriptionScreenPreview() {
     }
     TaskyTheme {
         EditDescriptionScreen(
-            textState = state
+            textState = state,
+            onClickBackButton = {},
+            onClickSaveButton = {}
         )
     }
 
