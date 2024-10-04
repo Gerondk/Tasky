@@ -13,4 +13,15 @@
     <string name="arrow_back">" Arrow Back "</string>
     <string name="edit_title">EDIT TITLE</string>
     <string name="edit_description">EDIT DESCRIPTION</string>
+    <string name="task">Task</string>
+    <string name="at">At</string>
+    <string name="time_picker_ok">OK</string>
+    <string name="time_picker_cancel">Cancel</string>
+    <string name="time_picker_title">Select time</string>
+    <string name="date_picker_ok">OK</string>
+    <string name="reminder_10_minutes_before">10 minutes before</string>
+    <string name="reminder_30_minutes_before">30 minutes before</string>
+    <string name="reminder_1_hour_before">1 hour before</string>
+    <string name="reminder_6_hour_before">6 hour before</string>
+    <string name="reminder_1_day_before">1 day before</string>
 </resources>

@@ -3,15 +3,14 @@ package com.gkp.auth.presentation.login
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.MaterialTheme
@@ -52,9 +51,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun LoginScreen(
-    modifier: Modifier = Modifier,
     onSignUpTextClick: () -> Unit,
-    navigateToAgenda: () -> Unit
+    navigateToAgenda: () -> Unit,
 ) {
     val viewModel = koinViewModel<LoginViewModel>()
     val state by viewModel.loginState.collectAsStateWithLifecycle()
@@ -72,7 +70,7 @@ internal fun LoginScreen(
         key1 = Unit,
         key2 = Unit
     ) { event ->
-        when(event) {
+        when (event) {
             is LoginEvents.LoginEventsError -> {
                 scope.launch {
                     snackbarHostState.showSnackbar(
@@ -80,8 +78,9 @@ internal fun LoginScreen(
                     )
                 }
             }
+
             LoginEvents.LoginEventsSuccess -> {
-               navigateToAgenda()
+                navigateToAgenda()
             }
         }
 
@@ -104,17 +103,17 @@ private fun LoginScreen(
     state: LoginState,
     onLoginButtonClick: () -> Unit,
     onSignUpTextClick: () -> Unit,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
 ) {
     Scaffold(
-        snackbarHost = {SnackbarHost(snackbarHostState)}
-    ) {  paddingValues ->
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
 
         AuthBlackBackground(title = stringResource(R.string.login_welcome_back)) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .safeContentPadding()
+                    .navigationBarsPadding()
                     .fillMaxHeight(0.8f)
                     .align(Alignment.BottomEnd)
                     .background(

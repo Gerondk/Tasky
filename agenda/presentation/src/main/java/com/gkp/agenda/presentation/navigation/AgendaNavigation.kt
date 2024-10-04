@@ -4,13 +4,16 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import com.gkp.agenda.presentation.AgendaScreen
 import com.gkp.agenda.presentation.task.TaskDetailScreen
-import com.gkp.agenda.presentation.task.edittask.EditDescriptionScreen
-import com.gkp.agenda.presentation.task.edittask.EditTaskScreen
-import com.gkp.agenda.presentation.task.edittask.EditTitleScreen
+import com.gkp.agenda.presentation.task.edittask.EditTaskViewModel
+import com.gkp.agenda.presentation.task.edittask.navigation.editTaskGraph
 import kotlinx.serialization.Serializable
 
+
+@Serializable
+data object AgendaGraph
 
 @Serializable
 data object AgendaScreenRoute
@@ -18,63 +21,41 @@ data object AgendaScreenRoute
 @Serializable
 data object TaskDetailScreenRoute
 
-@Serializable
-data object EditTaskScreenRoute
 
-@Serializable
-data object EditTitleScreenRoute
-
-@Serializable
-data object EditDescriptionScreenRoute
-
-
-fun NavController.navigateToAgendaRoute(navOptions: NavOptions? = null) {
-    navigate(AgendaScreenRoute, navOptions)
+fun NavController.navigateToAgendaGraph(navOptions: NavOptions? = null) {
+    navigate(AgendaGraph, navOptions)
 }
 
-fun NavController.navigateToEditTaskRoute(navOptions: NavOptions? = null) {
-    navigate(EditTaskScreenRoute, navOptions)
-}
-
-fun NavController.navigateToEditTitleRoute(navOptions: NavOptions? = null) {
-    navigate(EditTitleScreenRoute, navOptions)
-}
-
-fun NavController.navigateToEditDescriptionRoute(navOptions: NavOptions? = null) {
-    navigate(EditDescriptionScreenRoute, navOptions)
-}
-
-fun NavGraphBuilder.agendaScreen(
+fun NavGraphBuilder.agendaGraph(
     onLogout: () -> Unit,
     onMenuItemTaskClick: () -> Unit,
     onTaskDescriptionClick: () -> Unit,
     onTaskTitleClick: () -> Unit,
     onEditTaskTitleBackClick: () -> Unit,
     onEditTaskDescriptionBackClick: () -> Unit,
+    onClickEditCloseButton: () -> Unit,
+    navController: NavController
 ) {
-    composable<AgendaScreenRoute> {
-        AgendaScreen(
-            onMenuItemTaskClick = onMenuItemTaskClick,
-            onLogout = onLogout
-        )
-    }
-    composable<TaskDetailScreenRoute> {
-        TaskDetailScreen()
-    }
-    composable<EditTaskScreenRoute> {
-        EditTaskScreen(
-            onClickTaskTitle = onTaskTitleClick,
-            onClickTaskDescription = onTaskDescriptionClick
-        )
-    }
-    composable<EditTitleScreenRoute> {
-        EditTitleScreen(
-            onClickBackButton =  onEditTaskTitleBackClick
-        )
-    }
-    composable<EditDescriptionScreenRoute> {
-        EditDescriptionScreen(
-            onBackClick = onEditTaskDescriptionBackClick
+    navigation<AgendaGraph>(
+        startDestination = AgendaScreenRoute
+    ) {
+        composable<AgendaScreenRoute> {
+            AgendaScreen(
+                onMenuItemTaskClick = onMenuItemTaskClick,
+                onLogout = onLogout
+            )
+        }
+        composable<TaskDetailScreenRoute> {
+            TaskDetailScreen()
+        }
+
+        editTaskGraph(
+            onTaskTitleClick = onTaskTitleClick,
+            onTaskDescriptionClick = onTaskDescriptionClick,
+            onEditTaskTitleBackClick = onEditTaskTitleBackClick,
+            onEditTaskDescriptionBackClick = onEditTaskDescriptionBackClick,
+            onClickEditCloseButton = onClickEditCloseButton,
+            navController = navController
         )
     }
 }

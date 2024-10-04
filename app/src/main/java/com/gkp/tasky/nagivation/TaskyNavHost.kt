@@ -1,20 +1,23 @@
 package com.gkp.tasky.nagivation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.gkp.agenda.presentation.navigation.AgendaScreenRoute
-import com.gkp.agenda.presentation.navigation.agendaScreen
-import com.gkp.agenda.presentation.navigation.navigateToAgendaRoute
-import com.gkp.agenda.presentation.navigation.navigateToEditDescriptionRoute
-import com.gkp.agenda.presentation.navigation.navigateToEditTaskRoute
-import com.gkp.agenda.presentation.navigation.navigateToEditTitleRoute
-import com.gkp.auth.presentation.login.navigation.LoginRoute
-import com.gkp.auth.presentation.login.navigation.loginScreen
-import com.gkp.auth.presentation.login.navigation.navigateToLogin
+import com.gkp.agenda.presentation.navigation.AgendaGraph
+import com.gkp.agenda.presentation.navigation.agendaGraph
+import com.gkp.agenda.presentation.navigation.navigateToAgendaGraph
+import com.gkp.agenda.presentation.task.edittask.EditTaskViewModel
+import com.gkp.agenda.presentation.task.edittask.navigation.navigateToEditDescriptionRoute
+import com.gkp.agenda.presentation.task.edittask.navigation.navigateToEditTaskGraph
+import com.gkp.agenda.presentation.task.edittask.navigation.navigateToEditTaskRoute
+import com.gkp.agenda.presentation.task.edittask.navigation.navigateToEditTitleRoute
+import com.gkp.auth.presentation.navigation.AuthGraph
+import com.gkp.auth.presentation.navigation.authGraph
+import com.gkp.auth.presentation.navigation.navigateToAuthGraph
 import com.gkp.auth.presentation.register.navigation.navigateToRegister
-import com.gkp.auth.presentation.register.navigation.registerScreen
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TaskyNavHost(
@@ -22,25 +25,23 @@ fun TaskyNavHost(
 ) {
     val navController = rememberNavController()
     NavHost(
-        startDestination = if (isLoggedIn) AgendaScreenRoute else LoginRoute,
+        startDestination = if (isLoggedIn) AgendaGraph else AuthGraph,
         navController = navController
     ) {
-        loginScreen(
-            onSignUpTextClick =  navController::navigateToRegister,
+        authGraph(
+            onSignUpTextClick = navController::navigateToRegister,
             navigateToAgenda = {
-                navController.navigateToAgendaRoute(
+                navController.navigateToAgendaGraph(
                     navOptions = navOptions {
-                        popUpTo(LoginRoute) {
+                        popUpTo(AuthGraph) {
                             inclusive = true
                         }
                     }
                 )
-            }
-        )
-        registerScreen(
+            },
             onFabBackClick = navController::navigateUp
         )
-        agendaScreen(
+        agendaGraph(
             onEditTaskTitleBackClick = navController::navigateUp,
             onEditTaskDescriptionBackClick = navController::navigateUp,
             onTaskDescriptionClick = {
@@ -50,17 +51,19 @@ fun TaskyNavHost(
                 navController.navigateToEditTitleRoute()
             },
             onMenuItemTaskClick = {
-                navController.navigateToEditTaskRoute()
-            } ,
+                navController.navigateToEditTaskGraph(taskId = 1)
+            },
             onLogout = {
-                navController.navigateToLogin(
+                navController.navigateToAuthGraph(
                     navOptions = navOptions {
-                        popUpTo(AgendaScreenRoute) {
+                        popUpTo(AgendaGraph) {
                             inclusive = true
                         }
                     }
                 )
-            }
+            },
+            onClickEditCloseButton = navController::navigateUp,
+            navController = navController
         )
     }
 }

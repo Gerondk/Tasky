@@ -16,6 +16,7 @@ dependencies {
 
     implementation(platform(libs.koin.bom))
     implementation(libs.bundles.koin)
+    implementation(libs.bundles.koin.compose)
 
     implementation(projects.core.presentation.designsystem)
 

@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gkp.agenda.presentation.R
@@ -119,7 +120,11 @@ private fun FabWithAgendaMenu(
             DropdownMenuItem(
                 text = {
                     Text(
-                        text = stringResource(R.string.menu_item_event)
+                        text = stringResource(R.string.menu_item_event),
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.W400
+                        )
+
                     )
                 },
                 onClick = {
@@ -131,7 +136,11 @@ private fun FabWithAgendaMenu(
             DropdownMenuItem(
                 text = {
                     Text(
-                        text = stringResource(R.string.menu_item_task)
+                        text = stringResource(R.string.menu_item_task),
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.W400
+                        )
+
                     )
                 },
                 onClick = {
@@ -143,7 +152,11 @@ private fun FabWithAgendaMenu(
             DropdownMenuItem(
                 text = {
                     Text(
-                        text = stringResource(R.string.menu_item_reminder)
+                        text = stringResource(R.string.menu_item_reminder),
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.W400
+                        )
+
                     )
                 },
                 onClick = {

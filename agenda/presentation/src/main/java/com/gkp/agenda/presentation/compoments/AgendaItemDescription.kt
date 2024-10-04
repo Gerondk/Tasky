@@ -20,7 +20,7 @@ import com.gkp.core.designsystem.theme.TaskyTheme
 @Composable
 fun AgendaItemDescription(
     modifier: Modifier = Modifier,
-    itemDescription: String = "Description",
+    itemDescription: String,
     editMode: Boolean = false
 ) {
     Row(
@@ -52,6 +52,8 @@ fun AgendaItemDescription(
 @Composable
 private fun AgendaItemTitlePreview() {
     TaskyTheme {
-        AgendaItemDescription()
+        AgendaItemDescription(
+            itemDescription = "Description"
+        )
     }
 }
