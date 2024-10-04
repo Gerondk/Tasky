@@ -178,7 +178,7 @@ private fun EditTaskScreen(
                     .clickable {
                         showReminderMenu = true
                     },
-                reminderTimeText = state.taskReminderText,
+                reminderTimeText = stringResource(state.taskReminderTextId),
                 editMode = true
             )
             HorizontalDivider()
@@ -264,11 +264,11 @@ fun ReminderDropDownMenu(
         expanded = expanded,
         onDismissRequest = { onDismissRequest() }
     ) {
-        reminderTimeList.forEachIndexed { index, reminderTimeText ->
+        reminderTimeList.forEachIndexed { index, reminderTimeTextResId ->
             DropdownMenuItem(
                 text = {
                     Text(
-                        text = reminderTimeText,
+                        text = stringResource(reminderTimeTextResId),
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.W400
                         )
@@ -286,11 +286,11 @@ fun ReminderDropDownMenu(
 }
 
 val reminderTimeList = listOf(
-    "10 minutes before",
-    "30 minutes before",
-    "1 hour before",
-    "6 hour before",
-    "1 day before"
+    R.string.reminder_10_minutes_before,
+    R.string.reminder_30_minutes_before,
+    R.string.reminder_1_hour_before,
+    R.string.reminder_6_hour_before,
+    R.string.reminder_1_day_before
 )
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -385,7 +385,7 @@ private fun TaskScreenPreview() {
                 taskTitle = "definitionem",
                 taskDescription = "consul",
                 taskDateTime = LocalDateTime.now(),
-                taskReminderText = "aeque"
+                taskReminderTextId = R.string.reminder_30_minutes_before
             )
         )
     }

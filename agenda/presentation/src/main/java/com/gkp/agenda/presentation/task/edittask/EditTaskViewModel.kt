@@ -23,18 +23,16 @@ class EditTaskViewModel(
 
     init {
         taskTitle?.let {
-            println("titleInit: $it")
             uiState = uiState.copy(taskTitle = it)
         }
     }
 
     fun onTaskTitleChanged(title: String) {
-        println("titleM: $title")
         uiState = uiState.copy(taskTitle = title)
 
     }
     fun onTaskReminderChanged(reminderIndex: Int) {
-        uiState = uiState.copy(taskReminderText = getReminderTimeText(reminderIndex))
+        uiState = uiState.copy(taskReminderTextId = getReminderTimeText(reminderIndex))
     }
 
     fun onTaskDateSelected(selectedDateMillis: Long) {

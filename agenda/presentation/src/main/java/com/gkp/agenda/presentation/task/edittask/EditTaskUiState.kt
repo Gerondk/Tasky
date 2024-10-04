@@ -1,6 +1,8 @@
 package com.gkp.agenda.presentation.task.edittask
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.text.input.TextFieldState
+import com.gkp.agenda.presentation.R
 import com.gkp.agenda.presentation.task.edittask.util.toUiDate
 import com.gkp.agenda.presentation.task.edittask.util.toUiTime
 import java.time.LocalDateTime
@@ -9,7 +11,7 @@ data class EditTaskUiState(
     val taskTitle: String = "Task",
     val taskDescription: String = "Description",
     val taskDateTime: LocalDateTime = LocalDateTime.now(),
-    val taskReminderText: String = ReminderTimes.THIRTY_MINUTES_BEFORE.text,
+    val taskReminderTextId: Int = ReminderTimes.THIRTY_MINUTES_BEFORE.textId,
     val editTitleTextState: TextFieldState = TextFieldState(
         taskTitle
     ),
@@ -23,10 +25,10 @@ data class EditTaskUiState(
     get() = taskDateTime.toUiTime()
 }
 
-enum class ReminderTimes(val text: String) {
-    TEN_MINUTES_BEFORE("10 minutes before"),
-    THIRTY_MINUTES_BEFORE("30 minutes before"),
-    ONE_HOUR_BEFORE("1 hour before"),
-    SIX_HOURS_BEFORE("2 hours before"),
-    ONE_DAY_BEFORE("1 day before")
+enum class ReminderTimes(@StringRes val textId: Int) {
+    TEN_MINUTES_BEFORE(R.string.reminder_10_minutes_before),
+    THIRTY_MINUTES_BEFORE(R.string.reminder_30_minutes_before),
+    ONE_HOUR_BEFORE(R.string.reminder_1_hour_before),
+    SIX_HOURS_BEFORE(R.string.reminder_6_hour_before),
+    ONE_DAY_BEFORE(R.string.reminder_1_day_before)
 }

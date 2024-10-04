@@ -3,14 +3,14 @@ package com.gkp.agenda.presentation.task.edittask.util
 import com.gkp.agenda.presentation.task.edittask.ReminderTimes
 import java.time.LocalDateTime
 
-fun getReminderTimeText(reminderTimeMenuIndex: Int): String {
+fun getReminderTimeText(reminderTimeMenuIndex: Int): Int {
     return when (reminderTimeMenuIndex) {
-        0 -> ReminderTimes.TEN_MINUTES_BEFORE.text
-        1 -> ReminderTimes.THIRTY_MINUTES_BEFORE.text
-        2 -> ReminderTimes.ONE_HOUR_BEFORE.text
-        3 -> ReminderTimes.SIX_HOURS_BEFORE.text
-        4 -> ReminderTimes.ONE_DAY_BEFORE.text
-        else -> ""
+        0 -> ReminderTimes.TEN_MINUTES_BEFORE.textId
+        1 -> ReminderTimes.THIRTY_MINUTES_BEFORE.textId
+        2 -> ReminderTimes.ONE_HOUR_BEFORE.textId
+        3 -> ReminderTimes.SIX_HOURS_BEFORE.textId
+        4 -> ReminderTimes.ONE_DAY_BEFORE.textId
+        else -> 0
     }
 }
 

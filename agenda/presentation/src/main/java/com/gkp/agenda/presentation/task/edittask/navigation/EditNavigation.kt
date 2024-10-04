@@ -54,8 +54,6 @@ fun NavGraphBuilder.editTaskGraph(
         startDestination = EditTaskScreenRoute
     ) {
         composable<EditTaskScreenRoute> {
-           val title = it.savedStateHandle.get<String>("title")
-            println("titleNAV: $title")
             EditTaskScreen(
                 onClickTaskTitle = onTaskTitleClick,
                 onClickTaskDescription = onTaskDescriptionClick,
@@ -63,7 +61,6 @@ fun NavGraphBuilder.editTaskGraph(
             )
         }
         composable<EditTitleScreenRoute> {
-            it.savedStateHandle["title"] = "Task123"
             EditTitleScreen(
                 onClickBackButton = onEditTaskTitleBackClick
             )
