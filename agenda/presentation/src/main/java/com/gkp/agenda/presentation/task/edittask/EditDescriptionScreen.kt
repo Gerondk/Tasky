@@ -8,7 +8,12 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,6 +46,11 @@ private fun EditDescriptionScreen(
     onClickSaveButton: () -> Unit,
     textState: TextFieldState,
 ) {
+    val focusRequester = remember { FocusRequester() }
+    LaunchedEffect(Unit) {
+      focusRequester.requestFocus()
+    }
+
     Spacer(modifier = Modifier.height(30.dp))
     EditAgendaField(
         title = stringResource(R.string.edit_description),
@@ -49,7 +59,9 @@ private fun EditDescriptionScreen(
     ) {
         Spacer(modifier = Modifier.height(20.dp))
         BasicTextField(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
             state = textState,
             textStyle = MaterialTheme.typography.bodyLarge.copy(
                 fontWeight = FontWeight.W400
