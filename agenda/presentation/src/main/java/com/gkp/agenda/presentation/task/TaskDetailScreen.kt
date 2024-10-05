@@ -94,7 +94,10 @@ private fun TaskDetailScreen(
             HorizontalDivider()
             AgendaItemReminderTime(
                 modifier = Modifier.padding(vertical = 16.dp),
-                reminderTimeText = "10 minutes before"
+                reminderTimeText = "10 minutes before",
+                onCLickReminderMenuItem = {},
+                onDismissReminderMenu = {},
+                showReminderMenu = false
             )
             HorizontalDivider()
             Spacer(modifier = Modifier.weight(1f))

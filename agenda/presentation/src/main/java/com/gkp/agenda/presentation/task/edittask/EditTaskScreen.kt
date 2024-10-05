@@ -177,16 +177,13 @@ private fun EditTaskScreen(
                         showReminderMenu = true
                     },
                 reminderTimeText = stringResource(state.taskReminderTextId),
+                onCLickReminderMenuItem = onCLickReminderMenuItem,
+                onDismissReminderMenu = { showReminderMenu = false },
+                showReminderMenu = showReminderMenu,
                 editMode = true
             )
             HorizontalDivider()
-            ReminderDropDownMenu(
-                expanded = showReminderMenu,
-                onDismissRequest = { showReminderMenu = false },
-                onCLickReminderMenuItem = onCLickReminderMenuItem
-            )
             Spacer(modifier = Modifier.weight(1f))
-
             TextButton(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { onClickDeleteButton() }
@@ -249,47 +246,6 @@ fun TaskyDatePickerDialog(
         }
     }
 }
-
-@Composable
-fun ReminderDropDownMenu(
-    modifier: Modifier = Modifier,
-    expanded: Boolean,
-    onDismissRequest: () -> Unit,
-    onCLickReminderMenuItem: (Int) -> Unit,
-) {
-    DropdownMenu(
-        modifier = modifier,
-        expanded = expanded,
-        onDismissRequest = { onDismissRequest() }
-    ) {
-        reminderTimeList.forEachIndexed { index, reminderTimeTextResId ->
-            DropdownMenuItem(
-                text = {
-                    Text(
-                        text = stringResource(reminderTimeTextResId),
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            fontWeight = FontWeight.W400
-                        )
-
-                    )
-                },
-                onClick = {
-                    onCLickReminderMenuItem(index)
-                    onDismissRequest()
-                }
-            )
-        }
-
-    }
-}
-
-val reminderTimeList = listOf(
-    R.string.reminder_10_minutes_before,
-    R.string.reminder_30_minutes_before,
-    R.string.reminder_1_hour_before,
-    R.string.reminder_6_hour_before,
-    R.string.reminder_1_day_before
-)
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
