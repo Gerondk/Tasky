@@ -23,6 +23,6 @@ private fun Request.Builder.applyHeader(
     value: String
 ): Request.Builder {
     return this.apply {
-        addHeader(name, value)
+        header(name, value)
     }
 }
