@@ -18,6 +18,7 @@ inline fun <T> networkApiCall(
     emit(TaskyResult.Success(response))
 }.catch { cause: Throwable ->
     if (cause is CancellationException) throw  cause
+    cause.printStackTrace()
     emit(TaskyResult.Error(getErrorType(cause)))
 }
 

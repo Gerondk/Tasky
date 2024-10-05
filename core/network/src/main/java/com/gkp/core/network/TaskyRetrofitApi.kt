@@ -5,6 +5,7 @@ import com.gkp.core.network.model.LoginResponse
 import com.gkp.core.network.model.RefreshTokenBody
 import com.gkp.core.network.model.RefreshTokenResponse
 import com.gkp.core.network.model.RegisterBody
+import com.gkp.core.network.model.TaskBody
 import com.gkp.network.BuildConfig
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -33,6 +34,11 @@ interface TaskyRetrofitApi {
     @GET("/agenda")
     suspend fun getAgenda(
         @Query("time") time: Long = System.currentTimeMillis()
+    )
+
+    @POST("/task")
+    suspend fun createTask(
+        @Body taskBody: TaskBody
     )
 
 }
