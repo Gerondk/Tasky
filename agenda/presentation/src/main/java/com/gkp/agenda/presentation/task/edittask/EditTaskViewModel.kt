@@ -6,14 +6,20 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.toRoute
+import com.gkp.agenda.domain.AgendaRepository
+import com.gkp.agenda.domain.model.Task
 import com.gkp.agenda.presentation.task.edittask.navigation.EditTaskGraph
+import com.gkp.agenda.presentation.task.edittask.util.getReminderInDateLong
 import com.gkp.agenda.presentation.task.edittask.util.getReminderTimeText
+import com.gkp.agenda.presentation.task.edittask.util.toMillis
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.util.UUID
 
 class EditTaskViewModel(
     savedStateHandle: SavedStateHandle,
+    private val agendaRepository: AgendaRepository,
 ) : ViewModel() {
     private val taskId: Int = savedStateHandle.toRoute<EditTaskGraph>().taskId
 
@@ -43,7 +49,21 @@ class EditTaskViewModel(
         uiState = uiState.copy(
             taskDateTime = uiState.taskDateTime.withHour(hour).withMinute(minute)
         )
+    }
 
+    fun onTaskSave() {
+        val task = Task(
+            id = UUID.randomUUID().toString(),
+            title = uiState.taskTitle,
+            description = uiState.taskDescription,
+            time = uiState.taskDateTime.toMillis(),
+            remindAt = getReminderInDateLong(
+                selectedDate = uiState.taskDateTime,
+                reminderTimeMenuTextId = uiState.taskReminderTextId
+            ),
+            isDone = false
+        )
+        agendaRepository.addTask(task)
     }
 
 

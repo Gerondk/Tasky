@@ -1,6 +1,7 @@
 package com.gkp.agenda.data
 
 import com.gkp.agenda.domain.AgendaRepository
+import com.gkp.agenda.domain.model.Task
 import com.gkp.auth.domain.session.SessionStorage
 import com.gkp.core.network.TaskyRetrofitApi
 import com.gkp.core.network.util.networkApiCall
@@ -16,6 +17,13 @@ class OfflineAgendaRepository(
     override suspend fun getAgenda(time: Long) {
 
     }
+
+    override fun addTask(task: Task) {
+        networkApiCall {
+            taskyRetrofitApi.createTask(task.toTaskBody())
+        }.launchIn(scope)
+    }
+
 
     override fun logout() {
         networkApiCall {

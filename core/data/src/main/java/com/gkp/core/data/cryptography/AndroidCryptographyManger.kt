@@ -49,7 +49,9 @@ object AndroidCryptographyManger {
         load(null)
     }
 
-    private val encryptCypher = Cipher.getInstance(TRANSFORMATION).apply {
+    // Put this get Avoid generating new cipher
+    private val encryptCypher : Cipher
+    get() = Cipher.getInstance(TRANSFORMATION).apply {
         init(Cipher.ENCRYPT_MODE, getKey())
     }
 

@@ -8,7 +8,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.gkp.agenda.presentation.task.edittask.ReminderTimes
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.qualifier.Qualifier
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 fun getReminderTimeText(reminderTimeMenuIndex: Int): Int {
     return when (reminderTimeMenuIndex) {
@@ -21,12 +26,52 @@ fun getReminderTimeText(reminderTimeMenuIndex: Int): Int {
     }
 }
 
+fun getReminderInDateLong(
+    selectedDate: LocalDateTime,
+    reminderTimeMenuTextId: Int,
+): Long {
+
+    return when (reminderTimeMenuTextId) {
+        ReminderTimes.TEN_MINUTES_BEFORE.textId -> {
+            val date = selectedDate.minusMinutes(10)
+            date.toMillis()
+        }
+        ReminderTimes.THIRTY_MINUTES_BEFORE.textId -> {
+            val date = selectedDate.minusMinutes(30)
+            date.toMillis()
+        }
+        ReminderTimes.ONE_HOUR_BEFORE.textId -> {
+            val date = selectedDate.minusHours(1)
+            date.toMillis()
+        }
+        ReminderTimes.SIX_HOURS_BEFORE.textId -> {
+            val date = selectedDate.minusHours(6)
+            date.toMillis()
+        }
+        ReminderTimes.ONE_DAY_BEFORE.textId -> {
+            val date = selectedDate.minusDays(1)
+            date.toMillis()
+        }
+        else -> 0
+    }
+}
+
 fun LocalDateTime.toUiTime(): String {
-    return "${this.hour}:${this.minute}"
+    return String.format("%02d:%02d", this.hour, this.minute)
 }
 
 fun LocalDateTime.toUiDate(): String {
     return "${this.month.toString().take(3)} ${this.dayOfMonth} ${this.year}"
+}
+
+@SuppressLint("NewApi")
+fun LocalDateTime.toMillis(): Long {
+    return this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+}
+
+@SuppressLint("NewApi")
+fun Long.toLocalDateTime(): LocalDateTime {
+    return LocalDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
 }
 
 @Composable
@@ -35,5 +80,21 @@ inline fun <reified T: ViewModel> NavBackStackEntry.sharedViewModel(navControlle
     val parentEntry = remember(this) {
         navController.getBackStackEntry(navGraphRoute)
     }
-    return viewModel(parentEntry)
+    return koinViewModel(viewModelStoreOwner = parentEntry)
+}
+
+@Composable
+inline fun <reified VM : ViewModel> NavController.routeViewModel(
+    route: String? = null,
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null,
+): VM {
+    val owner = if (route != null)
+        getBackStackEntry(route)
+    else
+        currentBackStackEntry!!
+
+    return koinViewModel(
+        viewModelStoreOwner = owner
+    )
 }

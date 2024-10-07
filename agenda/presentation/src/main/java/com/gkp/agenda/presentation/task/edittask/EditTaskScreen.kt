@@ -71,7 +71,10 @@ fun EditTaskScreen(
     EditTaskScreen(
         onClickTaskTitle = onClickTaskTitle,
         onClickTaskDescription = onClickTaskDescription,
-        onClickEditSaveButton = {},
+        onClickEditSaveButton = {
+            viewModel.onTaskSave()
+            onClickEditCloseButton()
+        },
         onClickDeleteButton = {},
         onClickEditCloseButton = onClickEditCloseButton,
         onCLickReminderMenuItem = viewModel::onTaskReminderChanged,
@@ -124,7 +127,7 @@ private fun EditTaskScreen(
             }
         },
         actions = {
-            IconButton(onClick = { onClickEditSaveButton() }) {
+            IconButton(onClick = onClickEditSaveButton) {
                 Text(
                     text = stringResource(R.string.save),
                     style = MaterialTheme.typography.bodyLarge.copy(
