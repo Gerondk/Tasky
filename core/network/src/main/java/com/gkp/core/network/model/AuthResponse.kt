@@ -14,6 +14,6 @@ data class LoginResponse (
 @Serializable
 data class RefreshTokenResponse(
     val accessToken: String,
-    val accessTokenExpirationTimestamp: Long
+    val expirationTimestamp: Long
 )
 
