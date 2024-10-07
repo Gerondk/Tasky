@@ -22,7 +22,7 @@ import com.gkp.core.designsystem.theme.TaskyTheme
 fun AgendaItemHeader(
     modifier: Modifier = Modifier,
     itemName: String,
-    leadingBoxColor: Color = TaskyGreen
+    leadingBoxColor: Color
 ) {
     Row(
         modifier = modifier
@@ -48,7 +48,8 @@ fun AgendaItemHeader(
 private fun AgendaItemHeaderPreview () {
    TaskyTheme {
        AgendaItemHeader(
-           itemName = "Task"
+           itemName = "Task",
+           leadingBoxColor = TaskyGreen
        )
    }
 }

@@ -25,4 +25,5 @@
     <string name="reminder_6_hour_before">6 hours before</string>
     <string name="reminder_1_day_before">1 day before</string>
     <string name="reminder">Reminder</string>
+    <string name="edit_reminder">EDIT REMINDER</string>
 </resources>

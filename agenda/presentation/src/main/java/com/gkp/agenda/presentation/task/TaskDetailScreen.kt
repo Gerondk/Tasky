@@ -27,6 +27,7 @@ import com.gkp.agenda.presentation.compoments.AgendaItemDescription
 import com.gkp.agenda.presentation.compoments.AgendaItemHeader
 import com.gkp.agenda.presentation.compoments.AgendaItemReminderTime
 import com.gkp.agenda.presentation.compoments.AgendaItemTitle
+import com.gkp.core.designsystem.theme.TaskyGreen
 import com.gkp.core.designsystem.theme.TaskyTextFieldColor
 import com.gkp.core.designsystem.theme.TaskyTheme
 
@@ -71,7 +72,8 @@ private fun TaskDetailScreen(
                 .padding(16.dp)
         ) {
             AgendaItemHeader(
-                itemName = "Task"
+                itemName = "Task",
+                leadingBoxColor = TaskyGreen
             )
             Spacer(modifier = Modifier.height(42.dp))
             AgendaItemTitle(

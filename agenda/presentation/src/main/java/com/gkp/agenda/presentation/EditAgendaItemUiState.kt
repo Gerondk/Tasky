@@ -1,28 +1,27 @@
-package com.gkp.agenda.presentation.task.edittask
+package com.gkp.agenda.presentation
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.text.input.TextFieldState
-import com.gkp.agenda.presentation.R
 import com.gkp.agenda.presentation.task.edittask.util.toUiDate
 import com.gkp.agenda.presentation.task.edittask.util.toUiTime
 import java.time.LocalDateTime
 
-data class EditTaskUiState(
-    val taskTitle: String = "Task",
-    val taskDescription: String = "Description",
-    val taskDateTime: LocalDateTime = LocalDateTime.now(),
-    val taskReminderTextId: Int = ReminderTimes.THIRTY_MINUTES_BEFORE.textId,
+data class EditItemUiState(
+    val title: String = "Title",
+    val description: String = "Description",
+    val dateTime: LocalDateTime = LocalDateTime.now(),
+    val reminderTextId: Int = ReminderTimes.THIRTY_MINUTES_BEFORE.textId,
     val editTitleTextState: TextFieldState = TextFieldState(
-        taskTitle
+        title
     ),
     val editDescriptionTextState: TextFieldState = TextFieldState(
-        taskDescription
+        description
     ),
 ){
     val uiDate: String
-    get() = taskDateTime.toUiDate()
+    get() = dateTime.toUiDate()
     val uiTime: String
-    get() = taskDateTime.toUiTime()
+    get() = dateTime.toUiTime()
 }
 
 enum class ReminderTimes(@StringRes val textId: Int) {

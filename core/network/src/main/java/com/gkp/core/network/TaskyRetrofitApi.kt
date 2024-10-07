@@ -5,6 +5,7 @@ import com.gkp.core.network.model.LoginResponse
 import com.gkp.core.network.model.RefreshTokenBody
 import com.gkp.core.network.model.RefreshTokenResponse
 import com.gkp.core.network.model.RegisterBody
+import com.gkp.core.network.model.ReminderBody
 import com.gkp.core.network.model.TaskBody
 import com.gkp.network.BuildConfig
 import retrofit2.http.Body
@@ -39,6 +40,11 @@ interface TaskyRetrofitApi {
     @POST("/task")
     suspend fun createTask(
         @Body taskBody: TaskBody
+    )
+
+    @POST("/reminder")
+    suspend fun createReminder(
+        @Body reminderBody: ReminderBody
     )
 
 }

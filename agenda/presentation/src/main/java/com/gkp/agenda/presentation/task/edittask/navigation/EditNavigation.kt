@@ -1,15 +1,14 @@
 package com.gkp.agenda.presentation.task.edittask.navigation
 
 import android.annotation.SuppressLint
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.gkp.agenda.presentation.task.edittask.EditDescriptionScreen
+import com.gkp.agenda.presentation.task.edittask.EditTaskDescriptionScreen
 import com.gkp.agenda.presentation.task.edittask.EditTaskScreen
-import com.gkp.agenda.presentation.task.edittask.EditTaskViewModel
+import com.gkp.agenda.presentation.EditAgendaItemViewModel
 import com.gkp.agenda.presentation.task.edittask.EditTitleScreen
 import com.gkp.agenda.presentation.task.edittask.util.sharedViewModel
 import kotlinx.serialization.Serializable
@@ -56,7 +55,7 @@ fun NavGraphBuilder.editTaskGraph(
         startDestination = EditTaskScreenRoute
     ) {
         composable<EditTaskScreenRoute> {
-            val viewModel = it.sharedViewModel<EditTaskViewModel>(navController)
+            val viewModel = it.sharedViewModel<EditAgendaItemViewModel>(navController)
             EditTaskScreen(
                 onClickTaskTitle = onTaskTitleClick,
                 onClickTaskDescription = onTaskDescriptionClick,
@@ -65,15 +64,15 @@ fun NavGraphBuilder.editTaskGraph(
             )
         }
         composable<EditTitleScreenRoute> {
-            val viewModel = it.sharedViewModel<EditTaskViewModel>(navController)
+            val viewModel = it.sharedViewModel<EditAgendaItemViewModel>(navController)
             EditTitleScreen(
                 onClickBackButton = onEditTaskTitleBackClick,
                 viewModel = viewModel
             )
         }
         composable<EditDescriptionScreenRoute> {
-            val viewModel = it.sharedViewModel<EditTaskViewModel>(navController)
-            EditDescriptionScreen(
+            val viewModel = it.sharedViewModel<EditAgendaItemViewModel>(navController)
+            EditTaskDescriptionScreen(
                 onBackClick = onEditTaskDescriptionBackClick,
                 viewModel = viewModel
             )

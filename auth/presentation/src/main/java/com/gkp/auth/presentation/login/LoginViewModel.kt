@@ -60,8 +60,6 @@ class LoginViewModel(
                         LoginEvents.LoginEventsError("")
                     )
                 }
-                TaskyResult.Loading -> {
-                }
                 is TaskyResult.Success -> {
                     eventsChannel.send(
                         LoginEvents.LoginEventsSuccess

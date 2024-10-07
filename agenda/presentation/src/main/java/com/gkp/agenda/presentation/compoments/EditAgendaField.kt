@@ -1,9 +1,13 @@
-package com.gkp.agenda.presentation.task.edittask
+package com.gkp.agenda.presentation.compoments
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -15,11 +19,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.gkp.agenda.presentation.R
 import com.gkp.core.designsystem.theme.TaskyBlack
 import com.gkp.core.designsystem.theme.TaskyGreen
@@ -30,11 +40,11 @@ import com.gkp.core.designsystem.theme.TaskyTheme
 fun EditAgendaField(
     modifier: Modifier = Modifier,
     title: String,
-    onBackClick: () -> Unit = {},
-    onSaveClick: () -> Unit = {},
-    content: @Composable ColumnScope.() -> Unit = {},
+    onBackClick: () -> Unit,
+    onSaveClick: () -> Unit,
+    textState: TextFieldState,
+    textFieldFontSize: TextUnit
 ) {
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -76,7 +86,22 @@ fun EditAgendaField(
                 .padding(16.dp)
         ) {
             HorizontalDivider()
-            content()
+            val focusRequester = remember { FocusRequester() }
+            LaunchedEffect(Unit) {
+                focusRequester.requestFocus()
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            BasicTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
+                state = textState,
+                lineLimits = TextFieldLineLimits.SingleLine,
+                textStyle = MaterialTheme.typography.bodyLarge.copy(
+                    fontSize = textFieldFontSize,
+                    fontWeight = FontWeight.W400
+                )
+            )
         }
     }
 }
@@ -86,7 +111,11 @@ fun EditAgendaField(
 private fun EditAgendaFieldPreview() {
     TaskyTheme {
         EditAgendaField(
-            title = "EDIT TITLE"
+            title = "EDIT TITLE",
+            onBackClick = {},
+            onSaveClick = {},
+            textState = remember { TextFieldState() },
+            textFieldFontSize = 26.sp
         )
     }
 }

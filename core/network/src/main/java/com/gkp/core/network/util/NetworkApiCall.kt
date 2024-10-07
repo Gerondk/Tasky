@@ -13,12 +13,12 @@ import kotlin.coroutines.cancellation.CancellationException
 inline fun <T> networkApiCall(
     crossinline apiCall: suspend () -> T,
 ): Flow<TaskyResult<T>> = flow {
-    emit(TaskyResult.Loading)
-    val response = apiCall.invoke()
-    emit(TaskyResult.Success(response))
-}.catch { cause: Throwable ->
-    if (cause is CancellationException) throw cause
-    emit(TaskyResult.Error(getErrorType(cause)))
+    try {
+        emit(TaskyResult.Success(apiCall.invoke()))
+    } catch (cause: Throwable) {
+        if (cause is CancellationException) throw cause
+        emit(TaskyResult.Error(getErrorType(cause)))
+    }
 }
 
 fun getErrorType(throwable: Throwable) = when (throwable) {
