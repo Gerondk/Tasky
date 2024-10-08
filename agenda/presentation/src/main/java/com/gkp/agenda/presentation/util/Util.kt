@@ -1,6 +1,9 @@
 package com.gkp.agenda.presentation.util
 
+import android.annotation.SuppressLint
 import java.time.LocalDate
+import java.time.ZoneId
+
 private const val CURRENT_AND_NEXT_SIX_DATES = 7
 
 fun getFullNameInitials(fullName: String): String {
@@ -27,9 +30,13 @@ fun getFullNameInitials(fullName: String): String {
     return ""
 }
 
+@SuppressLint("NewApi")
+fun LocalDate.toMillis(): Long {
+    return this.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+}
 
 fun getCurrentAndNextSixWeekDayDates(
-    selectedDate: LocalDate
+    selectedDate: LocalDate,
 ): List<DateWithSelected> {
     val today = LocalDate.now()
 

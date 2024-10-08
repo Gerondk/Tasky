@@ -1,5 +1,6 @@
 package com.gkp.core.network
 
+import com.gkp.core.network.model.AgendaResponse
 import com.gkp.core.network.model.LoginBody
 import com.gkp.core.network.model.LoginResponse
 import com.gkp.core.network.model.RefreshTokenBody
@@ -35,7 +36,7 @@ interface TaskyRetrofitApi {
     @GET("/agenda")
     suspend fun getAgenda(
         @Query("time") time: Long = System.currentTimeMillis()
-    )
+    ): AgendaResponse
 
     @POST("/task")
     suspend fun createTask(

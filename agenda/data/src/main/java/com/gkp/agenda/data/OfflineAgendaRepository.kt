@@ -3,9 +3,11 @@ package com.gkp.agenda.data
 import com.gkp.agenda.domain.AgendaRepository
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.auth.domain.session.SessionStorage
+import com.gkp.core.domain.util.TaskyResult
 import com.gkp.core.network.TaskyRetrofitApi
 import com.gkp.core.network.util.networkApiCall
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 
 class OfflineAgendaRepository(
@@ -14,8 +16,10 @@ class OfflineAgendaRepository(
     private val scope: CoroutineScope,
 ) : AgendaRepository {
 
-    override suspend fun getAgenda(time: Long) {
-
+    override fun fetchAgendaItems(time: Long) : Flow<TaskyResult<List<AgendaItem>>> {
+        return networkApiCall {
+            taskyRetrofitApi.getAgenda(time).toAgendaItems()
+        }
     }
 
     override fun addAgendaItem(agendaItem: AgendaItem) {
@@ -25,7 +29,6 @@ class OfflineAgendaRepository(
                     taskyRetrofitApi.createReminder(agendaItem.toReminderBody())
                 }.launchIn(scope)
             }
-
             is AgendaItem.Task -> {
                 networkApiCall {
                     taskyRetrofitApi.createTask(agendaItem.toTaskBody())

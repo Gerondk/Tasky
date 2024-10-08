@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.gkp.agenda.presentation.R
-import com.gkp.agenda.presentation.EditItemUiState
+import com.gkp.agenda.presentation.edit.EditItemUiState
 import com.gkp.core.designsystem.theme.TaskyGreen
 import com.gkp.core.designsystem.theme.TaskyTextFieldColor
 import com.gkp.core.designsystem.theme.TaskyTheme

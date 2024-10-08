@@ -8,7 +8,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
-import com.gkp.agenda.presentation.EditAgendaItemViewModel
+import com.gkp.agenda.presentation.edit.EditAgendaItemViewModel
 import com.gkp.agenda.presentation.reminder.EditReminderScreen
 import com.gkp.agenda.presentation.reminder.EditReminderTitleAndDescriptionScreen
 import com.gkp.agenda.presentation.task.edittask.util.sharedViewModel

@@ -8,8 +8,8 @@ import androidx.compose.ui.res.stringResource
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.presentation.R
 import com.gkp.agenda.presentation.compoments.EditAgendaItemCommonSection
-import com.gkp.agenda.presentation.EditItemUiState
-import com.gkp.agenda.presentation.EditAgendaItemViewModel
+import com.gkp.agenda.presentation.edit.EditItemUiState
+import com.gkp.agenda.presentation.edit.EditAgendaItemViewModel
 import com.gkp.core.designsystem.theme.TaskyTextHintColor
 
 @RequiresApi(Build.VERSION_CODES.O)

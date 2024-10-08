@@ -1,4 +1,4 @@
-package com.gkp.agenda.presentation
+package com.gkp.agenda.presentation.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gkp.agenda.presentation.R
 import com.gkp.agenda.presentation.compoments.AgendaBackground
 import com.gkp.agenda.presentation.compoments.DayItem
 import com.gkp.agenda.presentation.compoments.TaskyCalendarDay
