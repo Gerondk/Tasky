@@ -64,11 +64,6 @@ fun LocalDateTime.toMillis(): Long {
     return this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }
 
-@SuppressLint("NewApi")
-fun Long.toLocalDateTime(): LocalDateTime {
-    return LocalDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
-}
-
 fun LocalDateTime.toUiTime(): String {
     return String.format("%02d:%02d", this.hour, this.minute)
 }

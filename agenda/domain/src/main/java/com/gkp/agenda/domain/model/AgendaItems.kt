@@ -1,11 +1,16 @@
 package com.gkp.agenda.domain.model
 
+import com.gkp.agenda.domain.util.formattedDateTime
+import com.gkp.agenda.domain.util.toLocalDateTime
+
 sealed interface AgendaItem {
     val id: String
     val title: String
     val description: String?
     val time: Long
     val remindAt: Long
+    val formattedDateTime: String
+        get() = time.formattedDateTime()
 
     data class Task(
         override val id: String = "",
@@ -23,5 +28,4 @@ sealed interface AgendaItem {
         override val time: Long = 0L,
         override val remindAt: Long = 0L,
     ) : AgendaItem
-
 }

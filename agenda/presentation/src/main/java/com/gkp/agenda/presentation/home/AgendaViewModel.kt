@@ -34,9 +34,10 @@ class AgendaViewModel(
             .flatMapLatest {
                 agendaRepository.fetchAgendaItems(it.toMillis())
             }
-            .onEach {
+            .onEach { taskResult ->
                 agendaUiState = agendaUiState.copy(
-                    agendaItems = it.getDataOrNull() ?: emptyList()
+                    agendaItems =
+                    taskResult.getDataOrNull()?.sortedBy { it.time } ?: emptyList()
                 )
             }.launchIn(viewModelScope)
     }
