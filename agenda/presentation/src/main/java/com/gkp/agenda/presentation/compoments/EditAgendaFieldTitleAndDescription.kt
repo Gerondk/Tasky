@@ -37,9 +37,9 @@ import com.gkp.core.designsystem.theme.TaskyTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditAgendaField(
+fun EditAgendaFieldTitleAndDescription(
     modifier: Modifier = Modifier,
-    title: String,
+    topBarTitle: String,
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit,
     textState: TextFieldState,
@@ -58,7 +58,7 @@ fun EditAgendaField(
                 },
                 title = {
                     Text(
-                        text = title,
+                        text = topBarTitle,
                         style = MaterialTheme.typography.titleLarge.copy(
                             color = TaskyBlack,
                             fontWeight = FontWeight.W600
@@ -110,8 +110,8 @@ fun EditAgendaField(
 @Composable
 private fun EditAgendaFieldPreview() {
     TaskyTheme {
-        EditAgendaField(
-            title = "EDIT TITLE",
+        EditAgendaFieldTitleAndDescription(
+            topBarTitle = "EDIT TITLE",
             onBackClick = {},
             onSaveClick = {},
             textState = remember { TextFieldState() },

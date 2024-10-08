@@ -7,10 +7,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.gkp.agenda.presentation.reminder.EditReminderDescriptionScreen
-import com.gkp.agenda.presentation.reminder.EditReminderScreen
-import com.gkp.agenda.presentation.reminder.EditReminderTitleScreen
+import androidx.navigation.toRoute
 import com.gkp.agenda.presentation.EditAgendaItemViewModel
+import com.gkp.agenda.presentation.reminder.EditReminderScreen
+import com.gkp.agenda.presentation.reminder.EditReminderTitleAndDescriptionScreen
 import com.gkp.agenda.presentation.task.edittask.util.sharedViewModel
 import kotlinx.serialization.Serializable
 
@@ -21,10 +21,7 @@ data class EditReminderGraph(val taskId: Int)
 data object EditReminderRoute
 
 @Serializable
-data object EditReminderTitleRoute
-
-@Serializable
-data object EditReminderDescriptionRoute
+data class EditReminderTitleAndDescriptionRoute(val editTextFieldName: String)
 
 
 fun NavController.navigateToEditReminderGraph(taskId: Int, navOptions: NavOptions? = null) {
@@ -35,45 +32,47 @@ fun NavController.navigateToEditReminderRoute(navOptions: NavOptions? = null) {
     navigate(EditReminderRoute, navOptions)
 }
 
-fun NavController.navigateToEditReminderTitleRoute(navOptions: NavOptions? = null) {
-    navigate(EditReminderTitleRoute, navOptions)
+fun NavController.navigateToEditReminderTitleAndDescriptionRoute(
+    textFieldName: String,
+    navOptions: NavOptions? = null,
+) {
+    navigate(EditReminderTitleAndDescriptionRoute(textFieldName), navOptions)
 }
 
-fun NavController.navigateToEditReminderDescriptionRoute(navOptions: NavOptions? = null) {
-    navigate(EditReminderDescriptionRoute, navOptions)
-}
-
+const val EDIT_TEXT_FIELD_NAME_TITLE = "TITLE"
+const val EDIT_TEXT_FIELD_NAME_DESCRIPTION = "DESCRIPTION"
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.editReminderGraph(
     onBackClick: () -> Unit,
-    onTitleClick: () -> Unit,
-    onDescriptionClick: () -> Unit,
-    navController: NavController
+    navController: NavController,
 ) {
     navigation<EditReminderGraph>(
         startDestination = EditReminderRoute
-    ){
+    ) {
         composable<EditReminderRoute>() {
             val viewModel = it.sharedViewModel<EditAgendaItemViewModel>(navController)
             EditReminderScreen(
                 onClickEditCloseButton = onBackClick,
-                onClickTitle = onTitleClick,
-                onClickDescription = onDescriptionClick,
+                onClickTitle = {
+                    navController.navigateToEditReminderTitleAndDescriptionRoute(
+                        EDIT_TEXT_FIELD_NAME_TITLE
+                    )
+                },
+                onClickDescription = {
+                    navController.navigateToEditReminderTitleAndDescriptionRoute(
+                        EDIT_TEXT_FIELD_NAME_DESCRIPTION
+                    )
+                },
                 viewModel = viewModel
             )
         }
-        composable<EditReminderTitleRoute>(){
+        composable<EditReminderTitleAndDescriptionRoute>() {
             val viewModel = it.sharedViewModel<EditAgendaItemViewModel>(navController)
-            EditReminderTitleScreen(
+            val textFieldName = it.toRoute<EditReminderTitleAndDescriptionRoute>().editTextFieldName
+            EditReminderTitleAndDescriptionScreen(
                 onClickBackButton = onBackClick,
-                viewModel = viewModel
-            )
-        }
-        composable<EditReminderDescriptionRoute>(){
-            val viewModel = it.sharedViewModel<EditAgendaItemViewModel>(navController)
-            EditReminderDescriptionScreen(
-                onClickBackButton = onBackClick,
+                textFieldName = textFieldName,
                 viewModel = viewModel
             )
         }
