@@ -1,42 +1,47 @@
-package com.gkp.agenda.presentation.task.edittask
+package com.gkp.agenda.presentation.reminder
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import com.gkp.agenda.domain.model.AgendaItem
+import com.gkp.agenda.presentation.R
+import com.gkp.agenda.presentation.compoments.EditAgendaItemCommonSection
 import com.gkp.agenda.presentation.EditItemUiState
 import com.gkp.agenda.presentation.EditAgendaItemViewModel
-import com.gkp.agenda.presentation.compoments.EditAgendaItemCommonSection
+import com.gkp.core.designsystem.theme.TaskyTextHintColor
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EditTaskScreen(
-    onClickTaskTitle: () -> Unit,
-    onClickTaskDescription: () -> Unit,
+fun EditReminderScreen(
     onClickEditCloseButton: () -> Unit,
+    onClickTitle: () -> Unit,
+    onClickDescription: () -> Unit,
     viewModel: EditAgendaItemViewModel,
 ) {
-    val uiState = viewModel.uiState
+    val state = viewModel.uiState
 
-    EditTaskScreen(
-        onClickTitle = onClickTaskTitle,
-        onClickDescription = onClickTaskDescription,
+    EditReminderScreen(
+        onClickEditCloseButton = onClickEditCloseButton,
+        onClickTitle = onClickTitle,
+        onClickDescription = onClickDescription,
         onClickEditSaveButton = {
-            viewModel.onSave(AgendaItem.Task())
+            viewModel.onSave(AgendaItem.Reminder())
             onClickEditCloseButton()
         },
         onClickDeleteButton = {},
-        onClickEditCloseButton = onClickEditCloseButton,
         onCLickReminderMenuItem = viewModel::onReminderTimeChanged,
         onDateSelected = viewModel::onDateSelected,
         onTimeSelected = viewModel::onTimeSelected,
-        state = uiState
+        state = state,
     )
+
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-private fun EditTaskScreen(
+private fun EditReminderScreen(
     onClickTitle: () -> Unit,
     onClickDescription: () -> Unit,
     onClickEditCloseButton: () -> Unit,
@@ -45,8 +50,12 @@ private fun EditTaskScreen(
     onCLickReminderMenuItem: (Int) -> Unit,
     onDateSelected: (Long) -> Unit,
     onTimeSelected: (Int, Int) -> Unit,
-    state: EditItemUiState
-) {
+    state: EditItemUiState,
+    appBarTitle: String = stringResource(R.string.edit_reminder),
+    itemName: String = stringResource(R.string.reminder),
+    itemLeadingBoxColor: Color = TaskyTextHintColor,
+
+    ) {
     EditAgendaItemCommonSection(
         onClickTitle = onClickTitle,
         onClickDescription = onClickDescription,
@@ -56,7 +65,9 @@ private fun EditTaskScreen(
         onCLickReminderMenuItem = onCLickReminderMenuItem,
         onDateSelected = onDateSelected,
         onTimeSelected = onTimeSelected,
-        state = state
+        state = state,
+        appBarTitle = appBarTitle,
+        itemName = itemName,
+        itemLeadingBoxColor = itemLeadingBoxColor
     )
 }
-

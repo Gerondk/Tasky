@@ -25,7 +25,7 @@ class AccessTokenRefreshHandler(
             sessionStorage.saveAuthInfo(
                 authInfo.copy(
                     accessToken = refreshTokenResponse.accessToken,
-                    accessTokenExpirationTimestamp = refreshTokenResponse.accessTokenExpirationTimestamp
+                    accessTokenExpirationTimestamp = refreshTokenResponse.expirationTimestamp
                 )
             )
         }

@@ -72,10 +72,6 @@ class RegisterViewModel(
                         RegisterEvents.RegisterError("")
                     )
                 }
-
-                TaskyResult.Loading -> {
-                }
-
                 is TaskyResult.Success -> {
                     eventsChannel.send(RegisterEvents.RegisterSuccess)
                 }
