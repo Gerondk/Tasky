@@ -8,6 +8,7 @@ import com.gkp.agenda.presentation.task.edittask.util.toUiTime
 import java.time.LocalDateTime
 
 data class EditItemUiState(
+    val id: String = "",
     val title: String = "Title",
     val description: String = "Description",
     val dateTime: LocalDateTime = LocalDateTime.now(),

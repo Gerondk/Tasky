@@ -6,6 +6,12 @@ import kotlinx.coroutines.flow.Flow
 
 interface AgendaRepository {
     fun fetchAgendaItems(time: Long = System.currentTimeMillis()) : Flow<TaskyResult<List<AgendaItem>>>
+
     fun addAgendaItem(agendaItem: AgendaItem)
+
+    fun fetchAgendaItemTask(id: String) : Flow<TaskyResult<AgendaItem.Task>>
+
+    fun fetchAgendaItemReminder(id: String) : Flow<TaskyResult<AgendaItem.Reminder>>
+
     fun logout()
 }

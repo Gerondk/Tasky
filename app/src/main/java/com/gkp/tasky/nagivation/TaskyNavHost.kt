@@ -41,7 +41,7 @@ fun TaskyNavHost(
         agendaGraph(
             onEditTaskTitleBackClick = navController::navigateUp,
             onMenuItemTaskClick = {
-                navController.navigateToEditTaskGraph(taskId = 1)
+                navController.navigateToEditTaskGraph(taskId = "")
             },
             onLogout = {
                 navController.navigateToAuthGraph(

@@ -7,11 +7,16 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import com.gkp.agenda.domain.model.AgendaItem
+import com.gkp.agenda.presentation.R
 import com.gkp.agenda.presentation.home.AgendaScreen
 import com.gkp.agenda.presentation.reminder.navigation.editReminderGraph
 import com.gkp.agenda.presentation.reminder.navigation.navigateToEditReminderGraph
-import com.gkp.agenda.presentation.task.TaskDetailScreen
+import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
+import com.gkp.agenda.presentation.detail.navigation.navigateToAgendaItemDetailScreenRoute
+import com.gkp.agenda.presentation.detail.navigation.agendaItemDetailScreen
 import com.gkp.agenda.presentation.task.edittask.navigation.editTaskGraph
+import com.gkp.agenda.presentation.task.edittask.navigation.navigateToEditTaskGraph
 import kotlinx.serialization.Serializable
 
 
@@ -21,8 +26,7 @@ data object AgendaGraph
 @Serializable
 data object AgendaScreenRoute
 
-@Serializable
-data object TaskDetailScreenRoute
+
 
 
 fun NavController.navigateToAgendaGraph(navOptions: NavOptions? = null) {
@@ -44,13 +48,44 @@ fun NavGraphBuilder.agendaGraph(
             AgendaScreen(
                 onMenuItemTaskClick = onMenuItemTaskClick,
                 onLogout = onLogout,
-                onMenuItemReminderClick = { navController.navigateToEditReminderGraph(taskId = 0) }
+                onMenuItemReminderClick = { navController.navigateToEditReminderGraph(taskId = "") },
+                onAgendaDropMenuItemClick = { parameters ->
+                    when (parameters.menuItemId) {
+                        R.string.open -> {
+                            when (parameters.agendaItem) {
+                                is AgendaItem.Reminder -> {
+                                    navController.navigateToAgendaItemDetailScreenRoute(
+                                        itemId = parameters.itemId,
+                                        agendaType = AgendaItemType.REMINDER
+                                    )
+                                }
+                                is AgendaItem.Task -> {
+                                    navController.navigateToAgendaItemDetailScreenRoute(
+                                        itemId = parameters.itemId,
+                                        agendaType = AgendaItemType.TASK
+                                    )
+                                }
+                            }
+                        }
+                        R.string.edit -> {
+                            when (parameters.agendaItem) {
+                                is AgendaItem.Reminder -> {
+                                    navController.navigateToEditReminderGraph(
+                                        taskId = parameters.itemId
+                                    )
+                                }
+                                is AgendaItem.Task -> {
+                                    navController.navigateToEditTaskGraph(
+                                        taskId = parameters.itemId
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
             )
         }
-        composable<TaskDetailScreenRoute> {
-            TaskDetailScreen()
-        }
-
+        agendaItemDetailScreen(navController)
         editTaskGraph(
             onEditTaskTitleBackClick = onEditTaskTitleBackClick,
             onClickEditCloseButton = onClickEditCloseButton,

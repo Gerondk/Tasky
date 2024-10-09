@@ -15,7 +15,7 @@ import com.gkp.agenda.presentation.task.edittask.util.sharedViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class EditReminderGraph(val taskId: Int)
+data class EditReminderGraph(val taskId: String)
 
 @Serializable
 data object EditReminderRoute
@@ -24,7 +24,7 @@ data object EditReminderRoute
 data class EditReminderTitleAndDescriptionRoute(val editTextFieldName: String)
 
 
-fun NavController.navigateToEditReminderGraph(taskId: Int, navOptions: NavOptions? = null) {
+fun NavController.navigateToEditReminderGraph(taskId: String, navOptions: NavOptions? = null) {
     navigate(EditReminderGraph(taskId), navOptions)
 }
 

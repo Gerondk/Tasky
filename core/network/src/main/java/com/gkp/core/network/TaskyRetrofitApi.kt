@@ -7,7 +7,9 @@ import com.gkp.core.network.model.RefreshTokenBody
 import com.gkp.core.network.model.RefreshTokenResponse
 import com.gkp.core.network.model.RegisterBody
 import com.gkp.core.network.model.ReminderBody
+import com.gkp.core.network.model.ReminderResponse
 import com.gkp.core.network.model.TaskBody
+import com.gkp.core.network.model.TaskResponse
 import com.gkp.network.BuildConfig
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -43,9 +45,19 @@ interface TaskyRetrofitApi {
         @Body taskBody: TaskBody
     )
 
+    @GET("/task")
+    suspend fun getTask(
+        @Query("taskId") id: String
+    ) : TaskResponse
+
     @POST("/reminder")
     suspend fun createReminder(
         @Body reminderBody: ReminderBody
     )
+
+    @GET("/reminder")
+    suspend fun getReminder(
+        @Query("reminderId") id: String
+    ) : ReminderResponse
 
 }
