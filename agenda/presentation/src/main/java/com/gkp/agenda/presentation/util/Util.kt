@@ -32,7 +32,7 @@ fun getFullNameInitials(fullName: String): String {
 
 @SuppressLint("NewApi")
 fun LocalDate.toMillis(): Long {
-    return this.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    return this.atStartOfDay().atZone(ZoneId.of("UTC")).toInstant().toEpochMilli()
 }
 
 fun getCurrentAndNextSixWeekDayDates(

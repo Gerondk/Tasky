@@ -225,7 +225,6 @@ fun AgendaItemCircle(
                 tint = MaterialTheme.colorScheme.background
             )
         }
-
     }
 }
 
