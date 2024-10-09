@@ -1,4 +1,4 @@
-package com.gkp.agenda.presentation
+package com.gkp.agenda.presentation.edit
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,9 +52,9 @@ class EditAgendaItemViewModel(
     }
 
     fun onSave(agendaItem: AgendaItem) {
-       val savedAgendaItem = when (agendaItem) {
+        val savedAgendaItem = when (agendaItem) {
             is AgendaItem.Reminder -> {
-                 AgendaItem.Reminder(
+                AgendaItem.Reminder(
                     id = UUID.randomUUID().toString(),
                     title = uiState.title,
                     description = uiState.description,
@@ -65,8 +65,9 @@ class EditAgendaItemViewModel(
                     ),
                 )
             }
+
             is AgendaItem.Task -> {
-                 AgendaItem.Task(
+                AgendaItem.Task(
                     id = UUID.randomUUID().toString(),
                     title = uiState.title,
                     description = uiState.description,

@@ -7,10 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import com.gkp.agenda.presentation.ReminderTimes
+import com.gkp.agenda.presentation.edit.ReminderTimes
 import org.koin.androidx.compose.koinViewModel
-import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.qualifier.Qualifier
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -36,24 +34,34 @@ fun getReminderInDateLong(
             val date = selectedDate.minusMinutes(10)
             date.toMillis()
         }
+
         ReminderTimes.THIRTY_MINUTES_BEFORE.textId -> {
             val date = selectedDate.minusMinutes(30)
             date.toMillis()
         }
+
         ReminderTimes.ONE_HOUR_BEFORE.textId -> {
             val date = selectedDate.minusHours(1)
             date.toMillis()
         }
+
         ReminderTimes.SIX_HOURS_BEFORE.textId -> {
             val date = selectedDate.minusHours(6)
             date.toMillis()
         }
+
         ReminderTimes.ONE_DAY_BEFORE.textId -> {
             val date = selectedDate.minusDays(1)
             date.toMillis()
         }
+
         else -> 0
     }
+}
+
+@SuppressLint("NewApi")
+fun LocalDateTime.toMillis(): Long {
+    return this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }
 
 fun LocalDateTime.toUiTime(): String {
@@ -64,37 +72,11 @@ fun LocalDateTime.toUiDate(): String {
     return "${this.month.toString().take(3)} ${this.dayOfMonth} ${this.year}"
 }
 
-@SuppressLint("NewApi")
-fun LocalDateTime.toMillis(): Long {
-    return this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-}
-
-@SuppressLint("NewApi")
-fun Long.toLocalDateTime(): LocalDateTime {
-    return LocalDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
-}
-
 @Composable
-inline fun <reified T: ViewModel> NavBackStackEntry.sharedViewModel(navController: NavController) : T {
+inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(navController: NavController): T {
     val navGraphRoute = destination.parent?.route ?: return viewModel()
     val parentEntry = remember(this) {
         navController.getBackStackEntry(navGraphRoute)
     }
     return koinViewModel(viewModelStoreOwner = parentEntry)
-}
-
-@Composable
-inline fun <reified VM : ViewModel> NavController.routeViewModel(
-    route: String? = null,
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null,
-): VM {
-    val owner = if (route != null)
-        getBackStackEntry(route)
-    else
-        currentBackStackEntry!!
-
-    return koinViewModel(
-        viewModelStoreOwner = owner
-    )
 }

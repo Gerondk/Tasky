@@ -7,7 +7,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
-import com.gkp.agenda.presentation.EditAgendaItemViewModel
+import com.gkp.agenda.presentation.edit.EditAgendaItemViewModel
 import com.gkp.agenda.presentation.reminder.navigation.EDIT_TEXT_FIELD_NAME_DESCRIPTION
 import com.gkp.agenda.presentation.reminder.navigation.EDIT_TEXT_FIELD_NAME_TITLE
 import com.gkp.agenda.presentation.task.edittask.EditTaskScreen

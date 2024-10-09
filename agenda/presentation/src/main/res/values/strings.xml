@@ -26,4 +26,7 @@
     <string name="reminder_1_day_before">1 day before</string>
     <string name="reminder">Reminder</string>
     <string name="edit_reminder">EDIT REMINDER</string>
+    <string name="task_done">Task Done</string>
+    <string name="delete">Delete\n</string>
+    <string name="open">Open</string>
 </resources>

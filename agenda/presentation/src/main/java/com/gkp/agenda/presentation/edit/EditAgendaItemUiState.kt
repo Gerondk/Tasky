@@ -1,7 +1,8 @@
-package com.gkp.agenda.presentation
+package com.gkp.agenda.presentation.edit
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.text.input.TextFieldState
+import com.gkp.agenda.presentation.R
 import com.gkp.agenda.presentation.task.edittask.util.toUiDate
 import com.gkp.agenda.presentation.task.edittask.util.toUiTime
 import java.time.LocalDateTime

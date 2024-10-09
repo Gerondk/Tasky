@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import com.gkp.agenda.presentation.EditAgendaItemViewModel
+import com.gkp.agenda.presentation.edit.EditAgendaItemViewModel
 import com.gkp.agenda.presentation.R
 import com.gkp.agenda.presentation.compoments.EditAgendaFieldTitleAndDescription
 import com.gkp.agenda.presentation.reminder.navigation.EDIT_TEXT_FIELD_NAME_TITLE

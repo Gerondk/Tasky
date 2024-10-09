@@ -7,7 +7,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.gkp.agenda.presentation.AgendaScreen
+import com.gkp.agenda.presentation.home.AgendaScreen
 import com.gkp.agenda.presentation.reminder.navigation.editReminderGraph
 import com.gkp.agenda.presentation.reminder.navigation.navigateToEditReminderGraph
 import com.gkp.agenda.presentation.task.TaskDetailScreen

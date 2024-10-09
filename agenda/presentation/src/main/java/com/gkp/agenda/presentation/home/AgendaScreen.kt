@@ -1,11 +1,14 @@
-package com.gkp.agenda.presentation
+package com.gkp.agenda.presentation.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -29,9 +32,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gkp.agenda.presentation.R
 import com.gkp.agenda.presentation.compoments.AgendaBackground
 import com.gkp.agenda.presentation.compoments.DayItem
 import com.gkp.agenda.presentation.compoments.TaskyCalendarDay
+import com.gkp.agenda.presentation.home.components.AgendaItemsList
 import com.gkp.core.designsystem.theme.TaskyTextHintColor
 import com.gkp.core.designsystem.theme.TaskyTheme
 import org.koin.androidx.compose.koinViewModel
@@ -106,7 +111,7 @@ internal fun AgendaScreen(
             ) {
                 DropdownMenuItem(
                     text = {
-                        Text(text = "Logout")
+                        Text(text = stringResource(R.string.logout))
                     },
                     onClick = {
                         showDropdownMenu = false
@@ -139,26 +144,42 @@ internal fun AgendaScreen(
                 ),
 
             ) {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround,
+            Column {
+                DayHeader(agendaUiState, onDateSelected)
+                Spacer(modifier = Modifier.height(32.dp))
+                AgendaItemsList(
+                    modifier = Modifier,
+                    agendaItems = agendaUiState.agendaItems
+                )
 
-                ) {
-                items(agendaUiState.uiDates) {
-                    DayItem(
-                        modifier = Modifier,
-                        day = TaskyCalendarDay(
-                            weekDay = it.date.dayOfWeek.name.take(2),
-                            monthDay = it.date.dayOfMonth.toString()
-                        ),
-                        onClick = { onDateSelected(it.date) },
-                        isDateSelected = it.isSelected
-                    )
-                }
             }
         }
     }
 
+}
+
+@Composable
+private fun DayHeader(
+    agendaUiState: AgendaUiState,
+    onDateSelected: (LocalDate) -> Unit,
+) {
+    LazyRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceAround,
+
+        ) {
+        items(agendaUiState.uiDates) {
+            DayItem(
+                modifier = Modifier,
+                day = TaskyCalendarDay(
+                    weekDay = it.date.dayOfWeek.name.take(2),
+                    monthDay = it.date.dayOfMonth.toString()
+                ),
+                onClick = { onDateSelected(it.date) },
+                isDateSelected = it.isSelected
+            )
+        }
+    }
 }
 
 @Preview(
