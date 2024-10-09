@@ -37,6 +37,18 @@ class OfflineAgendaRepository(
         }
     }
 
+    override fun fetchAgendaItemTask(id: String): Flow<TaskyResult<AgendaItem.Task>> {
+        return networkApiCall {
+            taskyRetrofitApi.getTask(id).toAgendaTaskItem()
+        }
+    }
+
+    override fun fetchAgendaItemReminder(id: String): Flow<TaskyResult<AgendaItem.Reminder>> {
+        return networkApiCall {
+            taskyRetrofitApi.getReminder(id).toAgendaReminderItem()
+        }
+    }
+
 
     override fun logout() {
         networkApiCall {

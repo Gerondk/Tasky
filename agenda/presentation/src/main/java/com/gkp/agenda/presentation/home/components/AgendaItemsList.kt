@@ -10,12 +10,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gkp.agenda.domain.model.AgendaItem
+import com.gkp.agenda.presentation.home.DropDownMenuParameters
 import com.gkp.core.designsystem.theme.TaskyTheme
 
 @Composable
 fun AgendaItemsList(
     modifier: Modifier = Modifier,
-    agendaItems: List<AgendaItem>
+    agendaItems: List<AgendaItem>,
+    onAgendaDropMenuItemClick: (DropDownMenuParameters) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
@@ -30,7 +32,7 @@ fun AgendaItemsList(
                 modifier = Modifier.fillMaxWidth(),
                 agendaItem = it,
                 onItemClick = {},
-                onAgendaDropMenuItemClick = {}
+                onAgendaDropMenuItemClick = onAgendaDropMenuItemClick
             )
         }
     }
@@ -81,6 +83,7 @@ private fun AgendaItemListPreview() {
     TaskyTheme {
         AgendaItemsList(
             modifier = Modifier,
+            onAgendaDropMenuItemClick = {},
             agendaItems = agendaItems
         )
     }

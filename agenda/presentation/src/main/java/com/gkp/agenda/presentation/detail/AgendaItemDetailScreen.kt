@@ -1,4 +1,4 @@
-package com.gkp.agenda.presentation.task
+package com.gkp.agenda.presentation.detail
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,24 +27,37 @@ import com.gkp.agenda.presentation.compoments.AgendaItemDescription
 import com.gkp.agenda.presentation.compoments.AgendaItemHeader
 import com.gkp.agenda.presentation.compoments.AgendaItemReminderTime
 import com.gkp.agenda.presentation.compoments.AgendaItemTitle
+import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
 import com.gkp.core.designsystem.theme.TaskyGreen
 import com.gkp.core.designsystem.theme.TaskyTextFieldColor
+import com.gkp.core.designsystem.theme.TaskyTextHintColor
 import com.gkp.core.designsystem.theme.TaskyTheme
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TaskDetailScreen(modifier: Modifier = Modifier) {
-    TaskDetailScreen(
-        onClickBackButton = {},
-        onEditClick = {},
-        onClickDeleteButton = {}
+fun AgendaItemDetailScreen(
+    onClickBackButton: () -> Unit,
+    navigateToTaskEdit: (String, AgendaItemType) -> Unit,
+) {
+    val viewModel = koinViewModel<AgendaItemDetailViewModel>()
+    val state = viewModel.uiState
+
+    AgendaItemDetailScreen(
+        onClickBackButton = onClickBackButton,
+        onEditClick = {
+            navigateToTaskEdit(state.id, state.agendaItemType)
+        },
+        onClickDeleteButton = {},
+        state = state
     )
 }
 
 @Composable
-private fun TaskDetailScreen(
-    onClickBackButton: () -> Unit = {},
-    onEditClick: () -> Unit = {},
-    onClickDeleteButton: () -> Unit = {},
+private fun AgendaItemDetailScreen(
+    onClickBackButton: () -> Unit,
+    onEditClick: () -> Unit,
+    onClickDeleteButton: () -> Unit,
+    state: AgendaItemDetailUiState,
 ) {
     AgendaBackground(
         navigationIcon = {
@@ -72,22 +85,32 @@ private fun TaskDetailScreen(
                 .padding(16.dp)
         ) {
             AgendaItemHeader(
-                itemName = "Task",
-                leadingBoxColor = TaskyGreen
+                itemName = stringResource(
+                    id = when (state.agendaItemType) {
+                        AgendaItemType.TASK -> R.string.task
+                        AgendaItemType.REMINDER -> R.string.reminder
+                    }
+                ),
+                leadingBoxColor = when (state.agendaItemType) {
+                    AgendaItemType.TASK -> TaskyGreen
+                    AgendaItemType.REMINDER -> TaskyTextHintColor
+                }
             )
             Spacer(modifier = Modifier.height(42.dp))
             AgendaItemTitle(
                 modifier = Modifier.padding(vertical = 16.dp),
-                itemTitle = "Task Title"
+                itemTitle = state.title
             )
             HorizontalDivider()
             AgendaItemDescription(
                 modifier = Modifier.padding(vertical = 16.dp),
-                itemDescription = "Task Description"
+                itemDescription = state.description
             )
             HorizontalDivider()
             AgendaItemDateTime(
-                modifier = Modifier.padding(vertical = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
                 onClickDate = {},
                 onClickTime = {},
                 date = "Jul 12 2023",
@@ -109,7 +132,12 @@ private fun TaskDetailScreen(
                 onClick =  onClickDeleteButton
             ) {
                 Text(
-                    text = stringResource(R.string.delete_task),
+                    text = stringResource(
+                        when (state.agendaItemType) {
+                            AgendaItemType.TASK -> R.string.delete_task
+                            AgendaItemType.REMINDER -> R.string.delete_reminder
+                        }
+                    ),
                     style = MaterialTheme.typography.bodyLarge.copy(
                         color = TaskyTextFieldColor
                     )
@@ -125,7 +153,15 @@ private fun TaskDetailScreen(
 @Composable
 private fun TaskDetailScreenPreview() {
     TaskyTheme {
-        TaskDetailScreen()
+        AgendaItemDetailScreen(
+            onClickBackButton = {},
+            onEditClick = {},
+            onClickDeleteButton = {},
+            state = AgendaItemDetailUiState(
+                title = "Task title",
+                description = "Task description"
+            )
+        )
     }
 
 }

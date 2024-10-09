@@ -29,4 +29,8 @@
     <string name="task_done">Task Done</string>
     <string name="delete">Delete\n</string>
     <string name="open">Open</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="delete_reminder">DELETE REMINDER</string>
 </resources>

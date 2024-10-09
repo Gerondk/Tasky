@@ -45,6 +45,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.presentation.R
+import com.gkp.agenda.presentation.home.DropDownMenuParameters
 import com.gkp.core.designsystem.theme.TaskyGreen
 import com.gkp.core.designsystem.theme.TaskyLightGray
 import com.gkp.core.designsystem.theme.TaskyTextFieldColor
@@ -54,7 +55,7 @@ import com.gkp.core.designsystem.theme.TaskyTheme
 fun AgendaListItem(
     modifier: Modifier = Modifier,
     onItemClick: () -> Unit,
-    onAgendaDropMenuItemClick: (Int) -> Unit,
+    onAgendaDropMenuItemClick: (DropDownMenuParameters) -> Unit,
     agendaItem: AgendaItem,
 ) {
     val titleColor = when(agendaItem){
@@ -143,7 +144,15 @@ fun AgendaListItem(
                     onDismissRequest = {
                         showAgendaItemDropDownMenu = false
                     },
-                    onAgendaDropMenuItemClick = onAgendaDropMenuItemClick
+                    onAgendaDropMenuItemClick = {
+                        onAgendaDropMenuItemClick(
+                            DropDownMenuParameters(
+                                agendaItem = agendaItem,
+                                menuItemId = it,
+                                itemId = agendaItem.id
+                            )
+                        )
+                    }
                 )
             }
 

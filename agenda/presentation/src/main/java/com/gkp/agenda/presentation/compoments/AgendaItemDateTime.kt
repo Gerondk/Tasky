@@ -3,9 +3,7 @@ package com.gkp.agenda.presentation.compoments
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
@@ -26,9 +24,9 @@ fun AgendaItemDateTime(
     modifier: Modifier = Modifier,
     time: String,
     date: String,
-    onClickTime: () -> Unit ,
+    onClickTime: () -> Unit,
     onClickDate: () -> Unit,
-    editMode: Boolean = false
+    editMode: Boolean = false,
 ) {
     Row(
         modifier = modifier,
@@ -50,11 +48,13 @@ fun AgendaItemDateTime(
                 color = TaskyBlack
             )
         )
-        if(editMode) {
+        if (editMode) {
             Icon(
-                modifier = Modifier.size(13.dp).clickable {
-                    onClickTime()
-                },
+                modifier = Modifier
+                    .size(13.dp)
+                    .clickable {
+                        onClickTime()
+                    },
                 imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
                 contentDescription = stringResource(R.string.edit),
                 tint = TaskyBlack
@@ -69,12 +69,14 @@ fun AgendaItemDateTime(
                 color = TaskyBlack
             )
         )
-        if(editMode) {
+        if (editMode) {
             Icon(
-                modifier = Modifier.size(13.dp).clickable {
-                    onClickDate()
+                modifier = Modifier
+                    .size(13.dp)
+                    .clickable {
+                        onClickDate()
 
-                },
+                    },
                 imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
                 contentDescription = stringResource(R.string.edit),
                 tint = TaskyBlack

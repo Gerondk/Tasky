@@ -22,7 +22,7 @@ data object EditTaskScreenRoute
 data class EditTaskTitleAndDescriptionScreenRoute(val editTextFieldName: String)
 
 @Serializable
-data class EditTaskGraph(val taskId: Int)
+data class EditTaskGraph(val taskId: String)
 
 fun NavController.navigateToEditTaskRoute(navOptions: NavOptions? = null) {
     navigate(EditTaskScreenRoute, navOptions)
@@ -35,7 +35,7 @@ fun NavController.navigateToEditTaskTitleAndDescriptionScreenRoute(
     navigate(EditTaskTitleAndDescriptionScreenRoute(editTextFieldName), navOptions)
 }
 
-fun NavController.navigateToEditTaskGraph(taskId: Int, navOptions: NavOptions? = null) {
+fun NavController.navigateToEditTaskGraph(taskId: String, navOptions: NavOptions? = null) {
     navigate(EditTaskGraph(taskId), navOptions)
 }
 
