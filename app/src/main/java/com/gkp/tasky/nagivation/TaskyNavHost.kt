@@ -9,7 +9,6 @@ import androidx.navigation.navOptions
 import com.gkp.agenda.presentation.navigation.AgendaGraph
 import com.gkp.agenda.presentation.navigation.agendaGraph
 import com.gkp.agenda.presentation.navigation.navigateToAgendaGraph
-import com.gkp.agenda.presentation.task.edittask.navigation.navigateToEditTaskGraph
 import com.gkp.auth.presentation.navigation.AuthGraph
 import com.gkp.auth.presentation.navigation.authGraph
 import com.gkp.auth.presentation.navigation.navigateToAuthGraph
@@ -39,10 +38,6 @@ fun TaskyNavHost(
             onFabBackClick = navController::navigateUp
         )
         agendaGraph(
-            onEditTaskTitleBackClick = navController::navigateUp,
-            onMenuItemTaskClick = {
-                navController.navigateToEditTaskGraph(taskId = "")
-            },
             onLogout = {
                 navController.navigateToAuthGraph(
                     navOptions = navOptions {
@@ -52,7 +47,6 @@ fun TaskyNavHost(
                     }
                 )
             },
-            onClickEditCloseButton = navController::navigateUp,
             navController = navController
         )
     }

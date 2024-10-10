@@ -9,5 +9,6 @@ android {
 dependencies {
     implementation(projects.agenda.domain)
     implementation(projects.core.presentation.designsystem)
+    implementation(projects.core.presentation.ui)
     implementation(projects.auth.domain)
 }

@@ -12,11 +12,12 @@ import androidx.navigation.toRoute
 import com.gkp.agenda.domain.AgendaRepository
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.domain.util.toLocalDateTime
-import com.gkp.agenda.presentation.task.edittask.navigation.EditTaskGraph
-import com.gkp.agenda.presentation.task.edittask.util.getReminderInDateLong
-import com.gkp.agenda.presentation.task.edittask.util.getReminderTimeText
-import com.gkp.agenda.presentation.task.edittask.util.toMillis
-import kotlinx.coroutines.flow.filter
+import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
+import com.gkp.agenda.presentation.edit.navigation.EditAgendaItemGraph
+import com.gkp.agenda.presentation.edit.util.getReminderInDateLong
+import com.gkp.agenda.presentation.edit.util.getReminderTimeText
+import com.gkp.agenda.presentation.edit.util.toMillis
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -30,15 +31,23 @@ class EditAgendaItemViewModel(
     savedStateHandle: SavedStateHandle,
     private val agendaRepository: AgendaRepository,
 ) : ViewModel() {
-    private val taskId = savedStateHandle.toRoute<EditTaskGraph>().taskId
+    private val agendaItemId = savedStateHandle.toRoute<EditAgendaItemGraph>().agendaItemId
+    private val agendaItemType = savedStateHandle.toRoute<EditAgendaItemGraph>().agendaItemType
+
+    var uiState by mutableStateOf(EditItemUiState())
+        private set
 
     init {
+        uiState = uiState.copy(agendaItemType = agendaItemType)
         snapshotFlow {
-            taskId
+            agendaItemId
         }
-        .filter { it.isNotBlank() }
+        .filterNotNull()
         .flatMapLatest {
-            agendaRepository.fetchAgendaItemTask(it)
+            when (agendaItemType) {
+                AgendaItemType.REMINDER -> agendaRepository.fetchAgendaItemReminder(it)
+                AgendaItemType.TASK -> agendaRepository.fetchAgendaItemTask(it)
+            }
         }
         .onEach { result ->
             val agendaItemTask = result.getDataOrNull()
@@ -59,8 +68,6 @@ class EditAgendaItemViewModel(
         }.launchIn(viewModelScope)
     }
 
-    var uiState by mutableStateOf(EditItemUiState())
-        private set
 
     fun onTitleChanged(title: String) {
         uiState = uiState.copy(title = title)
@@ -87,9 +94,9 @@ class EditAgendaItemViewModel(
         )
     }
 
-    fun onSave(agendaItem: AgendaItem) {
-        val savedAgendaItem = when (agendaItem) {
-            is AgendaItem.Reminder -> {
+    fun onSave() {
+        val savedAgendaItem = when (agendaItemType) {
+             AgendaItemType.REMINDER -> {
                 AgendaItem.Reminder(
                     id = UUID.randomUUID().toString(),
                     title = uiState.title,
@@ -102,7 +109,7 @@ class EditAgendaItemViewModel(
                 )
             }
 
-            is AgendaItem.Task -> {
+            AgendaItemType.TASK -> {
                 AgendaItem.Task(
                     id = UUID.randomUUID().toString(),
                     title = uiState.title,

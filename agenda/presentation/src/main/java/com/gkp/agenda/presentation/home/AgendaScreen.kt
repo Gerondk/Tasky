@@ -163,7 +163,7 @@ private fun AgendaScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    text = agendaUiState.uiFormattedSelectedDate,
+                    text = agendaUiState.uiFormattedSelectedDate.asString(),
                     style = MaterialTheme.typography.titleLarge.copy(
                         color = TaskyBlack,
                         fontWeight = FontWeight.W700

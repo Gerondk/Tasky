@@ -3,8 +3,9 @@ package com.gkp.agenda.presentation.edit
 import androidx.annotation.StringRes
 import androidx.compose.foundation.text.input.TextFieldState
 import com.gkp.agenda.presentation.R
-import com.gkp.agenda.presentation.task.edittask.util.toUiDate
-import com.gkp.agenda.presentation.task.edittask.util.toUiTime
+import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
+import com.gkp.agenda.presentation.edit.util.toUiDate
+import com.gkp.agenda.presentation.edit.util.toUiTime
 import java.time.LocalDateTime
 
 data class EditItemUiState(
@@ -19,6 +20,7 @@ data class EditItemUiState(
     val editDescriptionTextState: TextFieldState = TextFieldState(
         description
     ),
+    val agendaItemType: AgendaItemType = AgendaItemType.TASK
 ){
     val uiDate: String
     get() = dateTime.toUiDate()

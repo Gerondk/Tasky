@@ -9,14 +9,14 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.gkp.agenda.domain.AgendaRepository
 import com.gkp.agenda.domain.model.AgendaItem
-import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
 import com.gkp.agenda.presentation.detail.navigation.AgendaItemDetailScreenRoute
+import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class AgendaItemDetailViewModel(
     savedStateHandle: SavedStateHandle,
-    private val agendaRepository: AgendaRepository,
+    agendaRepository: AgendaRepository,
 ) : ViewModel() {
 
     var uiState by mutableStateOf(AgendaItemDetailUiState())
@@ -24,30 +24,29 @@ class AgendaItemDetailViewModel(
 
     init {
         val detailScreenRoute = savedStateHandle.toRoute<AgendaItemDetailScreenRoute>()
-        val itemId = detailScreenRoute.taskId
+        val itemId = detailScreenRoute.agendaItemId
         val itemType = detailScreenRoute.agendaItemType
 
-        if (itemId.isNotBlank()) {
-            when (itemType) {
-                AgendaItemType.TASK -> {
-                    agendaRepository.fetchAgendaItemTask(itemId).onEach { taskyResult ->
-                        val agendaItem = taskyResult.getDataOrNull()
-                        setUiState(agendaItem, itemType)
-                    }
+        when (itemType) {
+            AgendaItemType.TASK -> {
+                agendaRepository.fetchAgendaItemTask(itemId).onEach { taskyResult ->
+                    val agendaItem = taskyResult.getDataOrNull()
+                    setUiState(agendaItem, itemType)
                 }
-                AgendaItemType.REMINDER -> {
-                    agendaRepository.fetchAgendaItemReminder(itemId).onEach { taskyResult ->
-                        val agendaItem = taskyResult.getDataOrNull()
-                        setUiState(agendaItem, itemType)
-                    }
+            }
+
+            AgendaItemType.REMINDER -> {
+                agendaRepository.fetchAgendaItemReminder(itemId).onEach { taskyResult ->
+                    val agendaItem = taskyResult.getDataOrNull()
+                    setUiState(agendaItem, itemType)
                 }
-            }.launchIn(viewModelScope)
-        }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun setUiState(
         agendaItem: AgendaItem?,
-        itemType: AgendaItemType
+        itemType: AgendaItemType,
     ) {
         agendaItem?.let {
             uiState = uiState.copy(
