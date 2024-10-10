@@ -1,5 +1,6 @@
 package com.gkp.agenda.presentation.home
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -29,24 +31,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.presentation.R
 import com.gkp.agenda.presentation.compoments.AgendaBackground
 import com.gkp.agenda.presentation.compoments.DayItem
 import com.gkp.agenda.presentation.compoments.TaskyCalendarDay
 import com.gkp.agenda.presentation.home.components.AgendaItemsList
+import com.gkp.core.designsystem.theme.TaskyBlack
 import com.gkp.core.designsystem.theme.TaskyTextHintColor
 import com.gkp.core.designsystem.theme.TaskyTheme
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
+
+data class DropDownMenuParameters(
+    val agendaItem: AgendaItem = AgendaItem.Task(),
+    @StringRes val menuItemId: Int,
+    val itemId: String
+)
 
 @Composable
 fun AgendaScreen(
     onLogout: () -> Unit,
     onMenuItemTaskClick: () -> Unit,
     onMenuItemReminderClick: () -> Unit,
+    onAgendaDropMenuItemClick: (DropDownMenuParameters) -> Unit,
 ) {
     val viewModel = koinViewModel<AgendaViewModel>()
     val agendaUiState = viewModel.agendaUiState
@@ -59,6 +71,7 @@ fun AgendaScreen(
             onLogout()
             viewModel.logout()
         },
+        onAgendaDropMenuItemClick = onAgendaDropMenuItemClick,
         onDateSelected = viewModel::onDateSelected,
         agendaUiState = agendaUiState
     )
@@ -66,12 +79,13 @@ fun AgendaScreen(
 }
 
 @Composable
-internal fun AgendaScreen(
+private fun AgendaScreen(
     modifier: Modifier = Modifier,
     onLogout: () -> Unit,
-    onDateSelected: (LocalDate) -> Unit = {},
+    onDateSelected: (LocalDate) -> Unit,
     onMenuItemTaskClick: () -> Unit,
     onMenuItemReminderClick: () -> Unit,
+    onAgendaDropMenuItemClick: (DropDownMenuParameters) -> Unit,
     agendaUiState: AgendaUiState,
 ) {
 
@@ -146,9 +160,19 @@ internal fun AgendaScreen(
             ) {
             Column {
                 DayHeader(agendaUiState, onDateSelected)
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    text = agendaUiState.uiFormattedSelectedDate.asString(),
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        color = TaskyBlack,
+                        fontWeight = FontWeight.W700
+                    )
+                )
+                Spacer(modifier = Modifier.height(16.dp))
                 AgendaItemsList(
                     modifier = Modifier,
+                    onAgendaDropMenuItemClick = onAgendaDropMenuItemClick,
                     agendaItems = agendaUiState.agendaItems
                 )
 
@@ -190,11 +214,13 @@ private fun DayHeader(
 private fun AgendaScreenPreview() {
     TaskyTheme {
         AgendaScreen(
+            onDateSelected = {},
             modifier = Modifier,
             onLogout = {},
             agendaUiState = AgendaUiState(
                 fullName = "Ksdda Mbugua"
             ),
+            onAgendaDropMenuItemClick = {},
             onMenuItemTaskClick = {},
             onMenuItemReminderClick = {}
         )

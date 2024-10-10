@@ -67,9 +67,9 @@ fun EditAgendaItemCommonSection(
     onDateSelected: (Long) -> Unit,
     onTimeSelected: (Int, Int) -> Unit,
     state: EditItemUiState,
-    appBarTitle: String = stringResource(R.string.edit_task),
-    itemName: String = stringResource(R.string.task),
-    itemLeadingBoxColor: Color = TaskyGreen
+    appBarTitle: String,
+    itemName: String ,
+    itemLeadingBoxColor: Color
 ) {
     var showDatePicker by rememberSaveable {
         mutableStateOf(false)
@@ -313,6 +313,9 @@ private fun EditAgendaItemCommonSectionPreview() {
             onCLickReminderMenuItem = {},
             onDateSelected = {},
             onTimeSelected = { i: Int, i1: Int -> },
+            appBarTitle = "EDIT TASK",
+            itemName = "Task",
+            itemLeadingBoxColor = TaskyGreen,
             state = EditItemUiState(
                 title = "Title",
                 description = "Description",
