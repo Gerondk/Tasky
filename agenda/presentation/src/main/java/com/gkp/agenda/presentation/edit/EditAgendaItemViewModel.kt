@@ -52,7 +52,7 @@ class EditAgendaItemViewModel(
             when (agendaItemType) {
                 AgendaItemType.REMINDER -> agendaRepository.fetchAgendaItemReminder(it)
                 AgendaItemType.TASK -> agendaRepository.fetchAgendaItemTask(it)
-                AgendaItemType.EVENT -> flowOf()
+                AgendaItemType.EVENT -> TODO("Event edit not implemented yet")
             }
         }
         .onEach { result ->
@@ -159,7 +159,6 @@ class EditAgendaItemViewModel(
     fun onPhotosSelected(uris: List<Uri>) {
         viewModelScope.launch {
            val imageInfoList = imageReader.readImagesFromStringUri(uris.map { it.toString() })
-            println(" ATSM Type: ${imageInfoList.map { it.type }}")
             val imageInfoCurrentList = uiState.eventPhotoInfoList
             uiState = uiState.copy(
                 eventPhotoInfoList = imageInfoCurrentList + imageInfoList

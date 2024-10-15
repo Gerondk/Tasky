@@ -6,6 +6,8 @@ import com.gkp.agenda.domain.image.ImageInfo
 import com.gkp.agenda.domain.image.ImageReader
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 
 class AndroidImageReader(
@@ -17,13 +19,16 @@ class AndroidImageReader(
     ): List<ImageInfo> {
         return withContext(dispatcher) {
             stringUris.map { uriString ->
-                val content = context.contentResolver.openInputStream(Uri.parse(uriString))?.use {
-                    it.readBytes()
-                } ?: byteArrayOf()
-                val type = context.contentResolver.getType(Uri.parse(uriString)) ?: ""
-                val compressedImage = ImageCompressor.compressImage(content)
-                ImageInfo(type, uriString, compressedImage)
-            }
+                async {
+                    val content = context.contentResolver.openInputStream(Uri.parse(uriString))?.use {
+                        it.readBytes()
+                    } ?: byteArrayOf()
+                    val type = context.contentResolver.getType(Uri.parse(uriString)) ?: ""
+                    val compressedImage = ImageCompressor.compressImage(content)
+                    ImageInfo(type, uriString, compressedImage)
+                }
+
+            }.awaitAll()
         }
     }
 }

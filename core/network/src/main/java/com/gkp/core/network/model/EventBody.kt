@@ -11,7 +11,7 @@ import java.util.UUID
 data class EventBody(
     val id: String,
     val title: String,
-    val description: String,
+    val description: String?,
     val from: Long,
     val to: Long,
     val remindAt: Long,

@@ -38,8 +38,8 @@ import com.gkp.core.designsystem.theme.TaskyLightGray
 @Composable
 fun EventPhotosSection(
     modifier: Modifier = Modifier,
-    photosUris: List<String>,
     onAddPhotoClick: () -> Unit,
+    photosUris: List<String>
 ) {
     Box(
         modifier = modifier
