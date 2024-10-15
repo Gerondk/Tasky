@@ -44,6 +44,11 @@ fun NavGraphBuilder.agendaGraph(
                         agendaItemType = AgendaItemType.TASK
                     )
                 },
+                onMenuItemEventClick = {
+                    navController.navigateToEditAgendaItemGraph(
+                        agendaItemType = AgendaItemType.EVENT
+                    )
+                },
                 onLogout = onLogout,
                 onMenuItemReminderClick = {
                     navController.navigateToEditAgendaItemGraph(
@@ -67,6 +72,13 @@ fun NavGraphBuilder.agendaGraph(
                                         agendaType = AgendaItemType.TASK
                                     )
                                 }
+
+                                is AgendaItem.Event -> {
+                                    navController.navigateToAgendaItemDetailScreenRoute(
+                                        agendaItemId = parameters.itemId,
+                                        agendaType = AgendaItemType.EVENT
+                                    )
+                                }
                             }
                         }
 
@@ -85,6 +97,13 @@ fun NavGraphBuilder.agendaGraph(
                                         agendaItemType = AgendaItemType.TASK
                                     )
                                 }
+
+                                is AgendaItem.Event -> {
+                                    navController.navigateToEditAgendaItemGraph(
+                                        agendaItemId = parameters.itemId,
+                                        agendaItemType = AgendaItemType.EVENT
+                                    )
+                                }
                             }
                         }
                     }
@@ -98,10 +117,6 @@ fun NavGraphBuilder.agendaGraph(
             navController = navController
         )
 
-//        editReminderGraph(
-//            onBackClick = navController::navigateUp,
-//            navController = navController
-//        )
     }
 }
 

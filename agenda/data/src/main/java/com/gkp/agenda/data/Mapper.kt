@@ -2,6 +2,7 @@ package com.gkp.agenda.data
 
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.core.network.model.AgendaResponse
+import com.gkp.core.network.model.EventBody
 import com.gkp.core.network.model.ReminderBody
 import com.gkp.core.network.model.ReminderResponse
 import com.gkp.core.network.model.TaskBody
@@ -42,3 +43,13 @@ fun ReminderResponse.toAgendaReminderItem() = AgendaItem.Reminder(
 )
 fun AgendaResponse.toAgendaItems() =
     tasks.map { it.toAgendaTaskItem() } + reminders.map { it.toAgendaReminderItem() }
+
+fun AgendaItem.Event.toEventBody() = EventBody(
+    id = id,
+    title = title,
+    description = description!!,
+    from = time,
+    to = to,
+    remindAt = remindAt,
+    attendeeIds = attendeesIds
+)

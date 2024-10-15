@@ -17,6 +17,8 @@ okhttp = "4.12.0"
 retrofit = "2.11.0"
 retrofitKotlinxSerializationJson = "1.0.0"
 
+coilCompose = "2.7.0"
+
 koinBom = "4.0.0"
 androidTools = "31.6.0"
 
@@ -89,6 +91,7 @@ retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.r
 retrofit-kotlin-serialization = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofitKotlinxSerializationJson" }
 http-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 
 # Dependencies of the included build-logic

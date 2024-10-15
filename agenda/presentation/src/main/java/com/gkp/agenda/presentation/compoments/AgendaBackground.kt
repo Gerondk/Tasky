@@ -193,7 +193,10 @@ private fun AgendaBackgroundPreview() {
         AgendaBackground(
             modifier = Modifier,
             content = {},
-            hasFloatingActionButton = true
+            hasFloatingActionButton = true,
+            onMenuItemEventClick = {},
+            onMenuItemReminderClick = {},
+            onMenuItemTaskClick = {}
         )
     }
 

@@ -5,6 +5,8 @@ import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.auth.domain.session.SessionStorage
 import com.gkp.core.domain.util.TaskyResult
 import com.gkp.core.network.TaskyRetrofitApi
+import com.gkp.core.network.model.buildEventBodyPart
+import com.gkp.core.network.model.buildPhotosPart
 import com.gkp.core.network.util.networkApiCall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +18,7 @@ class OfflineAgendaRepository(
     private val scope: CoroutineScope,
 ) : AgendaRepository {
 
-    override fun fetchAgendaItems(time: Long) : Flow<TaskyResult<List<AgendaItem>>> {
+    override fun fetchAgendaItems(time: Long): Flow<TaskyResult<List<AgendaItem>>> {
         return networkApiCall {
             taskyRetrofitApi.getAgenda(time).toAgendaItems()
         }
@@ -27,14 +29,26 @@ class OfflineAgendaRepository(
             is AgendaItem.Reminder -> {
                 networkApiCall {
                     taskyRetrofitApi.createReminder(agendaItem.toReminderBody())
-                }.launchIn(scope)
+                }
             }
+
             is AgendaItem.Task -> {
                 networkApiCall {
                     taskyRetrofitApi.createTask(agendaItem.toTaskBody())
-                }.launchIn(scope)
+                }
             }
-        }
+            is AgendaItem.Event -> {
+                networkApiCall {
+                    val eventBody = agendaItem.toEventBody()
+                    val eventBodyPart = buildEventBodyPart(eventBody)
+                    val photosPart = buildPhotosPart(agendaItem.photos)
+                    taskyRetrofitApi.createEvent(
+                        eventBodyPart = eventBodyPart,
+                        photosPart = photosPart
+                    )
+                }
+            }
+        }.launchIn(scope)
     }
 
     override fun fetchAgendaItemTask(id: String): Flow<TaskyResult<AgendaItem.Task>> {

@@ -48,7 +48,7 @@ import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 
 data class DropDownMenuParameters(
-    val agendaItem: AgendaItem = AgendaItem.Task(),
+    val agendaItem: AgendaItem,
     @StringRes val menuItemId: Int,
     val itemId: String
 )
@@ -56,6 +56,7 @@ data class DropDownMenuParameters(
 @Composable
 fun AgendaScreen(
     onLogout: () -> Unit,
+    onMenuItemEventClick: () -> Unit,
     onMenuItemTaskClick: () -> Unit,
     onMenuItemReminderClick: () -> Unit,
     onAgendaDropMenuItemClick: (DropDownMenuParameters) -> Unit,
@@ -66,6 +67,7 @@ fun AgendaScreen(
     AgendaScreen(
         modifier = Modifier,
         onMenuItemTaskClick = onMenuItemTaskClick,
+        onMenuItemEventClick = onMenuItemEventClick,
         onMenuItemReminderClick = onMenuItemReminderClick,
         onLogout = {
             onLogout()
@@ -85,6 +87,7 @@ private fun AgendaScreen(
     onDateSelected: (LocalDate) -> Unit,
     onMenuItemTaskClick: () -> Unit,
     onMenuItemReminderClick: () -> Unit,
+    onMenuItemEventClick: () -> Unit,
     onAgendaDropMenuItemClick: (DropDownMenuParameters) -> Unit,
     agendaUiState: AgendaUiState,
 ) {
@@ -97,6 +100,7 @@ private fun AgendaScreen(
         modifier = modifier,
         onMenuItemTaskClick = onMenuItemTaskClick,
         onMenuItemReminderClick = onMenuItemReminderClick,
+        onMenuItemEventClick = onMenuItemEventClick,
         hasFloatingActionButton = true,
         actions = {
             Box(
@@ -222,7 +226,8 @@ private fun AgendaScreenPreview() {
             ),
             onAgendaDropMenuItemClick = {},
             onMenuItemTaskClick = {},
-            onMenuItemReminderClick = {}
+            onMenuItemReminderClick = {},
+            onMenuItemEventClick = {}
         )
     }
 }
