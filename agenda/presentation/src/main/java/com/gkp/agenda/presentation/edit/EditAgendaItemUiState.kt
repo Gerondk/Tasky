@@ -2,6 +2,7 @@ package com.gkp.agenda.presentation.edit
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.text.input.TextFieldState
+import com.gkp.agenda.domain.image.ImageInfo
 import com.gkp.agenda.presentation.R
 import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
 import com.gkp.agenda.presentation.edit.util.toUiDate
@@ -20,12 +21,19 @@ data class EditItemUiState(
     val editDescriptionTextState: TextFieldState = TextFieldState(
         description
     ),
-    val agendaItemType: AgendaItemType = AgendaItemType.TASK
+    val toDateTime: LocalDateTime = LocalDateTime.now(),
+    val agendaItemType: AgendaItemType = AgendaItemType.TASK,
+    val eventPhotoInfoList: List<ImageInfo> = emptyList(),
+    val eventVisitors: List<String> = emptyList(),
 ){
     val uiDate: String
     get() = dateTime.toUiDate()
     val uiTime: String
     get() = dateTime.toUiTime()
+    val uiToDateTime: String
+    get() = toDateTime.toUiDate()
+    val uiToTime: String
+    get() = toDateTime.toUiTime()
 }
 
 enum class ReminderTimes(@StringRes val textId: Int) {

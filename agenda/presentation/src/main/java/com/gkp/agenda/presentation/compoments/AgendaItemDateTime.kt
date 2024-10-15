@@ -26,6 +26,7 @@ fun AgendaItemDateTime(
     date: String,
     onClickTime: () -> Unit,
     onClickDate: () -> Unit,
+    dateTimeLabel: String,
     editMode: Boolean = false,
 ) {
     Row(
@@ -34,7 +35,7 @@ fun AgendaItemDateTime(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = stringResource(R.string.at),
+            text = dateTimeLabel,
             style = MaterialTheme.typography.bodyLarge.copy(
                 color = TaskyBlack
             )
@@ -95,6 +96,7 @@ private fun AgendaItemDateTimePreview() {
             date = "Jul 12 2023",
             onClickDate = {},
             onClickTime = {},
+            dateTimeLabel = "From",
             editMode = true
         )
     }

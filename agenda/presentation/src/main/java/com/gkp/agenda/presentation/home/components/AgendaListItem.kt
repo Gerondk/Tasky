@@ -48,6 +48,7 @@ import com.gkp.agenda.presentation.R
 import com.gkp.agenda.presentation.home.DropDownMenuParameters
 import com.gkp.core.designsystem.theme.TaskyGreen
 import com.gkp.core.designsystem.theme.TaskyLightGray
+import com.gkp.core.designsystem.theme.TaskyLightGreen
 import com.gkp.core.designsystem.theme.TaskyTextFieldColor
 import com.gkp.core.designsystem.theme.TaskyTheme
 
@@ -61,14 +62,17 @@ fun AgendaListItem(
     val titleColor = when(agendaItem){
         is AgendaItem.Task -> MaterialTheme.colorScheme.background
         is AgendaItem.Reminder -> MaterialTheme.colorScheme.primary
+        is AgendaItem.Event -> MaterialTheme.colorScheme.primary
     }
     val descriptionAndDateColor = when(agendaItem){
         is AgendaItem.Task -> MaterialTheme.colorScheme.background
         is AgendaItem.Reminder -> TaskyTextFieldColor
+        is AgendaItem.Event -> TaskyTextFieldColor
     }
     val backgroundColor = when(agendaItem){
         is AgendaItem.Task -> TaskyGreen
         is AgendaItem.Reminder -> TaskyLightGray
+        is AgendaItem.Event -> TaskyLightGreen
     }
 
     var showAgendaItemDropDownMenu by remember {

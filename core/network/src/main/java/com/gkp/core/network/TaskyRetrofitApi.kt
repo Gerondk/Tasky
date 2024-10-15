@@ -1,6 +1,8 @@
 package com.gkp.core.network
 
 import com.gkp.core.network.model.AgendaResponse
+import com.gkp.core.network.model.EventBody
+import com.gkp.core.network.model.EventResponse
 import com.gkp.core.network.model.LoginBody
 import com.gkp.core.network.model.LoginResponse
 import com.gkp.core.network.model.RefreshTokenBody
@@ -11,9 +13,14 @@ import com.gkp.core.network.model.ReminderResponse
 import com.gkp.core.network.model.TaskBody
 import com.gkp.core.network.model.TaskResponse
 import com.gkp.network.BuildConfig
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
+import retrofit2.http.PartMap
 import retrofit2.http.Query
 
 interface TaskyRetrofitApi {
@@ -59,5 +66,13 @@ interface TaskyRetrofitApi {
     suspend fun getReminder(
         @Query("reminderId") id: String
     ) : ReminderResponse
+
+    @Multipart
+    @POST("/event")
+    @JvmSuppressWildcards
+    suspend fun createEvent(
+        @Part eventBodyPart: MultipartBody.Part,
+        @Part photosPart: List<MultipartBody.Part>
+    ) :EventResponse
 
 }

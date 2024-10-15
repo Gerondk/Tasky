@@ -7,6 +7,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.coil.compose)
     implementation(projects.agenda.domain)
     implementation(projects.core.presentation.designsystem)
     implementation(projects.core.presentation.ui)

@@ -1,5 +1,6 @@
 package com.gkp.agenda.presentation.edit
 
+import android.net.Uri
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.gkp.agenda.domain.AgendaRepository
+import com.gkp.agenda.domain.image.ImageReader
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.domain.util.toLocalDateTime
 import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
@@ -19,8 +21,10 @@ import com.gkp.agenda.presentation.edit.util.getReminderTimeText
 import com.gkp.agenda.presentation.edit.util.toMillis
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -30,6 +34,7 @@ import java.util.UUID
 class EditAgendaItemViewModel(
     savedStateHandle: SavedStateHandle,
     private val agendaRepository: AgendaRepository,
+    private val imageReader: ImageReader
 ) : ViewModel() {
     private val agendaItemId = savedStateHandle.toRoute<EditAgendaItemGraph>().agendaItemId
     private val agendaItemType = savedStateHandle.toRoute<EditAgendaItemGraph>().agendaItemType
@@ -47,6 +52,7 @@ class EditAgendaItemViewModel(
             when (agendaItemType) {
                 AgendaItemType.REMINDER -> agendaRepository.fetchAgendaItemReminder(it)
                 AgendaItemType.TASK -> agendaRepository.fetchAgendaItemTask(it)
+                AgendaItemType.EVENT -> TODO("Event edit not implemented yet")
             }
         }
         .onEach { result ->
@@ -81,17 +87,25 @@ class EditAgendaItemViewModel(
         uiState = uiState.copy(reminderTextId = getReminderTimeText(reminderIndex))
     }
 
-    fun onDateSelected(selectedDateMillis: Long) {
+    fun onDateSelected(selectedDateMillis: Long, toDateTimeSelected: Boolean) {
         val date =
             LocalDate.ofInstant(Instant.ofEpochMilli(selectedDateMillis), ZoneId.systemDefault())
-        uiState = uiState.copy(dateTime = date.atTime(uiState.dateTime.toLocalTime()))
+        uiState = if (toDateTimeSelected)
+            uiState.copy(toDateTime = date.atTime(uiState.toDateTime.toLocalTime()))
+        else
+            uiState.copy(dateTime = date.atTime(uiState.dateTime.toLocalTime()))
 
     }
 
-    fun onTimeSelected(hour: Int, minute: Int) {
-        uiState = uiState.copy(
-            dateTime = uiState.dateTime.withHour(hour).withMinute(minute)
-        )
+    fun onTimeSelected(hour: Int, minute: Int, toDateTimeSelected: Boolean) {
+        uiState = if (toDateTimeSelected)
+            uiState.copy(
+                toDateTime = uiState.toDateTime.withHour(hour).withMinute(minute)
+            )
+        else
+            uiState.copy(
+                dateTime = uiState.dateTime.withHour(hour).withMinute(minute)
+            )
     }
 
     fun onSave() {
@@ -122,8 +136,42 @@ class EditAgendaItemViewModel(
                     isDone = false
                 )
             }
+
+            AgendaItemType.EVENT -> {
+                AgendaItem.Event(
+                    id = UUID.randomUUID().toString(),
+                    title = uiState.title,
+                    description = uiState.description,
+                    time = uiState.dateTime.toMillis(),
+                    to = uiState.toDateTime.toMillis(),
+                    remindAt = getReminderInDateLong(
+                        selectedDate = uiState.dateTime,
+                        reminderTimeMenuTextId = uiState.reminderTextId
+                    ),
+                    attendeesIds = uiState.eventVisitors,
+                    photos = uiState.eventPhotoInfoList.map { it.byteArray }
+                )
+            }
         }
         agendaRepository.addAgendaItem(savedAgendaItem)
+    }
+
+    fun onPhotosSelected(uris: List<Uri>) {
+        viewModelScope.launch {
+           val imageInfoList = imageReader.readImagesFromStringUri(uris.map { it.toString() })
+            val imageInfoCurrentList = uiState.eventPhotoInfoList
+            uiState = uiState.copy(
+                eventPhotoInfoList = imageInfoCurrentList + imageInfoList
+            )
+        }
+    }
+
+    fun onAddVisitor(visitor: String) {
+        val currentVisitors = uiState.eventVisitors
+        uiState = uiState.copy(
+            eventVisitors = currentVisitors + visitor
+        )
+
     }
 
 }

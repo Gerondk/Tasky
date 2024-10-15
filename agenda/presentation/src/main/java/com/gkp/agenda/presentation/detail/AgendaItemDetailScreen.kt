@@ -29,6 +29,7 @@ import com.gkp.agenda.presentation.compoments.AgendaItemReminderTime
 import com.gkp.agenda.presentation.compoments.AgendaItemTitle
 import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
 import com.gkp.core.designsystem.theme.TaskyGreen
+import com.gkp.core.designsystem.theme.TaskyLightGreen
 import com.gkp.core.designsystem.theme.TaskyTextFieldColor
 import com.gkp.core.designsystem.theme.TaskyTextHintColor
 import com.gkp.core.designsystem.theme.TaskyTheme
@@ -89,11 +90,13 @@ private fun AgendaItemDetailScreen(
                     id = when (state.agendaItemType) {
                         AgendaItemType.TASK -> R.string.task
                         AgendaItemType.REMINDER -> R.string.reminder
+                        AgendaItemType.EVENT -> R.string.event
                     }
                 ),
                 leadingBoxColor = when (state.agendaItemType) {
                     AgendaItemType.TASK -> TaskyGreen
                     AgendaItemType.REMINDER -> TaskyTextHintColor
+                    AgendaItemType.EVENT -> TaskyLightGreen
                 }
             )
             Spacer(modifier = Modifier.height(42.dp))
@@ -114,7 +117,13 @@ private fun AgendaItemDetailScreen(
                 onClickDate = {},
                 onClickTime = {},
                 date = "Jul 12 2023",
-                time = "12:00"
+                time = "12:00",
+                dateTimeLabel = stringResource(
+                    if (state.agendaItemType == AgendaItemType.EVENT)
+                        R.string.from
+                    else
+                        R.string.at
+                )
             )
             HorizontalDivider()
             AgendaItemReminderTime(
@@ -136,6 +145,7 @@ private fun AgendaItemDetailScreen(
                         when (state.agendaItemType) {
                             AgendaItemType.TASK -> R.string.delete_task
                             AgendaItemType.REMINDER -> R.string.delete_reminder
+                            AgendaItemType.EVENT -> R.string.delete_event
                         }
                     ),
                     style = MaterialTheme.typography.bodyLarge.copy(

@@ -7,6 +7,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gkp.agenda.domain.AgendaRepository
+import com.gkp.agenda.domain.image.ImageReader
 import com.gkp.agenda.presentation.util.toMillis
 import com.gkp.auth.domain.session.SessionStorage
 import kotlinx.coroutines.flow.distinctUntilChanged

@@ -24,9 +24,15 @@ class TaskyApiInterceptor(
         }
         val response = chain.proceed(requestBuilder.build())
         if (accessTokenRefreshHandler.shouldRefreshAccessToken(response)) {
+            response.close()
             runBlocking {
                 accessTokenRefreshHandler.refreshAccessToken().launchIn(this)
             }
+            val newAccessToken = runBlocking {
+                sessionStorage.getAuthInfo().accessToken
+            }
+            val request = requestBuilder.applyAuthorization(newAccessToken)
+            return chain.proceed(request.build())
         }
         return response
     }

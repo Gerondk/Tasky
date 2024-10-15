@@ -11,6 +11,7 @@ import com.gkp.agenda.domain.AgendaRepository
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.presentation.detail.navigation.AgendaItemDetailScreenRoute
 import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -40,6 +41,11 @@ class AgendaItemDetailViewModel(
                     val agendaItem = taskyResult.getDataOrNull()
                     setUiState(agendaItem, itemType)
                 }
+            }
+
+            AgendaItemType.EVENT -> {
+                // TODO: implement fetch event later
+                flowOf()
             }
         }.launchIn(viewModelScope)
     }

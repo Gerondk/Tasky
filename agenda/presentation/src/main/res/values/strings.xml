@@ -33,4 +33,14 @@
     <string name="tomorrow">Tomorrow</string>
     <string name="yesterday">Yesterday</string>
     <string name="delete_reminder">DELETE REMINDER</string>
+    <string name="event">Event</string>
+    <string name="delete_event">DELETE EVENT</string>
+    <string name="edit_event">EDIT EVENT</string>
+    <string name="from">From</string>
+    <string name="to">To  </string>
+    <string name="event_photos">Photos</string>
+    <string name="event_visitors">Visitors</string>
+    <string name="visitor_name">Visitor name</string>
+    <string name="add_visitor">Add Visitor</string>
+    <string name="add_visitor_button_label">ADD</string>
 </resources>

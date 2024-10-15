@@ -37,6 +37,7 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.gkp.agenda.presentation.R
+import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
 import com.gkp.agenda.presentation.edit.EditItemUiState
 import com.gkp.core.designsystem.theme.TaskyGreen
 import com.gkp.core.designsystem.theme.TaskyTextFieldColor
@@ -64,12 +66,15 @@ fun EditAgendaItemCommonSection(
     onClickEditSaveButton: () -> Unit,
     onClickDeleteButton: () -> Unit,
     onCLickReminderMenuItem: (Int) -> Unit,
-    onDateSelected: (Long) -> Unit,
-    onTimeSelected: (Int, Int) -> Unit,
+    onDateSelected: (Long, Boolean) -> Unit,
+    onTimeSelected: (Int, Int, Boolean) -> Unit,
+    onAddPhotoClick: () -> Unit,
+    onAddVisitorClick: (String) -> Unit,
     state: EditItemUiState,
     appBarTitle: String,
-    itemName: String ,
-    itemLeadingBoxColor: Color
+    itemName: String,
+    itemLeadingBoxColor: Color,
+    agendaItemType: AgendaItemType,
 ) {
     var showDatePicker by rememberSaveable {
         mutableStateOf(false)
@@ -86,6 +91,9 @@ fun EditAgendaItemCommonSection(
     }
 
     var showReminderMenu by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var toDateTimeSelected by remember {
         mutableStateOf(false)
     }
 
@@ -114,16 +122,16 @@ fun EditAgendaItemCommonSection(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp)
         ) {
             AgendaItemHeader(
+                modifier = Modifier.padding(16.dp),
                 itemName = itemName,
                 leadingBoxColor = itemLeadingBoxColor
             )
             Spacer(modifier = Modifier.height(42.dp))
             AgendaItemTitle(
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
+                    .padding(16.dp)
                     .clickable { onClickTitle() },
                 itemTitle = state.title,
                 editMode = true
@@ -131,26 +139,60 @@ fun EditAgendaItemCommonSection(
             HorizontalDivider()
             AgendaItemDescription(
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
+                    .padding(16.dp)
                     .clickable { onClickDescription() },
                 itemDescription = state.description,
                 editMode = true
             )
             HorizontalDivider()
+            if (agendaItemType == AgendaItemType.EVENT) {
+                EventPhotosSection(
+                    modifier = Modifier,
+                    photosUris = state.eventPhotoInfoList.map { it.uri },
+                    onAddPhotoClick = onAddPhotoClick
+                )
+            }
             AgendaItemDateTime(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp),
+                    .padding(16.dp),
                 date = state.uiDate,
                 time = state.uiTime,
                 onClickDate = { showDatePicker = true },
                 onClickTime = { showTimePicker = true },
+                dateTimeLabel = stringResource(
+                    if (agendaItemType == AgendaItemType.EVENT)
+                        R.string.from
+                    else
+                        R.string.at
+                ),
                 editMode = true
             )
             HorizontalDivider()
+            if (agendaItemType == AgendaItemType.EVENT) {
+                AgendaItemDateTime(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    date = state.uiToDateTime,
+                    time = state.uiToTime,
+                    onClickDate = {
+                        showDatePicker = true
+                        toDateTimeSelected = true
+
+                    },
+                    onClickTime = {
+                        showTimePicker = true
+                        toDateTimeSelected = true
+                    },
+                    dateTimeLabel = stringResource(R.string.to),
+                    editMode = true
+                )
+                HorizontalDivider()
+            }
             AgendaItemReminderTime(
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
+                    .padding(16.dp)
                     .clickable {
                         showReminderMenu = true
                     },
@@ -161,6 +203,14 @@ fun EditAgendaItemCommonSection(
                 editMode = true
             )
             HorizontalDivider()
+            if (agendaItemType == AgendaItemType.EVENT) {
+                Spacer(modifier = Modifier.height(20.dp))
+                EventVisitorsSection(
+                    modifier = Modifier,
+                    onAddVisitorClick = onAddVisitorClick,
+                    visitors = state.eventVisitors
+                )
+            }
             Spacer(modifier = Modifier.weight(1f))
             TextButton(
                 modifier = Modifier.fillMaxWidth(),
@@ -181,13 +231,19 @@ fun EditAgendaItemCommonSection(
         showDatePicker = showDatePicker,
         state = datePickerState,
         dismissDatePicker = { showDatePicker = false },
-        onDateSelected = onDateSelected
+        onDateSelected = {
+            onDateSelected(it, toDateTimeSelected)
+            toDateTimeSelected = false
+        }
 
     )
     TaskyTimePickerWithDialog(
         state = timePickerState,
         showTimePicker = showTimePicker,
-        onTimeSelected = onTimeSelected,
+        onTimeSelected = { hour, minute ->
+            onTimeSelected(hour, minute, toDateTimeSelected)
+            toDateTimeSelected = false
+        },
         dismissTimePicker = { showTimePicker = false }
     )
 }
@@ -305,23 +361,26 @@ fun TaskyTimePickerWithDialog(
 private fun EditAgendaItemCommonSectionPreview() {
     TaskyTheme {
         EditAgendaItemCommonSection(
-            onClickEditCloseButton = {},
             onClickTitle = {},
             onClickDescription = {},
+            onClickEditCloseButton = {},
             onClickEditSaveButton = {},
             onClickDeleteButton = {},
             onCLickReminderMenuItem = {},
-            onDateSelected = {},
-            onTimeSelected = { i: Int, i1: Int -> },
-            appBarTitle = "EDIT TASK",
-            itemName = "Task",
-            itemLeadingBoxColor = TaskyGreen,
+            onDateSelected = { _, _ -> },
+            onTimeSelected = { _, _, _ -> },
             state = EditItemUiState(
                 title = "Title",
                 description = "Description",
                 dateTime = LocalDateTime.now(),
                 reminderTextId = R.string.reminder_30_minutes_before
-            )
+            ),
+            appBarTitle = "EDIT TASK",
+            itemName = "Task",
+            itemLeadingBoxColor = TaskyGreen,
+            agendaItemType = AgendaItemType.EVENT,
+            onAddVisitorClick = {},
+            onAddPhotoClick = {}
         )
     }
 }

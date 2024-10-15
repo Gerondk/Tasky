@@ -12,7 +12,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
-    implementation(libs.http.logging)
+    api(libs.http.logging)
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.kotlin.serialization)
     implementation(projects.auth.domain)

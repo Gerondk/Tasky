@@ -34,5 +34,6 @@ fun NavGraphBuilder.agendaItemDetailScreen(navController: NavController) {
 @Serializable
 enum class AgendaItemType {
     TASK,
-    REMINDER
+    REMINDER,
+    EVENT
 }
