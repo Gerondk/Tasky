@@ -4,9 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AgendaResponse(
-    val tasks: List<TaskResponse>,
-    val reminders: List<ReminderResponse>,
     val events: List<EventResponse>,
+    val tasks: List<TaskResponse>,
+    val reminders: List<ReminderResponse>
 )
 
 @Serializable
@@ -48,8 +48,9 @@ data class EventAttendeeResponse(
     val fullName: String,
     val userId: String,
     val eventId: String,
-    val isOnGoing: Boolean,
+    val isGoing: Boolean,
     val remindAt: Long,
+    val createdAt: String,
 )
 
 @Serializable

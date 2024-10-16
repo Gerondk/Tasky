@@ -1,6 +1,7 @@
 package com.gkp.agenda.presentation.detail
 
-import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
+import com.gkp.agenda.domain.model.AgendaItemType
+
 
 data class AgendaItemDetailUiState(
     val agendaItemType: AgendaItemType = AgendaItemType.TASK,

@@ -7,9 +7,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import com.gkp.agenda.domain.model.AgendaItemType
 import com.gkp.agenda.presentation.R
 import com.gkp.agenda.presentation.compoments.EditAgendaItemCommonSection
-import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
 import com.gkp.agenda.presentation.edit.EditAgendaItemViewModel
 import com.gkp.agenda.presentation.edit.EditItemUiState
 import com.gkp.core.designsystem.theme.TaskyGreen

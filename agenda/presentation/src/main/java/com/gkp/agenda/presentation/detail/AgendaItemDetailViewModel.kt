@@ -9,8 +9,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.gkp.agenda.domain.AgendaRepository
 import com.gkp.agenda.domain.model.AgendaItem
+import com.gkp.agenda.domain.model.AgendaItemType
 import com.gkp.agenda.presentation.detail.navigation.AgendaItemDetailScreenRoute
-import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

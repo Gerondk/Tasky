@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gkp.agenda.domain.model.AgendaItemType
 import com.gkp.agenda.presentation.R
 import com.gkp.agenda.presentation.compoments.AgendaBackground
 import com.gkp.agenda.presentation.compoments.AgendaItemDateTime
@@ -27,7 +28,6 @@ import com.gkp.agenda.presentation.compoments.AgendaItemDescription
 import com.gkp.agenda.presentation.compoments.AgendaItemHeader
 import com.gkp.agenda.presentation.compoments.AgendaItemReminderTime
 import com.gkp.agenda.presentation.compoments.AgendaItemTitle
-import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
 import com.gkp.core.designsystem.theme.TaskyGreen
 import com.gkp.core.designsystem.theme.TaskyLightGreen
 import com.gkp.core.designsystem.theme.TaskyTextFieldColor

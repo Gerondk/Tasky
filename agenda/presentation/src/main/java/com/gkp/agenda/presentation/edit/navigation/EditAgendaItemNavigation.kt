@@ -7,7 +7,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
-import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
+import com.gkp.agenda.domain.model.AgendaItemType
 import com.gkp.agenda.presentation.edit.EditAgendaItemViewModel
 import com.gkp.agenda.presentation.edit.util.sharedViewModel
 import kotlinx.serialization.Serializable
