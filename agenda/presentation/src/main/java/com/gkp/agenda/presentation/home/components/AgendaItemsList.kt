@@ -17,7 +17,8 @@ import com.gkp.core.designsystem.theme.TaskyTheme
 fun AgendaItemsList(
     modifier: Modifier = Modifier,
     agendaItems: List<AgendaItem>,
-    onAgendaDropMenuItemClick: (DropDownMenuParameters) -> Unit
+    onAgendaDropMenuItemClick: (DropDownMenuParameters) -> Unit,
+    onTaskTitleClick: (String) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
@@ -31,8 +32,8 @@ fun AgendaItemsList(
             AgendaListItem(
                 modifier = Modifier.fillMaxWidth(),
                 agendaItem = it,
-                onItemClick = {},
-                onAgendaDropMenuItemClick = onAgendaDropMenuItemClick
+                onAgendaDropMenuItemClick = onAgendaDropMenuItemClick,
+                onTaskTitleClick = onTaskTitleClick
             )
         }
     }
@@ -84,7 +85,8 @@ private fun AgendaItemListPreview() {
         AgendaItemsList(
             modifier = Modifier,
             onAgendaDropMenuItemClick = {},
-            agendaItems = agendaItems
+            agendaItems = agendaItems,
+            onTaskTitleClick = {}
         )
     }
 

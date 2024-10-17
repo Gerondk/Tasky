@@ -10,7 +10,9 @@ import androidx.navigation.toRoute
 import com.gkp.agenda.domain.AgendaRepository
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.domain.model.AgendaItemType
+import com.gkp.agenda.domain.util.toLocalDateTime
 import com.gkp.agenda.presentation.detail.navigation.AgendaItemDetailScreenRoute
+import com.gkp.agenda.presentation.edit.util.reminderLongToReminderTimeTextId
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -60,8 +62,12 @@ class AgendaItemDetailViewModel(
                 id = it.id,
                 title = it.title,
                 description = it.description ?: "",
-                time = it.time.toString(),
-                reminderTime = it.remindAt.toString()
+                dateTime = it.time.toLocalDateTime(),
+                reminderTextId = reminderLongToReminderTimeTextId(
+                    it.remindAt,
+                    it.time
+                ),
+                toDateTime = if (it is AgendaItem.Event) it.to.toLocalDateTime() else it.time.toLocalDateTime()
             )
         }
     }

@@ -19,6 +19,7 @@ import com.gkp.agenda.domain.util.toLocalDateTime
 import com.gkp.agenda.presentation.edit.navigation.EditAgendaItemGraph
 import com.gkp.agenda.presentation.edit.util.getReminderInDateLong
 import com.gkp.agenda.presentation.edit.util.getReminderTimeText
+import com.gkp.agenda.presentation.edit.util.reminderLongToReminderTimeTextId
 import com.gkp.agenda.presentation.edit.util.toMillis
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -64,6 +65,10 @@ class EditAgendaItemViewModel(
                         title = it.title,
                         description = it.description ?: "",
                         dateTime = it.time.toLocalDateTime(),
+                        reminderTextId = reminderLongToReminderTimeTextId(
+                            it.remindAt,
+                            it.time
+                        ),
                         editTitleTextState = TextFieldState(
                             it.title
                         ),
@@ -113,7 +118,7 @@ class EditAgendaItemViewModel(
         val savedAgendaItem = when (agendaItemType) {
             AgendaItemType.REMINDER -> {
                 AgendaItem.Reminder(
-                    id = UUID.randomUUID().toString(),
+                    id = agendaItemId ?: UUID.randomUUID().toString(),
                     title = uiState.title,
                     description = uiState.description,
                     time = uiState.dateTime.toMillis(),
@@ -154,7 +159,12 @@ class EditAgendaItemViewModel(
                 )
             }
         }
-        agendaRepository.addAgendaItem(savedAgendaItem)
+        if (agendaItemId != null) {
+            agendaRepository.updateAgendaItem(savedAgendaItem)
+            alarmScheduler.cancel(savedAgendaItem)
+        } else {
+            agendaRepository.addAgendaItem(savedAgendaItem)
+        }
         alarmScheduler.schedule(savedAgendaItem)
     }
 

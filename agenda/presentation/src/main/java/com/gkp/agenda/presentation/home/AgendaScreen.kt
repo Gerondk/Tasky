@@ -73,7 +73,17 @@ fun AgendaScreen(
             onLogout()
             viewModel.logout()
         },
-        onAgendaDropMenuItemClick = onAgendaDropMenuItemClick,
+        onAgendaDropMenuItemClick = { parameters ->
+            if(parameters.menuItemId == R.string.delete){
+                viewModel.deleteAgendaItem(parameters.agendaItem)
+            } else {
+                onAgendaDropMenuItemClick(parameters)
+            }
+
+        },
+        onTaskTitleClick = {
+            viewModel.onTaskTitleClick(it)
+        },
         onDateSelected = viewModel::onDateSelected,
         agendaUiState = agendaUiState
     )
@@ -89,6 +99,7 @@ private fun AgendaScreen(
     onMenuItemReminderClick: () -> Unit,
     onMenuItemEventClick: () -> Unit,
     onAgendaDropMenuItemClick: (DropDownMenuParameters) -> Unit,
+    onTaskTitleClick: (String) -> Unit,
     agendaUiState: AgendaUiState,
 ) {
 
@@ -177,7 +188,8 @@ private fun AgendaScreen(
                 AgendaItemsList(
                     modifier = Modifier,
                     onAgendaDropMenuItemClick = onAgendaDropMenuItemClick,
-                    agendaItems = agendaUiState.agendaItems
+                    agendaItems = agendaUiState.agendaItems,
+                    onTaskTitleClick = onTaskTitleClick
                 )
 
             }
@@ -227,7 +239,8 @@ private fun AgendaScreenPreview() {
             onAgendaDropMenuItemClick = {},
             onMenuItemTaskClick = {},
             onMenuItemReminderClick = {},
-            onMenuItemEventClick = {}
+            onMenuItemEventClick = {},
+            onTaskTitleClick = {}
         )
     }
 }
