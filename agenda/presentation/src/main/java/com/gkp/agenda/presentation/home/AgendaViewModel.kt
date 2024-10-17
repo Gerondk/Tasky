@@ -36,9 +36,9 @@ class AgendaViewModel(
                 agendaRepository.fetchAgendaItems(it.toMillis())
             }
             .onEach { taskResult ->
+                val agendaItems = taskResult.getDataOrNull()?.sortedBy { it.time } ?: emptyList()
                 agendaUiState = agendaUiState.copy(
-                    agendaItems =
-                    taskResult.getDataOrNull()?.sortedBy { it.time } ?: emptyList()
+                    agendaItems = agendaItems
                 )
             }.launchIn(viewModelScope)
     }

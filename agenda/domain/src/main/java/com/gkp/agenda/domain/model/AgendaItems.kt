@@ -1,7 +1,6 @@
 package com.gkp.agenda.domain.model
 
 import com.gkp.agenda.domain.util.formattedDateTime
-import com.gkp.agenda.domain.util.toLocalDateTime
 
 sealed interface AgendaItem {
     val id: String
@@ -37,6 +36,12 @@ sealed interface AgendaItem {
         override val remindAt: Long,
         val to: Long, // to for the event end time
         val attendeesIds: List<String>,
-        val photos: List<ByteArray>
+        val photos: List<ByteArray>,
     ) : AgendaItem
+}
+
+enum class AgendaItemType {
+    TASK,
+    REMINDER,
+    EVENT
 }

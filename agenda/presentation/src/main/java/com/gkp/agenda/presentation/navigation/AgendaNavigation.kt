@@ -8,8 +8,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.gkp.agenda.domain.model.AgendaItem
+import com.gkp.agenda.domain.model.AgendaItemType
 import com.gkp.agenda.presentation.R
-import com.gkp.agenda.presentation.detail.navigation.AgendaItemType
 import com.gkp.agenda.presentation.detail.navigation.agendaItemDetailScreen
 import com.gkp.agenda.presentation.detail.navigation.navigateToAgendaItemDetailScreenRoute
 import com.gkp.agenda.presentation.home.AgendaScreen
