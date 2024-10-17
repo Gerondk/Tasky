@@ -53,7 +53,7 @@ class EditAgendaItemViewModel(
                 when (agendaItemType) {
                     AgendaItemType.REMINDER -> agendaRepository.fetchAgendaItemReminder(it)
                     AgendaItemType.TASK -> agendaRepository.fetchAgendaItemTask(it)
-                    AgendaItemType.EVENT -> TODO("Event edit not implemented yet")
+                    AgendaItemType.EVENT -> agendaRepository.fetchAgendaItemEvent(it)
                 }
             }
             .onEach { result ->
@@ -173,7 +173,6 @@ class EditAgendaItemViewModel(
         uiState = uiState.copy(
             eventVisitors = currentVisitors + visitor
         )
-
     }
 
 }

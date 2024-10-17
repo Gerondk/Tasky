@@ -67,6 +67,7 @@ interface TaskyRetrofitApi {
         @Query("reminderId") id: String
     ) : ReminderResponse
 
+
     @Multipart
     @POST("/event")
     @JvmSuppressWildcards
@@ -74,5 +75,10 @@ interface TaskyRetrofitApi {
         @Part eventBodyPart: MultipartBody.Part,
         @Part photosPart: List<MultipartBody.Part>
     ) :EventResponse
+
+    @GET("/event")
+    suspend fun getEvent(
+        @Query("eventId") id: String
+    ) : EventResponse
 
 }

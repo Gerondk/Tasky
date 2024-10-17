@@ -26,9 +26,9 @@ fun NavController.navigateToAgendaItemDetailScreenRoute(
 fun NavGraphBuilder.agendaItemDetailScreen(navController: NavController) {
     composable<AgendaItemDetailScreenRoute>(
         deepLinks = listOf(
-            navDeepLink {
-                uriPattern = DEEP_LINK_URI
-            }
+            navDeepLink <AgendaItemDetailScreenRoute>(
+                basePath = DEEP_LINK_URI,
+            )
         )
     ) {
         AgendaItemDetailScreen(

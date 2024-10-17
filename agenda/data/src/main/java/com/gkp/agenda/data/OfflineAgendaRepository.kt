@@ -63,6 +63,12 @@ class OfflineAgendaRepository(
         }
     }
 
+    override fun fetchAgendaItemEvent(id: String): Flow<TaskyResult<AgendaItem.Event>> {
+        return networkApiCall {
+            taskyRetrofitApi.getEvent(id).toAgendaEventItem()
+        }
+    }
+
 
     override fun logout() {
         networkApiCall {

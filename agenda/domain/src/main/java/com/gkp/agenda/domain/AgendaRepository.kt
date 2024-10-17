@@ -13,5 +13,7 @@ interface AgendaRepository {
 
     fun fetchAgendaItemReminder(id: String) : Flow<TaskyResult<AgendaItem.Reminder>>
 
+    fun fetchAgendaItemEvent(id: String) : Flow<TaskyResult<AgendaItem.Event>>
+
     fun logout()
 }

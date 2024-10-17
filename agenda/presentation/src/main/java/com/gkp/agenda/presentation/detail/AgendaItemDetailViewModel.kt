@@ -11,7 +11,6 @@ import com.gkp.agenda.domain.AgendaRepository
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.domain.model.AgendaItemType
 import com.gkp.agenda.presentation.detail.navigation.AgendaItemDetailScreenRoute
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -27,7 +26,6 @@ class AgendaItemDetailViewModel(
         val detailScreenRoute = savedStateHandle.toRoute<AgendaItemDetailScreenRoute>()
         val itemId = detailScreenRoute.agendaItemId
         val itemType = detailScreenRoute.agendaItemType
-
         when (itemType) {
             AgendaItemType.TASK -> {
                 agendaRepository.fetchAgendaItemTask(itemId).onEach { taskyResult ->
@@ -44,8 +42,10 @@ class AgendaItemDetailViewModel(
             }
 
             AgendaItemType.EVENT -> {
-                // TODO: implement fetch event later
-                flowOf()
+                agendaRepository.fetchAgendaItemEvent(itemId).onEach { taskyResult ->
+                    val agendaItem = taskyResult.getDataOrNull()
+                    setUiState(agendaItem, itemType)
+                }
             }
         }.launchIn(viewModelScope)
     }

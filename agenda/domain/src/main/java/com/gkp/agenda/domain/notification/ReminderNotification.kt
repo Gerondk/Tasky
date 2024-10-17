@@ -11,4 +11,4 @@ data class NotificationInfo(
     val description: String
 )
 
-const val DEEP_LINK_URI = "https://gkp.com/tasky/agenda/{agendaItemId}/{agendaItemType}"
+const val DEEP_LINK_URI = "https://gkp.com/tasky/agenda"
