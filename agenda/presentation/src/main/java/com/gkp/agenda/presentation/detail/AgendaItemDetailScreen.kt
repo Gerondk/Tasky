@@ -69,7 +69,7 @@ private fun AgendaItemDetailScreen(
                 )
             }
         },
-        title = "12 MARCH 2023",
+        title = state.uiDate.uppercase(),
         actions = {
             IconButton(onClick = onEditClick) {
                 Icon(
@@ -116,8 +116,8 @@ private fun AgendaItemDetailScreen(
                     .padding(vertical = 16.dp),
                 onClickDate = {},
                 onClickTime = {},
-                date = "Jul 12 2023",
-                time = "12:00",
+                date = state.uiDate,
+                time = state.uiTime,
                 dateTimeLabel = stringResource(
                     if (state.agendaItemType == AgendaItemType.EVENT)
                         R.string.from
@@ -126,9 +126,20 @@ private fun AgendaItemDetailScreen(
                 )
             )
             HorizontalDivider()
+            if (state.agendaItemType == AgendaItemType.EVENT) {
+                AgendaItemDateTime(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    date = state.uiToDateTime,
+                    time = state.uiToTime,
+                    dateTimeLabel = stringResource(R.string.to),
+                )
+                HorizontalDivider()
+            }
             AgendaItemReminderTime(
                 modifier = Modifier.padding(vertical = 16.dp),
-                reminderTimeText = "10 minutes before",
+                reminderTimeText = stringResource(state.reminderTextId),
                 onCLickReminderMenuItem = {},
                 onDismissReminderMenu = {},
                 showReminderMenu = false

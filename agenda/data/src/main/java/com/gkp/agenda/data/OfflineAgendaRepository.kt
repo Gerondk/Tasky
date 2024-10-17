@@ -31,7 +31,6 @@ class OfflineAgendaRepository(
                     taskyRetrofitApi.createReminder(agendaItem.toReminderBody())
                 }
             }
-
             is AgendaItem.Task -> {
                 networkApiCall {
                     taskyRetrofitApi.createTask(agendaItem.toTaskBody())
@@ -47,6 +46,55 @@ class OfflineAgendaRepository(
                         photosPart = photosPart
                     )
                 }
+            }
+        }.launchIn(scope)
+    }
+
+    override fun updateAgendaItem(agendaItem: AgendaItem) {
+        when(agendaItem){
+            is AgendaItem.Event -> {
+                networkApiCall {
+                    val eventBody = agendaItem.toEventBody()
+                    val eventBodyPart = buildEventBodyPart(eventBody)
+                    val photosPart = buildPhotosPart(agendaItem.photos)
+                    taskyRetrofitApi.updateEvent(
+                        eventBodyPart = eventBodyPart,
+                        photosPart = photosPart
+                    )
+                }
+
+            }
+            is AgendaItem.Reminder -> {
+                networkApiCall {
+                    taskyRetrofitApi.updateReminder(agendaItem.toReminderBody())
+                }
+            }
+            is AgendaItem.Task -> {
+                networkApiCall {
+                    taskyRetrofitApi.updateTask(agendaItem.toTaskBody())
+                }
+            }
+        }.launchIn(scope)
+    }
+
+    override fun deleteAgendaItem(agendaItem: AgendaItem) {
+        when(agendaItem){
+            is AgendaItem.Event -> {
+                networkApiCall {
+                    taskyRetrofitApi.deleteEvent(agendaItem.id)
+                }
+            }
+
+            is AgendaItem.Reminder -> {
+                networkApiCall {
+                    taskyRetrofitApi.deleteReminder(agendaItem.id)
+                }
+            }
+            is AgendaItem.Task -> {
+                networkApiCall {
+                    taskyRetrofitApi.deleteTask(agendaItem.id)
+                }
+
             }
         }.launchIn(scope)
     }

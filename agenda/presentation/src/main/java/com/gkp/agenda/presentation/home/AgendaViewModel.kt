@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gkp.agenda.domain.AgendaRepository
 import com.gkp.agenda.domain.image.ImageReader
+import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.presentation.util.toMillis
 import com.gkp.auth.domain.session.SessionStorage
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -61,5 +62,29 @@ class AgendaViewModel(
                 fullName = authInfo.fullName
             )
         }
+    }
+
+    fun deleteAgendaItem(agendaItem: AgendaItem) {
+        agendaRepository.deleteAgendaItem(agendaItem)
+    }
+
+    fun onTaskTitleClick(id: String) {
+        agendaUiState.agendaItems.indexOfFirst { it.id == id }.let {
+            if (it != -1) {
+                var item = agendaUiState.agendaItems[it]
+                val agendaItems = agendaUiState.agendaItems - item
+                item = if (item is AgendaItem.Task) {
+                    item.copy(isDone = !item.isDone)
+                } else {
+                    item
+
+                }
+                agendaUiState = agendaUiState.copy(
+                    agendaItems = agendaItems + item
+                )
+            }
+
+        }
+
     }
 }
