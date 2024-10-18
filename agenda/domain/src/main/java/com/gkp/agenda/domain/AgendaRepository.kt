@@ -9,6 +9,10 @@ interface AgendaRepository {
 
     fun addAgendaItem(agendaItem: AgendaItem)
 
+    fun updateAgendaItem(agendaItem: AgendaItem)
+
+    fun deleteAgendaItem(agendaItem: AgendaItem)
+
     fun fetchAgendaItemTask(id: String) : Flow<TaskyResult<AgendaItem.Task>>
 
     fun fetchAgendaItemReminder(id: String) : Flow<TaskyResult<AgendaItem.Reminder>>

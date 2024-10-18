@@ -24,8 +24,8 @@ fun AgendaItemDateTime(
     modifier: Modifier = Modifier,
     time: String,
     date: String,
-    onClickTime: () -> Unit,
-    onClickDate: () -> Unit,
+    onClickTime: () -> Unit = {},
+    onClickDate: () -> Unit = {},
     dateTimeLabel: String,
     editMode: Boolean = false,
 ) {

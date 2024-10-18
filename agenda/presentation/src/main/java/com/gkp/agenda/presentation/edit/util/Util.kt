@@ -10,6 +10,7 @@ import androidx.navigation.NavController
 import com.gkp.agenda.presentation.edit.ReminderTimes
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
+import java.time.Period
 import java.time.ZoneId
 
 fun getReminderTimeText(reminderTimeMenuIndex: Int): Int {
@@ -54,6 +55,25 @@ fun getReminderInDateLong(
             date.toMillis()
         }
 
+        else -> 0
+    }
+}
+
+fun reminderLongToReminderTimeTextId(reminderLong: Long, startLong: Long): Int {
+    val reminderDate = LocalDateTime.ofInstant(
+        java.time.Instant.ofEpochMilli(reminderLong),
+        ZoneId.systemDefault()
+    )
+    val startDate = LocalDateTime.ofInstant(
+        java.time.Instant.ofEpochMilli(startLong),
+        ZoneId.systemDefault()
+    )
+    return when (startDate) {
+        reminderDate.plusMinutes(10) -> ReminderTimes.TEN_MINUTES_BEFORE.textId
+        reminderDate.plusMinutes(30) -> ReminderTimes.THIRTY_MINUTES_BEFORE.textId
+        reminderDate.plusHours(1) -> ReminderTimes.ONE_HOUR_BEFORE.textId
+        reminderDate.plusHours(6) -> ReminderTimes.SIX_HOURS_BEFORE.textId
+        reminderDate.plusDays(1) -> ReminderTimes.ONE_DAY_BEFORE.textId
         else -> 0
     }
 }

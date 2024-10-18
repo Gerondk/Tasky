@@ -1,6 +1,7 @@
 package com.gkp.agenda.presentation.home.components
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,6 +46,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.presentation.R
+import com.gkp.agenda.presentation.compoments.applyIf
 import com.gkp.agenda.presentation.home.DropDownMenuParameters
 import com.gkp.core.designsystem.theme.TaskyGreen
 import com.gkp.core.designsystem.theme.TaskyLightGray
@@ -55,8 +57,8 @@ import com.gkp.core.designsystem.theme.TaskyTheme
 @Composable
 fun AgendaListItem(
     modifier: Modifier = Modifier,
-    onItemClick: () -> Unit,
     onAgendaDropMenuItemClick: (DropDownMenuParameters) -> Unit,
+    onTaskTitleClick: (String) -> Unit,
     agendaItem: AgendaItem,
 ) {
     val titleColor = when(agendaItem){
@@ -89,8 +91,7 @@ fun AgendaListItem(
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 4.dp
-        ),
-        onClick = onItemClick
+        )
     ) {
         Box(
             modifier = modifier
@@ -106,6 +107,14 @@ fun AgendaListItem(
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(
+                        modifier = Modifier.applyIf(
+                            condition = agendaItem is AgendaItem.Task,
+                            block = {
+                                clickable {
+                                    onTaskTitleClick(agendaItem.id)
+                                }
+                            }
+                        ),
                         text = agendaItem.title,
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.W600,
@@ -265,9 +274,9 @@ private fun AgendaListItemPreview(
     TaskyTheme {
         AgendaListItem(
             modifier = Modifier,
-            onItemClick = {},
             agendaItem = agendaItem,
-            onAgendaDropMenuItemClick = {}
+            onAgendaDropMenuItemClick = {},
+            onTaskTitleClick = {}
         )
     }
 }
