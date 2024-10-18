@@ -16,7 +16,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import com.gkp.agenda.data.R
-import com.gkp.agenda.domain.model.AgendaItemType
 import com.gkp.agenda.domain.notification.DEEP_LINK_URI
 import com.gkp.agenda.domain.notification.NotificationInfo
 import com.gkp.agenda.domain.notification.ReminderNotification
@@ -25,11 +24,12 @@ const val REMINDER_CHANNEL_ID = "REMINDER_CHANNEL"
 const val MAIN_ACTIVITY_COMPONENT = "com.gkp.tasky.MainActivity"
 
 @RequiresApi(Build.VERSION_CODES.O)
-class AgendaItemReminderNotification (
-    private val context: Context
+class AgendaItemReminderNotification(
+    private val context: Context,
 ) : ReminderNotification {
 
     private val notificationManager = NotificationManagerCompat.from(context)
+
     init {
         val notificationChannel = NotificationChannel(
             REMINDER_CHANNEL_ID,
@@ -48,7 +48,8 @@ class AgendaItemReminderNotification (
                 context.packageName,
                 MAIN_ACTIVITY_COMPONENT
             )
-            data ="$DEEP_LINK_URI/${notificationInfo.id}/${AgendaItemType.REMINDER}".toUri()
+            data =
+                "$DEEP_LINK_URI/${notificationInfo.id}/${notificationInfo.agendaItemType}".toUri()
             action = Intent.ACTION_VIEW
         }
 

@@ -131,7 +131,7 @@ class EditAgendaItemViewModel(
 
             AgendaItemType.TASK -> {
                 AgendaItem.Task(
-                    id = UUID.randomUUID().toString(),
+                    id = agendaItemId ?: UUID.randomUUID().toString(),
                     title = uiState.title,
                     description = uiState.description,
                     time = uiState.dateTime.toMillis(),
@@ -145,7 +145,7 @@ class EditAgendaItemViewModel(
 
             AgendaItemType.EVENT -> {
                 AgendaItem.Event(
-                    id = UUID.randomUUID().toString(),
+                    id =  agendaItemId ?: UUID.randomUUID().toString(),
                     title = uiState.title,
                     description = uiState.description,
                     time = uiState.dateTime.toMillis(),
