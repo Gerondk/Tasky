@@ -68,28 +68,14 @@ fun reminderLongToReminderTimeTextId(reminderLong: Long, startLong: Long): Int {
         java.time.Instant.ofEpochMilli(startLong),
         ZoneId.systemDefault()
     )
-    var substractDate = reminderDate.plusMinutes(10)
-    if (substractDate == startDate) {
-      return ReminderTimes.TEN_MINUTES_BEFORE.textId
+    return when (startDate) {
+        reminderDate.plusMinutes(10) -> ReminderTimes.TEN_MINUTES_BEFORE.textId
+        reminderDate.plusMinutes(30) -> ReminderTimes.THIRTY_MINUTES_BEFORE.textId
+        reminderDate.plusHours(1) -> ReminderTimes.ONE_HOUR_BEFORE.textId
+        reminderDate.plusHours(6) -> ReminderTimes.SIX_HOURS_BEFORE.textId
+        reminderDate.plusDays(1) -> ReminderTimes.ONE_DAY_BEFORE.textId
+        else -> 0
     }
-    substractDate = reminderDate.plusMinutes(30)
-    if (substractDate == startDate) {
-       return ReminderTimes.THIRTY_MINUTES_BEFORE.textId
-    }
-    substractDate = reminderDate.plusHours(1)
-    if (substractDate == startDate) {
-      return ReminderTimes.ONE_HOUR_BEFORE.textId
-    }
-    substractDate = reminderDate.plusHours(6)
-    if (substractDate == startDate) {
-      return ReminderTimes.SIX_HOURS_BEFORE.textId
-    }
-    substractDate = reminderDate.plusDays(1)
-    if (substractDate == startDate) {
-      return ReminderTimes.ONE_DAY_BEFORE.textId
-    }
-
-    return 0
 }
 
 @SuppressLint("NewApi")
