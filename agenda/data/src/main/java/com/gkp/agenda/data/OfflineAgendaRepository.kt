@@ -3,6 +3,7 @@ package com.gkp.agenda.data
 import com.gkp.agenda.domain.AgendaRepository
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.auth.domain.session.SessionStorage
+import com.gkp.core.database.RoomLocalAgendaDataSource
 import com.gkp.core.domain.util.TaskyResult
 import com.gkp.core.network.TaskyRetrofitApi
 import com.gkp.core.network.model.buildEventBodyPart
@@ -11,26 +12,39 @@ import com.gkp.core.network.util.networkApiCall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.launch
 
 class OfflineAgendaRepository(
     private val taskyRetrofitApi: TaskyRetrofitApi,
     private val sessionStorage: SessionStorage,
+    private val roomLocalAgendaDataSource: RoomLocalAgendaDataSource,
     private val scope: CoroutineScope,
 ) : AgendaRepository {
 
-    override fun fetchAgendaItems(time: Long): Flow<TaskyResult<List<AgendaItem>>> {
-        return networkApiCall {
-            taskyRetrofitApi.getAgenda(time).toAgendaItems()
-        }
+    override fun getAgendaItemsForDate(dateLong: Long): Flow<List<AgendaItem>> {
+        return roomLocalAgendaDataSource.getAgendaItemsForDate(dateLong)
     }
 
-    override fun addAgendaItem(agendaItem: AgendaItem) {
+    override suspend fun fetchAgendaItems() {
+        networkApiCall {
+            val agendaItems = taskyRetrofitApi.getFullAgenda().toAgendaItems()
+            roomLocalAgendaDataSource.deleteAllAgendaItems()
+            roomLocalAgendaDataSource.updateAgendaItems(agendaItems)
+        }.launchIn(scope).join()
+    }
+
+    override suspend fun addAgendaItem(agendaItem: AgendaItem) {
+        val localAddJob = scope.launch {
+            roomLocalAgendaDataSource.addOrSaveAgendaItem(agendaItem)
+        }
+
         when (agendaItem) {
             is AgendaItem.Reminder -> {
                 networkApiCall {
                     taskyRetrofitApi.createReminder(agendaItem.toReminderBody())
                 }
             }
+
             is AgendaItem.Task -> {
                 networkApiCall {
                     taskyRetrofitApi.createTask(agendaItem.toTaskBody())
@@ -48,10 +62,16 @@ class OfflineAgendaRepository(
                 }
             }
         }.launchIn(scope)
+
+        localAddJob.join()
     }
 
-    override fun updateAgendaItem(agendaItem: AgendaItem) {
-        when(agendaItem){
+    override suspend fun updateAgendaItem(agendaItem: AgendaItem) {
+        val localUpdateJob = scope.launch {
+            roomLocalAgendaDataSource.addOrSaveAgendaItem(agendaItem)
+        }
+
+        when (agendaItem) {
             is AgendaItem.Event -> {
                 networkApiCall {
                     val eventBody = agendaItem.toEventBody()
@@ -62,29 +82,34 @@ class OfflineAgendaRepository(
                         photosPart = photosPart
                     )
                 }
-
             }
+
             is AgendaItem.Reminder -> {
                 networkApiCall {
                     taskyRetrofitApi.updateReminder(agendaItem.toReminderBody())
                 }
             }
+
             is AgendaItem.Task -> {
                 networkApiCall {
                     taskyRetrofitApi.updateTask(agendaItem.toTaskBody())
                 }
             }
         }.launchIn(scope)
+
+        localUpdateJob.join()
     }
 
-    override fun deleteAgendaItem(agendaItem: AgendaItem) {
-        when(agendaItem){
+    override suspend fun deleteAgendaItem(agendaItem: AgendaItem) {
+        val  localDeleteJob = scope.launch {
+            roomLocalAgendaDataSource.deleteAgendaItemById(agendaItem.id)
+        }
+        when (agendaItem) {
             is AgendaItem.Event -> {
                 networkApiCall {
                     taskyRetrofitApi.deleteEvent(agendaItem.id)
                 }
             }
-
             is AgendaItem.Reminder -> {
                 networkApiCall {
                     taskyRetrofitApi.deleteReminder(agendaItem.id)
@@ -94,29 +119,15 @@ class OfflineAgendaRepository(
                 networkApiCall {
                     taskyRetrofitApi.deleteTask(agendaItem.id)
                 }
-
             }
         }.launchIn(scope)
+
+        localDeleteJob.join()
     }
 
-    override fun fetchAgendaItemTask(id: String): Flow<TaskyResult<AgendaItem.Task>> {
-        return networkApiCall {
-            taskyRetrofitApi.getTask(id).toAgendaTaskItem()
-        }
+    override suspend fun getAgendaItemForId(id: String): AgendaItem {
+        return roomLocalAgendaDataSource.getAgendaItemById(id)
     }
-
-    override fun fetchAgendaItemReminder(id: String): Flow<TaskyResult<AgendaItem.Reminder>> {
-        return networkApiCall {
-            taskyRetrofitApi.getReminder(id).toAgendaReminderItem()
-        }
-    }
-
-    override fun fetchAgendaItemEvent(id: String): Flow<TaskyResult<AgendaItem.Event>> {
-        return networkApiCall {
-            taskyRetrofitApi.getEvent(id).toAgendaEventItem()
-        }
-    }
-
 
     override fun logout() {
         networkApiCall {

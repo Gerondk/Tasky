@@ -5,7 +5,6 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,17 +20,12 @@ import com.gkp.agenda.presentation.edit.util.getReminderInDateLong
 import com.gkp.agenda.presentation.edit.util.getReminderTimeText
 import com.gkp.agenda.presentation.edit.util.reminderLongToReminderTimeTextId
 import com.gkp.agenda.presentation.edit.util.toMillis
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.UUID
 
-@Suppress("OPT_IN_USAGE")
 class EditAgendaItemViewModel(
     savedStateHandle: SavedStateHandle,
     private val agendaRepository: AgendaRepository,
@@ -46,40 +40,28 @@ class EditAgendaItemViewModel(
 
     init {
         uiState = uiState.copy(agendaItemType = agendaItemType)
-        snapshotFlow {
-            agendaItemId
-        }
-            .filterNotNull()
-            .flatMapLatest {
-                when (agendaItemType) {
-                    AgendaItemType.REMINDER -> agendaRepository.fetchAgendaItemReminder(it)
-                    AgendaItemType.TASK -> agendaRepository.fetchAgendaItemTask(it)
-                    AgendaItemType.EVENT -> agendaRepository.fetchAgendaItemEvent(it)
-                }
-            }
-            .onEach { result ->
-                val agendaItemTask = result.getDataOrNull()
-                agendaItemTask?.let {
-                    uiState = uiState.copy(
-                        id = it.id,
-                        title = it.title,
-                        description = it.description ?: "",
-                        dateTime = it.time.toLocalDateTime(),
-                        reminderTextId = reminderLongToReminderTimeTextId(
-                            it.remindAt,
-                            it.time
-                        ),
-                        editTitleTextState = TextFieldState(
-                            it.title
-                        ),
-                        editDescriptionTextState = TextFieldState(
-                            it.description ?: ""
-                        )
+        agendaItemId?.let {
+            viewModelScope.launch {
+                val agendaItem = agendaRepository.getAgendaItemForId(it)
+                uiState = uiState.copy(
+                    id = agendaItem.id,
+                    title = agendaItem.title,
+                    description = agendaItem.description ?: "",
+                    dateTime = agendaItem.time.toLocalDateTime(),
+                    reminderTextId = reminderLongToReminderTimeTextId(
+                        agendaItem.remindAt,
+                        agendaItem.time
+                    ),
+                    editTitleTextState = TextFieldState(
+                        agendaItem.title
+                    ),
+                    editDescriptionTextState = TextFieldState(
+                        agendaItem.description ?: ""
                     )
-                }
-            }.launchIn(viewModelScope)
+                )
+            }
+        }
     }
-
 
     fun onTitleChanged(title: String) {
         uiState = uiState.copy(title = title)
@@ -145,7 +127,7 @@ class EditAgendaItemViewModel(
 
             AgendaItemType.EVENT -> {
                 AgendaItem.Event(
-                    id =  agendaItemId ?: UUID.randomUUID().toString(),
+                    id = agendaItemId ?: UUID.randomUUID().toString(),
                     title = uiState.title,
                     description = uiState.description,
                     time = uiState.dateTime.toMillis(),
@@ -159,11 +141,15 @@ class EditAgendaItemViewModel(
                 )
             }
         }
-        if (agendaItemId != null) {
-            agendaRepository.updateAgendaItem(savedAgendaItem)
-            alarmScheduler.cancel(savedAgendaItem)
-        } else {
-            agendaRepository.addAgendaItem(savedAgendaItem)
+
+        viewModelScope.launch {
+            if (agendaItemId != null) {
+                agendaRepository.updateAgendaItem(savedAgendaItem)
+                alarmScheduler.cancel(savedAgendaItem)
+            } else {
+
+                agendaRepository.addAgendaItem(savedAgendaItem)
+            }
         }
         alarmScheduler.schedule(savedAgendaItem)
     }
