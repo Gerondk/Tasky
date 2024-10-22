@@ -8,7 +8,6 @@ interface LocalAgendaDataSource {
     suspend fun addOrSaveAgendaItem(agendaItem: AgendaItem)
     suspend fun deleteAgendaItemById(id: String)
     suspend fun deleteAllAgendaItems()
-    suspend fun updateAgendaItem(agendaItem: AgendaItem)
     suspend fun getAgendaItemById(id: String): AgendaItem
     suspend fun updateAgendaItems(agendaItems: List<AgendaItem>)
 }

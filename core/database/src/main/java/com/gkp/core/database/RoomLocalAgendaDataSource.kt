@@ -28,15 +28,11 @@ class RoomLocalAgendaDataSource(
         agendaItemsDao.deleteAllAgendaItems()
     }
 
-    override suspend fun updateAgendaItem(agendaItem: AgendaItem) {
-        agendaItemsDao.upsertAgendaItem(agendaItem.toAgendaItemEntity())
-    }
-
     override suspend fun getAgendaItemById(id: String): AgendaItem {
         return agendaItemsDao.getAgendaItemById(id).toAgendaItem()
     }
 
     override suspend fun updateAgendaItems(agendaItems: List<AgendaItem>) {
-        agendaItemsDao.upsertAllAgendaItems(agendaItems.map { it.toAgendaItemEntity()})
+        agendaItemsDao.upsertAllAgendaItems(agendaItems.map { it.toAgendaItemEntity() })
     }
 }

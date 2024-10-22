@@ -1,10 +1,9 @@
 package com.gkp.agenda.data
 
 import com.gkp.agenda.domain.AgendaRepository
+import com.gkp.agenda.domain.datasource.LocalAgendaDataSource
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.auth.domain.session.SessionStorage
-import com.gkp.core.database.RoomLocalAgendaDataSource
-import com.gkp.core.domain.util.TaskyResult
 import com.gkp.core.network.TaskyRetrofitApi
 import com.gkp.core.network.model.buildEventBodyPart
 import com.gkp.core.network.model.buildPhotosPart
@@ -17,25 +16,25 @@ import kotlinx.coroutines.launch
 class OfflineAgendaRepository(
     private val taskyRetrofitApi: TaskyRetrofitApi,
     private val sessionStorage: SessionStorage,
-    private val roomLocalAgendaDataSource: RoomLocalAgendaDataSource,
+    private val localAgendaDataSource: LocalAgendaDataSource,
     private val scope: CoroutineScope,
 ) : AgendaRepository {
 
     override fun getAgendaItemsForDate(dateLong: Long): Flow<List<AgendaItem>> {
-        return roomLocalAgendaDataSource.getAgendaItemsForDate(dateLong)
+        return localAgendaDataSource.getAgendaItemsForDate(dateLong)
     }
 
     override suspend fun fetchAgendaItems() {
         networkApiCall {
             val agendaItems = taskyRetrofitApi.getFullAgenda().toAgendaItems()
-            roomLocalAgendaDataSource.deleteAllAgendaItems()
-            roomLocalAgendaDataSource.updateAgendaItems(agendaItems)
+            localAgendaDataSource.deleteAllAgendaItems()
+            localAgendaDataSource.updateAgendaItems(agendaItems)
         }.launchIn(scope).join()
     }
 
     override suspend fun addAgendaItem(agendaItem: AgendaItem) {
         val localAddJob = scope.launch {
-            roomLocalAgendaDataSource.addOrSaveAgendaItem(agendaItem)
+            localAgendaDataSource.addOrSaveAgendaItem(agendaItem)
         }
 
         when (agendaItem) {
@@ -50,6 +49,7 @@ class OfflineAgendaRepository(
                     taskyRetrofitApi.createTask(agendaItem.toTaskBody())
                 }
             }
+
             is AgendaItem.Event -> {
                 networkApiCall {
                     val eventBody = agendaItem.toEventBody()
@@ -68,7 +68,7 @@ class OfflineAgendaRepository(
 
     override suspend fun updateAgendaItem(agendaItem: AgendaItem) {
         val localUpdateJob = scope.launch {
-            roomLocalAgendaDataSource.addOrSaveAgendaItem(agendaItem)
+            localAgendaDataSource.addOrSaveAgendaItem(agendaItem)
         }
 
         when (agendaItem) {
@@ -101,8 +101,8 @@ class OfflineAgendaRepository(
     }
 
     override suspend fun deleteAgendaItem(agendaItem: AgendaItem) {
-        val  localDeleteJob = scope.launch {
-            roomLocalAgendaDataSource.deleteAgendaItemById(agendaItem.id)
+        val localDeleteJob = scope.launch {
+            localAgendaDataSource.deleteAgendaItemById(agendaItem.id)
         }
         when (agendaItem) {
             is AgendaItem.Event -> {
@@ -110,11 +110,13 @@ class OfflineAgendaRepository(
                     taskyRetrofitApi.deleteEvent(agendaItem.id)
                 }
             }
+
             is AgendaItem.Reminder -> {
                 networkApiCall {
                     taskyRetrofitApi.deleteReminder(agendaItem.id)
                 }
             }
+
             is AgendaItem.Task -> {
                 networkApiCall {
                     taskyRetrofitApi.deleteTask(agendaItem.id)
@@ -126,7 +128,7 @@ class OfflineAgendaRepository(
     }
 
     override suspend fun getAgendaItemForId(id: String): AgendaItem {
-        return roomLocalAgendaDataSource.getAgendaItemById(id)
+        return localAgendaDataSource.getAgendaItemById(id)
     }
 
     override fun logout() {
