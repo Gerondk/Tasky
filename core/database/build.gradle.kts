@@ -1,18 +1,15 @@
 plugins {
     alias(libs.plugins.tasky.android.library)
+    alias(libs.plugins.tasky.android.room)
 }
 
 android {
-    namespace = "com.gkp.agenda.data"
+    namespace = "com.gkp.core.database"
 
 }
 
 dependencies {
-    implementation(libs.kotlinx.coroutines.core)
     implementation(platform(libs.koin.bom))
     implementation(libs.bundles.koin)
-    implementation(projects.core.network)
     implementation(projects.agenda.domain)
-    implementation(projects.auth.domain)
-    implementation(projects.core.database)
 }

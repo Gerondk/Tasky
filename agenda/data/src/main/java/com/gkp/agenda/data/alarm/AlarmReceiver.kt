@@ -3,6 +3,7 @@ package com.gkp.agenda.data.alarm
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.gkp.agenda.domain.model.AgendaItemType
 import com.gkp.agenda.domain.notification.NotificationInfo
 import com.gkp.agenda.domain.notification.ReminderNotification
 import org.koin.java.KoinJavaComponent.inject
@@ -15,15 +16,18 @@ class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         intent?.let {
             with (it) {
-                val id = getStringExtra("EXTRA_ID") ?: return
-                val title = getStringExtra("EXTRA_TITLE") ?: ""
-                val description = getStringExtra("EXTRA_DESCRIPTION")?: ""
+                val id = getStringExtra(EXTRA_ID) ?: return
+                val title = getStringExtra(EXTRA_TITLE) ?: ""
+                val description = getStringExtra(EXTRA_DESCRIPTION) ?: ""
+                val agendaItemTypeOrdinal = getIntExtra(EXTRA_AGENDA_TYPE,-1)
+                val agendaItemType = AgendaItemType.entries[agendaItemTypeOrdinal]
 
                reminderNotification.showNotification(
                    NotificationInfo(
                        id = id ,
                        title = title ,
-                       description = description
+                       description = description,
+                       agendaItemType = agendaItemType
                    )
                )
             }

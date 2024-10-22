@@ -49,6 +49,9 @@ interface TaskyRetrofitApi {
         @Query("time") time: Long = System.currentTimeMillis()
     ): AgendaResponse
 
+    @GET("/fullAgenda")
+    suspend fun getFullAgenda(): AgendaResponse
+
     @POST("/task")
     suspend fun createTask(
         @Body taskBody: TaskBody

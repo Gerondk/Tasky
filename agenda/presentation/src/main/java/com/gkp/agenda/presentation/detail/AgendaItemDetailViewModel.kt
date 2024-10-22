@@ -15,6 +15,7 @@ import com.gkp.agenda.presentation.detail.navigation.AgendaItemDetailScreenRoute
 import com.gkp.agenda.presentation.edit.util.reminderLongToReminderTimeTextId
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class AgendaItemDetailViewModel(
     savedStateHandle: SavedStateHandle,
@@ -28,28 +29,10 @@ class AgendaItemDetailViewModel(
         val detailScreenRoute = savedStateHandle.toRoute<AgendaItemDetailScreenRoute>()
         val itemId = detailScreenRoute.agendaItemId
         val itemType = detailScreenRoute.agendaItemType
-        when (itemType) {
-            AgendaItemType.TASK -> {
-                agendaRepository.fetchAgendaItemTask(itemId).onEach { taskyResult ->
-                    val agendaItem = taskyResult.getDataOrNull()
-                    setUiState(agendaItem, itemType)
-                }
-            }
-
-            AgendaItemType.REMINDER -> {
-                agendaRepository.fetchAgendaItemReminder(itemId).onEach { taskyResult ->
-                    val agendaItem = taskyResult.getDataOrNull()
-                    setUiState(agendaItem, itemType)
-                }
-            }
-
-            AgendaItemType.EVENT -> {
-                agendaRepository.fetchAgendaItemEvent(itemId).onEach { taskyResult ->
-                    val agendaItem = taskyResult.getDataOrNull()
-                    setUiState(agendaItem, itemType)
-                }
-            }
-        }.launchIn(viewModelScope)
+        viewModelScope.launch {
+            val agendaItem = agendaRepository.getAgendaItemForId(itemId)
+            setUiState(agendaItem, itemType)
+        }
     }
 
     private fun setUiState(

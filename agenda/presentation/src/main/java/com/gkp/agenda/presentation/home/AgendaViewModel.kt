@@ -7,7 +7,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gkp.agenda.domain.AgendaRepository
-import com.gkp.agenda.domain.image.ImageReader
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.presentation.util.toMillis
 import com.gkp.auth.domain.session.SessionStorage
@@ -34,14 +33,18 @@ class AgendaViewModel(
         }
             .distinctUntilChanged()
             .flatMapLatest {
-                agendaRepository.fetchAgendaItems(it.toMillis())
+                agendaRepository.getAgendaItemsForDate(it.toMillis())
             }
-            .onEach { taskResult ->
-                val agendaItems = taskResult.getDataOrNull()?.sortedBy { it.time } ?: emptyList()
+            .onEach { items ->
+                val agendaItems = items.sortedBy { it.time }
                 agendaUiState = agendaUiState.copy(
                     agendaItems = agendaItems
                 )
             }.launchIn(viewModelScope)
+
+        viewModelScope.launch {
+            agendaRepository.fetchAgendaItems()
+        }
     }
 
 
@@ -65,26 +68,18 @@ class AgendaViewModel(
     }
 
     fun deleteAgendaItem(agendaItem: AgendaItem) {
-        agendaRepository.deleteAgendaItem(agendaItem)
+        viewModelScope.launch {
+            agendaRepository.deleteAgendaItem(agendaItem)
+        }
     }
 
     fun onTaskTitleClick(id: String) {
-        agendaUiState.agendaItems.indexOfFirst { it.id == id }.let {
-            if (it != -1) {
-                var item = agendaUiState.agendaItems[it]
-                val agendaItems = agendaUiState.agendaItems - item
-                item = if (item is AgendaItem.Task) {
-                    item.copy(isDone = !item.isDone)
-                } else {
-                    item
-
-                }
-                agendaUiState = agendaUiState.copy(
-                    agendaItems = agendaItems + item
-                )
+        viewModelScope.launch {
+            val item = agendaUiState.agendaItems.find { it.id == id } as? AgendaItem.Task
+            val toSaveItem = item?.copy(isDone = item.isDone.not())
+            toSaveItem?.let {
+                agendaRepository.updateAgendaItem(it)
             }
-
         }
-
     }
 }
