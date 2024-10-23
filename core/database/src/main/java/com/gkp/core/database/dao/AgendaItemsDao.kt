@@ -1,4 +1,4 @@
-package com.gkp.core.database
+package com.gkp.core.database.dao
 
 import androidx.room.Dao
 import androidx.room.Query

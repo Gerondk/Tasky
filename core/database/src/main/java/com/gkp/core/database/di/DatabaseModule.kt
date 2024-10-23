@@ -21,5 +21,12 @@ val dataBaseModule = module {
     single {
         get<AgendaItemsDatabase>().agendaItemsDao
     }
+    single {
+        get<AgendaItemsDatabase>().deletedAgendaItemsDao
+
+    }
+    single {
+        get<AgendaItemsDatabase>().createdAgendaItemsDao
+    }
     singleOf(::RoomLocalAgendaDataSource).bind<LocalAgendaDataSource>()
 }

@@ -11,6 +11,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(platform(libs.koin.bom))
     implementation(libs.bundles.koin)
+    implementation(libs.workmager.ktx)
     implementation(projects.core.network)
     implementation(projects.agenda.domain)
     implementation(projects.auth.domain)

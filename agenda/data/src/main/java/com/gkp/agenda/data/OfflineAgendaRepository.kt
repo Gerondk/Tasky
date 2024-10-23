@@ -3,6 +3,8 @@ package com.gkp.agenda.data
 import com.gkp.agenda.domain.AgendaRepository
 import com.gkp.agenda.domain.datasource.LocalAgendaDataSource
 import com.gkp.agenda.domain.model.AgendaItem
+import com.gkp.agenda.domain.model.AgendaItemType
+import com.gkp.agenda.domain.sync.SyncAgendaItems
 import com.gkp.auth.domain.session.SessionStorage
 import com.gkp.core.network.TaskyRetrofitApi
 import com.gkp.core.network.model.buildEventBodyPart
@@ -11,6 +13,7 @@ import com.gkp.core.network.util.networkApiCall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class OfflineAgendaRepository(
@@ -18,6 +21,7 @@ class OfflineAgendaRepository(
     private val sessionStorage: SessionStorage,
     private val localAgendaDataSource: LocalAgendaDataSource,
     private val scope: CoroutineScope,
+    private val syncAgendaItems: SyncAgendaItems
 ) : AgendaRepository {
 
     override fun getAgendaItemsForDate(dateLong: Long): Flow<List<AgendaItem>> {
@@ -43,13 +47,11 @@ class OfflineAgendaRepository(
                     taskyRetrofitApi.createReminder(agendaItem.toReminderBody())
                 }
             }
-
             is AgendaItem.Task -> {
                 networkApiCall {
                     taskyRetrofitApi.createTask(agendaItem.toTaskBody())
                 }
             }
-
             is AgendaItem.Event -> {
                 networkApiCall {
                     val eventBody = agendaItem.toEventBody()
@@ -61,6 +63,19 @@ class OfflineAgendaRepository(
                     )
                 }
             }
+        }.onEach {
+            val error = it.getErrorOrNull()
+            error?.let {
+                localAgendaDataSource.saveCreatedAgendaItem(
+                    agendaItemId = agendaItem.id,
+                    userId = sessionStorage.getAuthInfo().userId
+                )
+                syncAgendaItems.syncCreatedAgendaItem(
+                    agendaItemId = agendaItem.id,
+                    agendaItemType = agendaItem.getType()
+                )
+            }
+
         }.launchIn(scope)
 
         localAddJob.join()
@@ -104,6 +119,8 @@ class OfflineAgendaRepository(
         val localDeleteJob = scope.launch {
             localAgendaDataSource.deleteAgendaItemById(agendaItem.id)
         }
+        val agendaItemType = agendaItem.getType()
+
         when (agendaItem) {
             is AgendaItem.Event -> {
                 networkApiCall {
@@ -121,6 +138,18 @@ class OfflineAgendaRepository(
                 networkApiCall {
                     taskyRetrofitApi.deleteTask(agendaItem.id)
                 }
+            }
+        }.onEach {
+            val error = it.getErrorOrNull()
+            error?.let {
+                localAgendaDataSource.saveAgendaDeletedItem(
+                    agendaItemId = agendaItem.id,
+                    userId = sessionStorage.getAuthInfo().userId
+                )
+                syncAgendaItems.syncDeletedAgendaItem(
+                    agendaItemId = agendaItem.id,
+                    agendaItemType = agendaItemType
+                )
             }
         }.launchIn(scope)
 
