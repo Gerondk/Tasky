@@ -1,5 +1,7 @@
 package com.gkp.tasky.di
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.gkp.agenda.data.di.agendaDataModule
 import com.gkp.agenda.presentation.di.agendaPresentationModule
 import com.gkp.auth.data.di.authDataModule
@@ -10,6 +12,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
+@RequiresApi(Build.VERSION_CODES.O)
 val appModule = module {
     includes(
         authPresentationModule,

@@ -3,7 +3,10 @@ package com.gkp.agenda.data
 import com.gkp.agenda.domain.AgendaRepository
 import com.gkp.agenda.domain.datasource.LocalAgendaDataSource
 import com.gkp.agenda.domain.model.AgendaItem
+import com.gkp.agenda.domain.sync.SyncAgendaItems
 import com.gkp.auth.domain.session.SessionStorage
+import com.gkp.core.database.dao.UpdatedAgendaItemsDao
+import com.gkp.core.database.entity.UpdatedAgendaItemEntity
 import com.gkp.core.network.TaskyRetrofitApi
 import com.gkp.core.network.model.buildEventBodyPart
 import com.gkp.core.network.model.buildPhotosPart
@@ -11,6 +14,7 @@ import com.gkp.core.network.util.networkApiCall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class OfflineAgendaRepository(
@@ -18,6 +22,8 @@ class OfflineAgendaRepository(
     private val sessionStorage: SessionStorage,
     private val localAgendaDataSource: LocalAgendaDataSource,
     private val scope: CoroutineScope,
+    private val syncAgendaItems: SyncAgendaItems,
+    private val updatedAgendaItemsDao: UpdatedAgendaItemsDao,
 ) : AgendaRepository {
 
     override fun getAgendaItemsForDate(dateLong: Long): Flow<List<AgendaItem>> {
@@ -61,6 +67,18 @@ class OfflineAgendaRepository(
                     )
                 }
             }
+        }.onEach {
+            val error = it.getErrorOrNull()
+            error?.let {
+                localAgendaDataSource.saveCreatedAgendaItem(
+                    agendaItemId = agendaItem.id,
+                    userId = sessionStorage.getAuthInfo().userId
+                )
+                syncAgendaItems.syncCreatedAgendaItem(
+                    agendaItemId = agendaItem.id,
+                )
+            }
+
         }.launchIn(scope)
 
         localAddJob.join()
@@ -95,15 +113,31 @@ class OfflineAgendaRepository(
                     taskyRetrofitApi.updateTask(agendaItem.toTaskBody())
                 }
             }
+        }.onEach {
+            val error = it.getErrorOrNull()
+            error?.let {
+                updatedAgendaItemsDao.upsertUpdatedItem(
+                    UpdatedAgendaItemEntity(
+                        id = agendaItem.id,
+                        userId = sessionStorage.getAuthInfo().userId
+                    )
+                )
+                syncAgendaItems.syncUpdatedAgendaItem(
+                    agendaItemId = agendaItem.id,
+                )
+            }
         }.launchIn(scope)
 
         localUpdateJob.join()
+        println("ATMS Update item done")
     }
 
     override suspend fun deleteAgendaItem(agendaItem: AgendaItem) {
         val localDeleteJob = scope.launch {
             localAgendaDataSource.deleteAgendaItemById(agendaItem.id)
         }
+        val agendaItemType = agendaItem.getType()
+
         when (agendaItem) {
             is AgendaItem.Event -> {
                 networkApiCall {
@@ -121,6 +155,18 @@ class OfflineAgendaRepository(
                 networkApiCall {
                     taskyRetrofitApi.deleteTask(agendaItem.id)
                 }
+            }
+        }.onEach {
+            val error = it.getErrorOrNull()
+            error?.let {
+                localAgendaDataSource.saveAgendaDeletedItem(
+                    agendaItemId = agendaItem.id,
+                    userId = sessionStorage.getAuthInfo().userId
+                )
+                syncAgendaItems.syncDeletedAgendaItem(
+                    agendaItemId = agendaItem.id,
+                    agendaItemType = agendaItemType
+                )
             }
         }.launchIn(scope)
 

@@ -26,6 +26,7 @@ ksp = "2.0.20-1.0.24"
 room = "2.6.1"
 
 desugar_jdk_libs = "2.1.2"
+workManger = "2.9.1"
 
 # Project versions
 projectApplicationId = "com.gkp.tasky"
@@ -102,6 +103,9 @@ ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devto
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+# Workmanger
+workmager-ktx = {group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManger"}
 
 
 [plugins]
