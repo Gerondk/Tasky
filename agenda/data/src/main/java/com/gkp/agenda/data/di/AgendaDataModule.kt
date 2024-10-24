@@ -9,6 +9,7 @@ import com.gkp.agenda.data.image.AndroidImageReader
 import com.gkp.agenda.data.notification.AgendaItemReminderNotification
 import com.gkp.agenda.data.workers.CreatedItemsWorker
 import com.gkp.agenda.data.workers.DeletedItemsWorker
+import com.gkp.agenda.data.workers.UpdatedItemsWorker
 import com.gkp.agenda.domain.AgendaRepository
 import com.gkp.agenda.domain.alarm.AlarmScheduler
 import com.gkp.agenda.domain.image.ImageReader
@@ -32,4 +33,5 @@ val agendaDataModule = module {
     singleOf(::WorkerSync).bind<SyncAgendaItems>()
     workerOf(::DeletedItemsWorker)
     workerOf(::CreatedItemsWorker)
+    workerOf(::UpdatedItemsWorker)
 }

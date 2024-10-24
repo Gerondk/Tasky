@@ -20,7 +20,7 @@ class DeletedItemsWorker(
         val agendaItemId = inputData.getString(AGENDA_ITEM_ID) ?: return Result.failure()
         val agendaItemType = inputData.getString(AGENDA_ITEM_TYPE) ?: return Result.failure()
         val type = AgendaItemType.valueOf(agendaItemType)
-       if(runAttemptCount > 3 ){
+       if(runAttemptCount >= 5 ){
            return Result.failure()
        }
        return try {
@@ -29,7 +29,7 @@ class DeletedItemsWorker(
            Result.success()
        } catch (e: Exception) {
            currentCoroutineContext().ensureActive()
-           Result.failure()
+           Result.retry()
        }
     }
 

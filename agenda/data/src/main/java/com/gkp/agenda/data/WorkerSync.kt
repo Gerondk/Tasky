@@ -12,6 +12,7 @@ import com.gkp.agenda.data.workers.AGENDA_ITEM_ID
 import com.gkp.agenda.data.workers.AGENDA_ITEM_TYPE
 import com.gkp.agenda.data.workers.CreatedItemsWorker
 import com.gkp.agenda.data.workers.DeletedItemsWorker
+import com.gkp.agenda.data.workers.UpdatedItemsWorker
 import com.gkp.agenda.domain.model.AgendaItemType
 import com.gkp.agenda.domain.sync.SyncAgendaItems
 import java.util.concurrent.TimeUnit
@@ -50,7 +51,6 @@ class WorkerSync(
 
     override suspend fun syncCreatedAgendaItem(
         agendaItemId: String,
-        agendaItemType: AgendaItemType,
     ) {
         val request = OneTimeWorkRequestBuilder<CreatedItemsWorker>()
             .setConstraints(
@@ -67,12 +67,31 @@ class WorkerSync(
                 Data.Builder().putString(
                     AGENDA_ITEM_ID,
                     agendaItemId
-                ).putString(
-                    AGENDA_ITEM_TYPE,
-                    agendaItemType.name
                 ).build()
             ).build()
 
         workManager.enqueue(request).await()
     }
+
+    override suspend fun syncUpdatedAgendaItem(agendaItemId: String) {
+        val request = OneTimeWorkRequestBuilder<UpdatedItemsWorker>()
+            .setConstraints(
+                constraints = Constraints.Builder().setRequiredNetworkType(
+                    NetworkType.CONNECTED
+                ).build()
+            )
+            .setInputData(
+                Data.Builder().putString(
+                    AGENDA_ITEM_ID,
+                    agendaItemId
+                ).build()
+            )
+            .setBackoffCriteria(
+                backoffPolicy = BackoffPolicy.EXPONENTIAL,
+                backoffDelay = 2000L,
+                timeUnit = TimeUnit.MILLISECONDS
+            ).build()
+        workManager.enqueue(request).await()
+    }
+
 }

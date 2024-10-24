@@ -9,50 +9,51 @@ import com.gkp.agenda.data.toTaskBody
 import com.gkp.agenda.domain.datasource.LocalAgendaDataSource
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.domain.model.AgendaItemType
-import com.gkp.core.database.dao.CreatedAgendaItemsDao
+import com.gkp.core.database.dao.UpdatedAgendaItemsDao
 import com.gkp.core.network.TaskyRetrofitApi
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 
-class CreatedItemsWorker(
+class UpdatedItemsWorker(
     private val taskyRetrofitApi: TaskyRetrofitApi,
-    private val localDataSource: LocalAgendaDataSource,
-    private val createdAgendaItemsDao: CreatedAgendaItemsDao,
+    private val localAgendaDataSource: LocalAgendaDataSource,
+    private val updatedItemsDao: UpdatedAgendaItemsDao,
     context: Context,
-    params: WorkerParameters,
+    params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        if (runAttemptCount >= 5) {
+        if ( runAttemptCount >= 5) {
             return Result.failure()
+
         }
         val agendaItemId = inputData.getString(AGENDA_ITEM_ID) ?: return Result.failure()
         return try {
-            val agendaItem = localDataSource.getAgendaItemById(agendaItemId)
-            performPushCreatedRequest(agendaItem)
-            createdAgendaItemsDao.deleteById(agendaItemId)
-
+            val agendaItem = localAgendaDataSource.getAgendaItemById(agendaItemId)
+            performedRemoteUpdate(agendaItem)
+            updatedItemsDao.deleteById(agendaItemId)
+            println(" ATMS UpdatedItemsWorker: success")
             Result.success()
         } catch (e: Exception) {
             currentCoroutineContext().ensureActive()
+            println(" ATMS UpdatedItemsWorker: retry")
             Result.retry()
         }
-
     }
 
-    private suspend fun performPushCreatedRequest(agendaItem: AgendaItem) {
+    private suspend fun performedRemoteUpdate(agendaItem: AgendaItem) {
         when (agendaItem.getType()) {
             AgendaItemType.TASK -> {
-                val taskItem = agendaItem as AgendaItem.Task
-                taskyRetrofitApi.createTask(taskItem.toTaskBody())
+                val task = agendaItem as AgendaItem.Task
+                taskyRetrofitApi.updateTask(task.toTaskBody())
             }
             AgendaItemType.REMINDER -> {
-                val reminderItem = agendaItem as AgendaItem.Reminder
-                taskyRetrofitApi.createReminder(reminderItem.toReminderBody())
+                val reminder = agendaItem as AgendaItem.Reminder
+                taskyRetrofitApi.updateReminder(reminder.toReminderBody())
             }
             AgendaItemType.EVENT -> {
-                // TODO: save in images in the db not done yet
-                val eventItem = agendaItem as AgendaItem.Event
+                // TODO: handle images need to implemented
+                val event = agendaItem as AgendaItem.Event
             }
         }
     }

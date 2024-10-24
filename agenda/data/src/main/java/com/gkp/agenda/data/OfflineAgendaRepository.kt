@@ -3,9 +3,10 @@ package com.gkp.agenda.data
 import com.gkp.agenda.domain.AgendaRepository
 import com.gkp.agenda.domain.datasource.LocalAgendaDataSource
 import com.gkp.agenda.domain.model.AgendaItem
-import com.gkp.agenda.domain.model.AgendaItemType
 import com.gkp.agenda.domain.sync.SyncAgendaItems
 import com.gkp.auth.domain.session.SessionStorage
+import com.gkp.core.database.dao.UpdatedAgendaItemsDao
+import com.gkp.core.database.entity.UpdatedAgendaItemEntity
 import com.gkp.core.network.TaskyRetrofitApi
 import com.gkp.core.network.model.buildEventBodyPart
 import com.gkp.core.network.model.buildPhotosPart
@@ -21,7 +22,8 @@ class OfflineAgendaRepository(
     private val sessionStorage: SessionStorage,
     private val localAgendaDataSource: LocalAgendaDataSource,
     private val scope: CoroutineScope,
-    private val syncAgendaItems: SyncAgendaItems
+    private val syncAgendaItems: SyncAgendaItems,
+    private val updatedAgendaItemsDao: UpdatedAgendaItemsDao,
 ) : AgendaRepository {
 
     override fun getAgendaItemsForDate(dateLong: Long): Flow<List<AgendaItem>> {
@@ -47,11 +49,13 @@ class OfflineAgendaRepository(
                     taskyRetrofitApi.createReminder(agendaItem.toReminderBody())
                 }
             }
+
             is AgendaItem.Task -> {
                 networkApiCall {
                     taskyRetrofitApi.createTask(agendaItem.toTaskBody())
                 }
             }
+
             is AgendaItem.Event -> {
                 networkApiCall {
                     val eventBody = agendaItem.toEventBody()
@@ -72,7 +76,6 @@ class OfflineAgendaRepository(
                 )
                 syncAgendaItems.syncCreatedAgendaItem(
                     agendaItemId = agendaItem.id,
-                    agendaItemType = agendaItem.getType()
                 )
             }
 
@@ -110,9 +113,23 @@ class OfflineAgendaRepository(
                     taskyRetrofitApi.updateTask(agendaItem.toTaskBody())
                 }
             }
+        }.onEach {
+            val error = it.getErrorOrNull()
+            error?.let {
+                updatedAgendaItemsDao.upsertUpdatedItem(
+                    UpdatedAgendaItemEntity(
+                        id = agendaItem.id,
+                        userId = sessionStorage.getAuthInfo().userId
+                    )
+                )
+                syncAgendaItems.syncUpdatedAgendaItem(
+                    agendaItemId = agendaItem.id,
+                )
+            }
         }.launchIn(scope)
 
         localUpdateJob.join()
+        println("ATMS Update item done")
     }
 
     override suspend fun deleteAgendaItem(agendaItem: AgendaItem) {
