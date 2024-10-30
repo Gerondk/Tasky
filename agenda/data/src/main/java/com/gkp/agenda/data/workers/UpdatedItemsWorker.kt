@@ -9,6 +9,7 @@ import com.gkp.agenda.data.toTaskBody
 import com.gkp.agenda.domain.datasource.LocalAgendaDataSource
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.domain.model.AgendaItemType
+import com.gkp.auth.domain.session.SessionStorage
 import com.gkp.core.database.dao.UpdatedAgendaItemsDao
 import com.gkp.core.network.TaskyRetrofitApi
 import kotlinx.coroutines.currentCoroutineContext
@@ -18,11 +19,15 @@ class UpdatedItemsWorker(
     private val taskyRetrofitApi: TaskyRetrofitApi,
     private val localAgendaDataSource: LocalAgendaDataSource,
     private val updatedItemsDao: UpdatedAgendaItemsDao,
+    private val sessionStorage: SessionStorage,
     context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
+        if (sessionStorage.getAuthInfo().accessToken.isBlank()){
+            return Result.failure()
+        }
         if ( runAttemptCount >= 5) {
             return Result.failure()
 
@@ -32,11 +37,9 @@ class UpdatedItemsWorker(
             val agendaItem = localAgendaDataSource.getAgendaItemById(agendaItemId)
             performedRemoteUpdate(agendaItem)
             updatedItemsDao.deleteById(agendaItemId)
-            println(" ATMS UpdatedItemsWorker: success")
             Result.success()
         } catch (e: Exception) {
             currentCoroutineContext().ensureActive()
-            println(" ATMS UpdatedItemsWorker: retry")
             Result.retry()
         }
     }

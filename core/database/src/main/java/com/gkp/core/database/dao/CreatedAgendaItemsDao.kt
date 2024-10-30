@@ -14,4 +14,7 @@ interface CreatedAgendaItemsDao {
     @Upsert
     suspend fun upsert(item: CreatedAgendaItemEntity)
 
+    @Query("SELECT * FROM CreatedAgendaItemEntity WHERE userId = :userId")
+    suspend fun getCreatedAgendaItemsByUserId(userId: String): List<CreatedAgendaItemEntity>
+
 }

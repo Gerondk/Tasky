@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.map
 
 class RoomLocalAgendaDataSource(
     private val agendaItemsDao: AgendaItemsDao,
-    private val deletedAgendaItemsDao: DeletedAgendaItemsDao,
     private val createdAgendaItemsDao: CreatedAgendaItemsDao
 ) : LocalAgendaDataSource {
     override fun getAgendaItemsForDate(dateLong: Long): Flow<List<AgendaItem>> {
@@ -41,15 +40,6 @@ class RoomLocalAgendaDataSource(
 
     override suspend fun updateAgendaItems(agendaItems: List<AgendaItem>) {
         agendaItemsDao.upsertAllAgendaItems(agendaItems.map { it.toAgendaItemEntity() })
-    }
-
-    override suspend fun saveAgendaDeletedItem(agendaItemId: String, userId: String) {
-        deletedAgendaItemsDao.upsert(
-            DeletedAgendaItemEntity(
-                id = agendaItemId,
-                userId = userId
-            )
-        )
     }
 
     override suspend fun saveCreatedAgendaItem(agendaItemId: String, userId: String) {

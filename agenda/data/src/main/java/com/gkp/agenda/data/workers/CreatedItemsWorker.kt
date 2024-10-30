@@ -9,6 +9,7 @@ import com.gkp.agenda.data.toTaskBody
 import com.gkp.agenda.domain.datasource.LocalAgendaDataSource
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.domain.model.AgendaItemType
+import com.gkp.auth.domain.session.SessionStorage
 import com.gkp.core.database.dao.CreatedAgendaItemsDao
 import com.gkp.core.network.TaskyRetrofitApi
 import kotlinx.coroutines.currentCoroutineContext
@@ -18,11 +19,17 @@ class CreatedItemsWorker(
     private val taskyRetrofitApi: TaskyRetrofitApi,
     private val localDataSource: LocalAgendaDataSource,
     private val createdAgendaItemsDao: CreatedAgendaItemsDao,
+    private val sessionStorage: SessionStorage,
     context: Context,
     params: WorkerParameters,
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
+
+        if (sessionStorage.getAuthInfo().accessToken.isBlank()){
+            return Result.failure()
+        }
+
         if (runAttemptCount >= 5) {
             return Result.failure()
         }

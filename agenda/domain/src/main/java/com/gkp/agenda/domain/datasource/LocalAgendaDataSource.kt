@@ -10,6 +10,5 @@ interface LocalAgendaDataSource {
     suspend fun deleteAllAgendaItems()
     suspend fun getAgendaItemById(id: String): AgendaItem
     suspend fun updateAgendaItems(agendaItems: List<AgendaItem>)
-    suspend fun saveAgendaDeletedItem(agendaItemId: String, userId: String)
     suspend fun saveCreatedAgendaItem(agendaItemId: String, userId: String)
 }

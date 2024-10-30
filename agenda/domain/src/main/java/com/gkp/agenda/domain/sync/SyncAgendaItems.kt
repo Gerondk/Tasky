@@ -6,4 +6,6 @@ interface SyncAgendaItems {
     suspend fun syncDeletedAgendaItem(agendaItemId: String, agendaItemType: AgendaItemType)
     suspend fun syncCreatedAgendaItem(agendaItemId: String)
     suspend fun syncUpdatedAgendaItem(agendaItemId: String)
+    suspend fun syncFullAgenda()
+    suspend fun cancelWorkers()
 }
