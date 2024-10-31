@@ -3,9 +3,9 @@ package com.gkp.core.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.gkp.core.database.dao.AgendaItemsDao
-import com.gkp.core.database.dao.CreatedAgendaItemsDao
-import com.gkp.core.database.dao.DeletedAgendaItemsDao
-import com.gkp.core.database.dao.UpdatedAgendaItemsDao
+import com.gkp.core.database.dao.PendingSyncCreatedAgendaItemsDao
+import com.gkp.core.database.dao.PendingSyncDeletedAgendaItemsDao
+import com.gkp.core.database.dao.PendingSyncUpdatedAgendaItemsDao
 import com.gkp.core.database.entity.AgendaItemEntity
 import com.gkp.core.database.entity.CreatedAgendaItemEntity
 import com.gkp.core.database.entity.DeletedAgendaItemEntity
@@ -23,7 +23,7 @@ import com.gkp.core.database.entity.UpdatedAgendaItemEntity
 )
 abstract class AgendaItemsDatabase : RoomDatabase() {
     abstract val agendaItemsDao: AgendaItemsDao
-    abstract val deletedAgendaItemsDao: DeletedAgendaItemsDao
-    abstract val createdAgendaItemsDao: CreatedAgendaItemsDao
-    abstract val updatedAgendaItemsDao: UpdatedAgendaItemsDao
+    abstract val deletedAgendaItemsDao: PendingSyncDeletedAgendaItemsDao
+    abstract val createdAgendaItemsDao: PendingSyncCreatedAgendaItemsDao
+    abstract val updatedAgendaItemsDao: PendingSyncUpdatedAgendaItemsDao
 }

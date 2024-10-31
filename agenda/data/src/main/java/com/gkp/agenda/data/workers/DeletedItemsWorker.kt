@@ -5,14 +5,14 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.gkp.agenda.domain.model.AgendaItemType
 import com.gkp.auth.domain.session.SessionStorage
-import com.gkp.core.database.dao.DeletedAgendaItemsDao
+import com.gkp.core.database.dao.PendingSyncDeletedAgendaItemsDao
 import com.gkp.core.network.TaskyRetrofitApi
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 
 class DeletedItemsWorker(
     private val taskyRetrofitApi: TaskyRetrofitApi,
-    private val deletedAgendaItemsDao: DeletedAgendaItemsDao,
+    private val pendingSyncDeletedAgendaItemsDao: PendingSyncDeletedAgendaItemsDao,
     private val sessionStorage: SessionStorage,
     context: Context,
     workerParams: WorkerParameters,
@@ -32,7 +32,7 @@ class DeletedItemsWorker(
         val type = AgendaItemType.valueOf(agendaItemType)
        return try {
            performDelete(agendaItemId, type)
-           deletedAgendaItemsDao.deleteForId(agendaItemId)
+           pendingSyncDeletedAgendaItemsDao.deleteForId(agendaItemId)
            Result.success()
        } catch (e: Exception) {
            currentCoroutineContext().ensureActive()

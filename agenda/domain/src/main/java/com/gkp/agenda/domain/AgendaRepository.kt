@@ -20,5 +20,5 @@ interface AgendaRepository {
 
     suspend fun periodicalSyncAgendaItems()
 
-    fun logout()
+    suspend fun logout()
 }

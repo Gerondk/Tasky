@@ -6,9 +6,9 @@ import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.domain.model.AgendaItemType
 import com.gkp.agenda.domain.sync.SyncAgendaItems
 import com.gkp.auth.domain.session.SessionStorage
-import com.gkp.core.database.dao.CreatedAgendaItemsDao
-import com.gkp.core.database.dao.DeletedAgendaItemsDao
-import com.gkp.core.database.dao.UpdatedAgendaItemsDao
+import com.gkp.core.database.dao.PendingSyncCreatedAgendaItemsDao
+import com.gkp.core.database.dao.PendingSyncDeletedAgendaItemsDao
+import com.gkp.core.database.dao.PendingSyncUpdatedAgendaItemsDao
 import com.gkp.core.database.entity.DeletedAgendaItemEntity
 import com.gkp.core.database.entity.UpdatedAgendaItemEntity
 import com.gkp.core.network.TaskyRetrofitApi
@@ -28,9 +28,9 @@ class OfflineAgendaRepository(
     private val localAgendaDataSource: LocalAgendaDataSource,
     private val scope: CoroutineScope,
     private val syncAgendaItems: SyncAgendaItems,
-    private val updatedAgendaItemsDao: UpdatedAgendaItemsDao,
-    private val deletedAgendaItemsDao: DeletedAgendaItemsDao,
-    private val createdAgendaItemsDao: CreatedAgendaItemsDao
+    private val pendingSyncUpdatedAgendaItemsDao: PendingSyncUpdatedAgendaItemsDao,
+    private val pendingSyncDeletedAgendaItemsDao: PendingSyncDeletedAgendaItemsDao,
+    private val pendingSyncCreatedAgendaItemsDao: PendingSyncCreatedAgendaItemsDao
 ) : AgendaRepository {
 
     override fun getAgendaItemsForDate(dateLong: Long): Flow<List<AgendaItem>> {
@@ -123,7 +123,7 @@ class OfflineAgendaRepository(
         }.onEach {
             val error = it.getErrorOrNull()
             error?.let {
-                updatedAgendaItemsDao.upsertUpdatedItem(
+                pendingSyncUpdatedAgendaItemsDao.upsertUpdatedItem(
                     UpdatedAgendaItemEntity(
                         id = agendaItem.id,
                         userId = sessionStorage.getAuthInfo().userId
@@ -165,7 +165,7 @@ class OfflineAgendaRepository(
         }.onEach {
             val error = it.getErrorOrNull()
             error?.let {
-                deletedAgendaItemsDao.upsert(
+                pendingSyncDeletedAgendaItemsDao.upsert(
                     DeletedAgendaItemEntity(
                         id = agendaItem.id,
                         userId = sessionStorage.getAuthInfo().userId,
@@ -188,7 +188,7 @@ class OfflineAgendaRepository(
 
     override suspend fun pushOfflineAgendaItems() {
         val userId = sessionStorage.getAuthInfo().userId
-        val offlineDeletedAgendaItems = deletedAgendaItemsDao.getAllDeletedAgendaItemsForUser(userId)
+        val offlineDeletedAgendaItems = pendingSyncDeletedAgendaItemsDao.getAllDeletedAgendaItemsForUser(userId)
 
         val deletedJobs = offlineDeletedAgendaItems.map { deletedAgendaItem ->
             scope.launch {
@@ -199,7 +199,7 @@ class OfflineAgendaRepository(
             }
         }
 
-        val offlineUpdatedAgendaItems = updatedAgendaItemsDao.getUpdatedItemsByUserId(userId)
+        val offlineUpdatedAgendaItems = pendingSyncUpdatedAgendaItemsDao.getUpdatedItemsByUserId(userId)
         val updatedJobs = offlineUpdatedAgendaItems.map { updatedAgendaItem ->
             scope.launch {
                 syncAgendaItems.syncUpdatedAgendaItem(
@@ -208,7 +208,7 @@ class OfflineAgendaRepository(
             }
         }
 
-        val offlineCreatedAgendaItems = createdAgendaItemsDao.getCreatedAgendaItemsByUserId(userId)
+        val offlineCreatedAgendaItems = pendingSyncCreatedAgendaItemsDao.getCreatedAgendaItemsByUserId(userId)
         val createdJobs = offlineCreatedAgendaItems.map { createdAgendaItem ->
             scope.launch {
                 syncAgendaItems.syncCreatedAgendaItem(
@@ -226,11 +226,14 @@ class OfflineAgendaRepository(
         syncAgendaItems.syncFullAgenda()
     }
 
-    override fun logout() {
+    override suspend fun logout() {
         networkApiCall {
-            sessionStorage.resetAuthInfo()
             syncAgendaItems.cancelWorkers()
+            localAgendaDataSource.deleteAllAgendaItems()
             taskyRetrofitApi.logout()
-        }.launchIn(scope)
+        }.launchIn(scope).join()
+        scope.launch {
+            sessionStorage.resetAuthInfo()
+        }.join()
     }
 }

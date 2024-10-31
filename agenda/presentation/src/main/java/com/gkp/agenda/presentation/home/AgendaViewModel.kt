@@ -58,7 +58,9 @@ class AgendaViewModel(
     }
 
     fun logout() {
-        agendaRepository.logout()
+        viewModelScope.launch {
+            agendaRepository.logout()
+        }
     }
 
     private fun setFullName() {

@@ -6,7 +6,7 @@ import androidx.room.Upsert
 import com.gkp.core.database.entity.DeletedAgendaItemEntity
 
 @Dao
-interface DeletedAgendaItemsDao {
+interface PendingSyncDeletedAgendaItemsDao {
 
     @Query("SELECT * FROM deletedagendaitementity WHERE userId = :userId")
     suspend fun getAllDeletedAgendaItemsForUser(userId: String): List<DeletedAgendaItemEntity>
