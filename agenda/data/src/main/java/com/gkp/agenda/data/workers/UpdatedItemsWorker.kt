@@ -9,7 +9,8 @@ import com.gkp.agenda.data.toTaskBody
 import com.gkp.agenda.domain.datasource.LocalAgendaDataSource
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.domain.model.AgendaItemType
-import com.gkp.core.database.dao.UpdatedAgendaItemsDao
+import com.gkp.auth.domain.session.SessionStorage
+import com.gkp.core.database.dao.PendingSyncUpdatedAgendaItemsDao
 import com.gkp.core.network.TaskyRetrofitApi
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
@@ -17,12 +18,16 @@ import kotlinx.coroutines.ensureActive
 class UpdatedItemsWorker(
     private val taskyRetrofitApi: TaskyRetrofitApi,
     private val localAgendaDataSource: LocalAgendaDataSource,
-    private val updatedItemsDao: UpdatedAgendaItemsDao,
+    private val pendingSyncUpdatedItemsDao: PendingSyncUpdatedAgendaItemsDao,
+    private val sessionStorage: SessionStorage,
     context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
+        if (sessionStorage.getAuthInfo().accessToken.isBlank()){
+            return Result.failure()
+        }
         if ( runAttemptCount >= 5) {
             return Result.failure()
 
@@ -31,12 +36,10 @@ class UpdatedItemsWorker(
         return try {
             val agendaItem = localAgendaDataSource.getAgendaItemById(agendaItemId)
             performedRemoteUpdate(agendaItem)
-            updatedItemsDao.deleteById(agendaItemId)
-            println(" ATMS UpdatedItemsWorker: success")
+            pendingSyncUpdatedItemsDao.deleteById(agendaItemId)
             Result.success()
         } catch (e: Exception) {
             currentCoroutineContext().ensureActive()
-            println(" ATMS UpdatedItemsWorker: retry")
             Result.retry()
         }
     }

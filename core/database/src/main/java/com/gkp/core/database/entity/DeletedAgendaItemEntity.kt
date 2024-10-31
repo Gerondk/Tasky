@@ -8,4 +8,5 @@ data class DeletedAgendaItemEntity(
    @PrimaryKey
     val id: String,
     val userId: String,
+    val agendaItemType: String,
 )

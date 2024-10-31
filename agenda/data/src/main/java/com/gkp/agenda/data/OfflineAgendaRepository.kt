@@ -3,9 +3,13 @@ package com.gkp.agenda.data
 import com.gkp.agenda.domain.AgendaRepository
 import com.gkp.agenda.domain.datasource.LocalAgendaDataSource
 import com.gkp.agenda.domain.model.AgendaItem
+import com.gkp.agenda.domain.model.AgendaItemType
 import com.gkp.agenda.domain.sync.SyncAgendaItems
 import com.gkp.auth.domain.session.SessionStorage
-import com.gkp.core.database.dao.UpdatedAgendaItemsDao
+import com.gkp.core.database.dao.PendingSyncCreatedAgendaItemsDao
+import com.gkp.core.database.dao.PendingSyncDeletedAgendaItemsDao
+import com.gkp.core.database.dao.PendingSyncUpdatedAgendaItemsDao
+import com.gkp.core.database.entity.DeletedAgendaItemEntity
 import com.gkp.core.database.entity.UpdatedAgendaItemEntity
 import com.gkp.core.network.TaskyRetrofitApi
 import com.gkp.core.network.model.buildEventBodyPart
@@ -15,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 class OfflineAgendaRepository(
@@ -23,7 +28,9 @@ class OfflineAgendaRepository(
     private val localAgendaDataSource: LocalAgendaDataSource,
     private val scope: CoroutineScope,
     private val syncAgendaItems: SyncAgendaItems,
-    private val updatedAgendaItemsDao: UpdatedAgendaItemsDao,
+    private val pendingSyncUpdatedAgendaItemsDao: PendingSyncUpdatedAgendaItemsDao,
+    private val pendingSyncDeletedAgendaItemsDao: PendingSyncDeletedAgendaItemsDao,
+    private val pendingSyncCreatedAgendaItemsDao: PendingSyncCreatedAgendaItemsDao
 ) : AgendaRepository {
 
     override fun getAgendaItemsForDate(dateLong: Long): Flow<List<AgendaItem>> {
@@ -116,7 +123,7 @@ class OfflineAgendaRepository(
         }.onEach {
             val error = it.getErrorOrNull()
             error?.let {
-                updatedAgendaItemsDao.upsertUpdatedItem(
+                pendingSyncUpdatedAgendaItemsDao.upsertUpdatedItem(
                     UpdatedAgendaItemEntity(
                         id = agendaItem.id,
                         userId = sessionStorage.getAuthInfo().userId
@@ -129,7 +136,6 @@ class OfflineAgendaRepository(
         }.launchIn(scope)
 
         localUpdateJob.join()
-        println("ATMS Update item done")
     }
 
     override suspend fun deleteAgendaItem(agendaItem: AgendaItem) {
@@ -159,9 +165,12 @@ class OfflineAgendaRepository(
         }.onEach {
             val error = it.getErrorOrNull()
             error?.let {
-                localAgendaDataSource.saveAgendaDeletedItem(
-                    agendaItemId = agendaItem.id,
-                    userId = sessionStorage.getAuthInfo().userId
+                pendingSyncDeletedAgendaItemsDao.upsert(
+                    DeletedAgendaItemEntity(
+                        id = agendaItem.id,
+                        userId = sessionStorage.getAuthInfo().userId,
+                        agendaItemType = agendaItemType.name
+                    )
                 )
                 syncAgendaItems.syncDeletedAgendaItem(
                     agendaItemId = agendaItem.id,
@@ -177,10 +186,54 @@ class OfflineAgendaRepository(
         return localAgendaDataSource.getAgendaItemById(id)
     }
 
-    override fun logout() {
+    override suspend fun pushOfflineAgendaItems() {
+        val userId = sessionStorage.getAuthInfo().userId
+        val offlineDeletedAgendaItems = pendingSyncDeletedAgendaItemsDao.getAllDeletedAgendaItemsForUser(userId)
+
+        val deletedJobs = offlineDeletedAgendaItems.map { deletedAgendaItem ->
+            scope.launch {
+                syncAgendaItems.syncDeletedAgendaItem(
+                    agendaItemId = deletedAgendaItem.id,
+                    agendaItemType = AgendaItemType.valueOf(deletedAgendaItem.agendaItemType)
+                )
+            }
+        }
+
+        val offlineUpdatedAgendaItems = pendingSyncUpdatedAgendaItemsDao.getUpdatedItemsByUserId(userId)
+        val updatedJobs = offlineUpdatedAgendaItems.map { updatedAgendaItem ->
+            scope.launch {
+                syncAgendaItems.syncUpdatedAgendaItem(
+                    agendaItemId = updatedAgendaItem.id,
+                )
+            }
+        }
+
+        val offlineCreatedAgendaItems = pendingSyncCreatedAgendaItemsDao.getCreatedAgendaItemsByUserId(userId)
+        val createdJobs = offlineCreatedAgendaItems.map { createdAgendaItem ->
+            scope.launch {
+                syncAgendaItems.syncCreatedAgendaItem(
+                    agendaItemId = createdAgendaItem.id,
+                )
+            }
+        }
+
+        updatedJobs.joinAll()
+        createdJobs.joinAll()
+        deletedJobs.joinAll()
+    }
+
+    override suspend fun periodicalSyncAgendaItems() {
+        syncAgendaItems.syncFullAgenda()
+    }
+
+    override suspend fun logout() {
         networkApiCall {
-            sessionStorage.resetAuthInfo()
+            syncAgendaItems.cancelWorkers()
+            localAgendaDataSource.deleteAllAgendaItems()
             taskyRetrofitApi.logout()
-        }.launchIn(scope)
+        }.launchIn(scope).join()
+        scope.launch {
+            sessionStorage.resetAuthInfo()
+        }.join()
     }
 }

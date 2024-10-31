@@ -27,6 +27,9 @@ class AgendaViewModel(
         private set
 
     init {
+        viewModelScope.launch {
+            agendaRepository.periodicalSyncAgendaItems()
+        }
         setFullName()
         snapshotFlow {
             agendaUiState.selectedDate
@@ -43,7 +46,7 @@ class AgendaViewModel(
             }.launchIn(viewModelScope)
 
         viewModelScope.launch {
-            agendaRepository.fetchAgendaItems()
+            agendaRepository.pushOfflineAgendaItems()
         }
     }
 
@@ -55,7 +58,9 @@ class AgendaViewModel(
     }
 
     fun logout() {
-        agendaRepository.logout()
+        viewModelScope.launch {
+            agendaRepository.logout()
+        }
     }
 
     private fun setFullName() {

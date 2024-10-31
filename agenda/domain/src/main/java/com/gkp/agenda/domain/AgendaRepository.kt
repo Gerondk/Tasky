@@ -13,7 +13,12 @@ interface AgendaRepository {
     suspend fun updateAgendaItem(agendaItem: AgendaItem)
 
     suspend fun deleteAgendaItem(agendaItem: AgendaItem)
+
     suspend fun getAgendaItemForId(id: String): AgendaItem
 
-    fun logout()
+    suspend fun pushOfflineAgendaItems()
+
+    suspend fun periodicalSyncAgendaItems()
+
+    suspend fun logout()
 }

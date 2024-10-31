@@ -9,7 +9,8 @@ import com.gkp.agenda.data.toTaskBody
 import com.gkp.agenda.domain.datasource.LocalAgendaDataSource
 import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.domain.model.AgendaItemType
-import com.gkp.core.database.dao.CreatedAgendaItemsDao
+import com.gkp.auth.domain.session.SessionStorage
+import com.gkp.core.database.dao.PendingSyncCreatedAgendaItemsDao
 import com.gkp.core.network.TaskyRetrofitApi
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
@@ -17,30 +18,40 @@ import kotlinx.coroutines.ensureActive
 class CreatedItemsWorker(
     private val taskyRetrofitApi: TaskyRetrofitApi,
     private val localDataSource: LocalAgendaDataSource,
-    private val createdAgendaItemsDao: CreatedAgendaItemsDao,
+    private val pendingSyncCreatedAgendaItemsDao: PendingSyncCreatedAgendaItemsDao,
+    private val sessionStorage: SessionStorage,
     context: Context,
     params: WorkerParameters,
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
+        println(" ATMS CreatedItemsWorker doWork")
+
+        if (sessionStorage.getAuthInfo().accessToken.isBlank()){
+            return Result.failure()
+        }
+
         if (runAttemptCount >= 5) {
             return Result.failure()
         }
         val agendaItemId = inputData.getString(AGENDA_ITEM_ID) ?: return Result.failure()
+        println(" ATMS CreatedItemsWorker doWork agendaItemId $agendaItemId")
         return try {
             val agendaItem = localDataSource.getAgendaItemById(agendaItemId)
             performPushCreatedRequest(agendaItem)
-            createdAgendaItemsDao.deleteById(agendaItemId)
+            pendingSyncCreatedAgendaItemsDao.deleteById(agendaItemId)
 
             Result.success()
         } catch (e: Exception) {
             currentCoroutineContext().ensureActive()
+            println(" ATMS CreatedItemsWorker doWork exception $e")
             Result.retry()
         }
 
     }
 
     private suspend fun performPushCreatedRequest(agendaItem: AgendaItem) {
+        println(" ATMS CreatedItemsWorker performPushCreatedRequest")
         when (agendaItem.getType()) {
             AgendaItemType.TASK -> {
                 val taskItem = agendaItem as AgendaItem.Task
