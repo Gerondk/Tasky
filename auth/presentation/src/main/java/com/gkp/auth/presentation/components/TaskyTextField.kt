@@ -1,9 +1,9 @@
 package com.gkp.auth.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gkp.core.designsystem.theme.TaskyGreen
@@ -73,9 +72,10 @@ fun TaskyTextField(
         decorator = { innerBox ->
             Row(
                 modifier = modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Box(modifier = modifier.weight(1f)) {
+                Box {
                     if (textState.text.isEmpty() && !hasFocus) {
                         Text(
                             text = hintText,
@@ -87,8 +87,9 @@ fun TaskyTextField(
                     innerBox()
                 }
                 if (endIcon != null) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    IconButton(onClick = {}) {
+                    IconButton(
+                        onClick = {}
+                    ) {
                         Icon(
                             imageVector = endIcon,
                             contentDescription = endIconContentDescription,

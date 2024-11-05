@@ -2,6 +2,7 @@ package com.gkp.tasky
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -21,7 +22,11 @@ class MainActivity : ComponentActivity() {
                 viewModel.mainAppState.sessionStorageLoading
             }
         }
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(
+                scrim = android.graphics.Color.TRANSPARENT
+            )
+        )
 
         setContent {
             TaskyTheme {
