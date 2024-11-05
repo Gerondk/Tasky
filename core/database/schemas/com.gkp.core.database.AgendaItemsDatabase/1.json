@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "22c028247b45b07cfd6a84963d33bb8b",
+    "identityHash": "9b8eff2fef86f7a8b84b5b7cd3080c63",
     "entities": [
       {
         "tableName": "AgendaItemEntity",
@@ -106,11 +106,11 @@
       },
       {
         "tableName": "CreatedAgendaItemEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `userId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`agendaItemId` TEXT NOT NULL, `userId` TEXT NOT NULL, `id` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT, `time` INTEGER NOT NULL, `to` INTEGER, `remindAt` INTEGER NOT NULL, `isDone` INTEGER, `photoUrls` TEXT, `date` INTEGER NOT NULL, PRIMARY KEY(`agendaItemId`))",
         "fields": [
           {
-            "fieldPath": "id",
-            "columnName": "id",
+            "fieldPath": "agendaItemId",
+            "columnName": "agendaItemId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -119,12 +119,66 @@
             "columnName": "userId",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "agendaItem.id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "agendaItem.title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "agendaItem.description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "agendaItem.time",
+            "columnName": "time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "agendaItem.to",
+            "columnName": "to",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "agendaItem.remindAt",
+            "columnName": "remindAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "agendaItem.isDone",
+            "columnName": "isDone",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "agendaItem.photoUrls",
+            "columnName": "photoUrls",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "agendaItem.date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "id"
+            "agendaItemId"
           ]
         },
         "indices": [],
@@ -132,11 +186,11 @@
       },
       {
         "tableName": "UpdatedAgendaItemEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `userId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`agendaItemId` TEXT NOT NULL, `userId` TEXT NOT NULL, `id` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT, `time` INTEGER NOT NULL, `to` INTEGER, `remindAt` INTEGER NOT NULL, `isDone` INTEGER, `photoUrls` TEXT, `date` INTEGER NOT NULL, PRIMARY KEY(`agendaItemId`))",
         "fields": [
           {
-            "fieldPath": "id",
-            "columnName": "id",
+            "fieldPath": "agendaItemId",
+            "columnName": "agendaItemId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -145,12 +199,66 @@
             "columnName": "userId",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "agendaItem.id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "agendaItem.title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "agendaItem.description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "agendaItem.time",
+            "columnName": "time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "agendaItem.to",
+            "columnName": "to",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "agendaItem.remindAt",
+            "columnName": "remindAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "agendaItem.isDone",
+            "columnName": "isDone",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "agendaItem.photoUrls",
+            "columnName": "photoUrls",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "agendaItem.date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "id"
+            "agendaItemId"
           ]
         },
         "indices": [],
@@ -160,7 +268,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '22c028247b45b07cfd6a84963d33bb8b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9b8eff2fef86f7a8b84b5b7cd3080c63')"
     ]
   }
 }

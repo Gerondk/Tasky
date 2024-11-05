@@ -11,6 +11,7 @@ import com.gkp.core.database.dao.PendingSyncDeletedAgendaItemsDao
 import com.gkp.core.database.dao.PendingSyncUpdatedAgendaItemsDao
 import com.gkp.core.database.entity.DeletedAgendaItemEntity
 import com.gkp.core.database.entity.UpdatedAgendaItemEntity
+import com.gkp.core.database.mapper.toAgendaItemEntity
 import com.gkp.core.network.TaskyRetrofitApi
 import com.gkp.core.network.model.buildEventBodyPart
 import com.gkp.core.network.model.buildPhotosPart
@@ -78,7 +79,7 @@ class OfflineAgendaRepository(
             val error = it.getErrorOrNull()
             error?.let {
                 localAgendaDataSource.saveCreatedAgendaItem(
-                    agendaItemId = agendaItem.id,
+                    agendaItem = agendaItem,
                     userId = sessionStorage.getAuthInfo().userId
                 )
                 syncAgendaItems.syncCreatedAgendaItem(
@@ -125,8 +126,9 @@ class OfflineAgendaRepository(
             error?.let {
                 pendingSyncUpdatedAgendaItemsDao.upsertUpdatedItem(
                     UpdatedAgendaItemEntity(
-                        id = agendaItem.id,
-                        userId = sessionStorage.getAuthInfo().userId
+                        agendaItemId = agendaItem.id,
+                        userId = sessionStorage.getAuthInfo().userId,
+                        agendaItem = agendaItem.toAgendaItemEntity()
                     )
                 )
                 syncAgendaItems.syncUpdatedAgendaItem(
@@ -203,7 +205,7 @@ class OfflineAgendaRepository(
         val updatedJobs = offlineUpdatedAgendaItems.map { updatedAgendaItem ->
             scope.launch {
                 syncAgendaItems.syncUpdatedAgendaItem(
-                    agendaItemId = updatedAgendaItem.id,
+                    agendaItemId = updatedAgendaItem.agendaItemId,
                 )
             }
         }
@@ -212,7 +214,7 @@ class OfflineAgendaRepository(
         val createdJobs = offlineCreatedAgendaItems.map { createdAgendaItem ->
             scope.launch {
                 syncAgendaItems.syncCreatedAgendaItem(
-                    agendaItemId = createdAgendaItem.id,
+                    agendaItemId = createdAgendaItem.agendaItemId,
                 )
             }
         }
@@ -220,6 +222,7 @@ class OfflineAgendaRepository(
         updatedJobs.joinAll()
         createdJobs.joinAll()
         deletedJobs.joinAll()
+        fetchAgendaItems()
     }
 
     override suspend fun periodicalSyncAgendaItems() {
