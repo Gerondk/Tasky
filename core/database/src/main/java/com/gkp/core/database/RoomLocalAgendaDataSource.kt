@@ -40,11 +40,12 @@ class RoomLocalAgendaDataSource(
         agendaItemsDao.upsertAllAgendaItems(agendaItems.map { it.toAgendaItemEntity() })
     }
 
-    override suspend fun saveCreatedAgendaItem(agendaItemId: String, userId: String) {
+    override suspend fun saveCreatedAgendaItem(agendaItem: AgendaItem, userId: String) {
         createdAgendaItemsDao.upsert(
             CreatedAgendaItemEntity(
-                id = agendaItemId,
-                userId = userId
+                agendaItemId = agendaItem.id,
+                userId = userId,
+                agendaItem = agendaItem.toAgendaItemEntity()
             )
         )
     }

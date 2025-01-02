@@ -11,13 +11,13 @@ import com.gkp.agenda.domain.model.AgendaItem
 import com.gkp.agenda.domain.model.AgendaItemType
 import com.gkp.auth.domain.session.SessionStorage
 import com.gkp.core.database.dao.PendingSyncUpdatedAgendaItemsDao
+import com.gkp.core.database.mapper.toAgendaItem
 import com.gkp.core.network.TaskyRetrofitApi
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 
 class UpdatedItemsWorker(
     private val taskyRetrofitApi: TaskyRetrofitApi,
-    private val localAgendaDataSource: LocalAgendaDataSource,
     private val pendingSyncUpdatedItemsDao: PendingSyncUpdatedAgendaItemsDao,
     private val sessionStorage: SessionStorage,
     context: Context,
@@ -34,8 +34,8 @@ class UpdatedItemsWorker(
         }
         val agendaItemId = inputData.getString(AGENDA_ITEM_ID) ?: return Result.failure()
         return try {
-            val agendaItem = localAgendaDataSource.getAgendaItemById(agendaItemId)
-            performedRemoteUpdate(agendaItem)
+            val agendaItemEntity = pendingSyncUpdatedItemsDao.getUpdatedItemById(agendaItemId) ?: return Result.failure()
+            performedRemoteUpdate(agendaItemEntity.agendaItem.toAgendaItem())
             pendingSyncUpdatedItemsDao.deleteById(agendaItemId)
             Result.success()
         } catch (e: Exception) {

@@ -8,7 +8,7 @@ import com.gkp.core.database.entity.CreatedAgendaItemEntity
 @Dao
 interface PendingSyncCreatedAgendaItemsDao {
 
-    @Query("DELETE FROM CreatedAgendaItemEntity WHERE id = :id")
+    @Query("DELETE FROM CreatedAgendaItemEntity WHERE agendaItemId = :id")
     suspend fun deleteById(id: String)
 
     @Upsert
@@ -16,5 +16,8 @@ interface PendingSyncCreatedAgendaItemsDao {
 
     @Query("SELECT * FROM CreatedAgendaItemEntity WHERE userId = :userId")
     suspend fun getCreatedAgendaItemsByUserId(userId: String): List<CreatedAgendaItemEntity>
+
+    @Query("SELECT * FROM CreatedAgendaItemEntity WHERE agendaItemId = :id")
+    suspend fun getCreatedAgendaItemById(id: String): CreatedAgendaItemEntity?
 
 }
